@@ -1,33 +1,32 @@
-package model;
+package entities;
 
 import java.util.Collection;
 import java.util.Objects;
 
-public class Teacher extends User {
+public class Student extends User{
     private static final long serialVersionUID = 1L;
 
     /**
      * @associates <{model.Course}>
      */
-    private Collection teachingCourses;
+    private Collection studyingCourses;
 
-
-    public Teacher() {
+    public Student() {
         super();
     }
 
-    public Collection getTeachingCourses() {
-        return teachingCourses;
+    public Collection getStudyingCourses() {
+        return studyingCourses;
     }
 
-    public void setTeachingCourses(Collection teachingCourses) {
-        this.teachingCourses = teachingCourses;
+    public void setStudyingCourses(Collection studyingCourses) {
+        this.studyingCourses = studyingCourses;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.teachingCourses);
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.studyingCourses);
         return hash;
     }
 
@@ -42,8 +41,8 @@ public class Teacher extends User {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Teacher other = (Teacher) obj;
-        if (!Objects.equals(this.teachingCourses, other.teachingCourses)) {
+        final Student other = (Student) obj;
+        if (!Objects.equals(this.studyingCourses, other.studyingCourses)) {
             return false;
         }
         return true;
@@ -51,7 +50,7 @@ public class Teacher extends User {
 
     @Override
     public String toString() {
-        return "Teacher{" + "teachingCourses=" + teachingCourses + '}';
+        return "Student{" + "studyingCourses=" + studyingCourses + '}';
     }
     
     

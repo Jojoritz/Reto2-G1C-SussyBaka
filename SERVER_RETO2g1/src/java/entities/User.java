@@ -1,4 +1,4 @@
-package model;
+package entities;
 
 import java.io.Serializable;
 
@@ -6,8 +6,8 @@ import java.sql.Timestamp;
 
 import java.util.Collection;
 import java.util.List;
-import model.enumerations.UserPrivilege;
-import model.enumerations.UserStatus;
+import entities.enumerations.UserPrivilege;
+import entities.enumerations.UserStatus;
 
 public class User implements Serializable {
 
