@@ -1,2 +1,2 @@
-package enumerations;
+package model.enumerations;
 

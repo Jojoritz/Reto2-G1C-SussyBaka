@@ -1,16 +1,18 @@
 package model;
 
-import enumerations.UserPrivilege;
-import enumerations.UserStatus;
-
 import java.io.Serializable;
 
 import java.sql.Timestamp;
 
 import java.util.Collection;
 import java.util.List;
+import model.enumerations.UserPrivilege;
+import model.enumerations.UserStatus;
 
-public class User implements Serializable{
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Integer id;
     private String login;
     private String email;
@@ -25,11 +27,8 @@ public class User implements Serializable{
      */
     private List signInHistory;
 
-
-
     public User() {
         super();
     }
 
-    
 }

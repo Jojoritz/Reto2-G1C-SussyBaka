@@ -1,4 +1,4 @@
-package enumerations;
+package model.enumerations;
 
 public enum UserStatus {
     ENABLED,

@@ -1,6 +1,7 @@
-package enumerations;
+package model.enumerations;
 
 public enum UserPrivilege {
-    USER,
+    STUDENT,
+    TEACHER,
     ADMIN
 }
