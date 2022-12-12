@@ -2,9 +2,9 @@ package entities;
 
 import java.util.Collection;
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -18,7 +18,7 @@ public class Student extends User{
     /**
      * @associates <{entities.Course}>
      */
-    @Column
+    @OneToMany
     private Collection<Course> studyingCourses;
 
     public Student() {

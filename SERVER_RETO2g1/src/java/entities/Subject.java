@@ -4,19 +4,52 @@ import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+/**
+ *This is the entity class of the subject 
+ * @author ioritz
+ */
+@Entity
+@Table(name="SUBJECT", schema="reto2_g1c_sussybaka")
 public class Subject implements Serializable {
     private static final long serialVersionUID = 1L;
+    /**
+     * This is the id of the entity
+     */
+    @Id
     private Integer subjectId;
+    /**
+     * The name of the subject
+     */
+    @Column
     private String name;
+    /**
+     * The type of the subject
+     */
+    @Column
     private String type;
+    /**
+     * The century of the subject
+     */
+    @Column
     private String century;
+    /**
+     * The level of the subject
+     */
+    @Column
     private String level;
 
     /**
      * @associates <{model.Course}>
+     * The collection of courses that contains this subject
      */
-    private Collection courseWithSubject;
+    @OneToMany
+    private Collection<Course> courseWithSubject;
 
     public Subject() {
         super();
