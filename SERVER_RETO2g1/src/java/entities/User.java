@@ -24,7 +24,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- *
+ *This is the user entity clas
  * @author ioritz
  */
 @Entity
@@ -34,29 +34,56 @@ import javax.persistence.TemporalType;
 @DiscriminatorValue(value="admin")
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
+    /**
+     * The id of the user
+     */
     @Id
     private Integer id;
+    /**
+     * The user to login in the application
+     */
     @Column
     private String login;
+    /**
+     * The user email
+     */
     @Column
     private String email;
+    /**
+     * The user full name
+     */
     @Column
     private String fullName;
+    /**
+     * The password of the account
+     */
     @Column
     private String password;
+    /**
+     * A collection with the date of lastest password changes
+     */
     @Temporal(TemporalType.TIMESTAMP)
     private Set<Timestamp> lastPasswordChange;
+    /**
+     * The status of the user
+     */
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+    /**
+     * The privilege of the user in the application
+     */
     @Enumerated(EnumType.STRING)
     private UserPrivilege privilege;
     @Temporal(TemporalType.TIMESTAMP)
+    /**
+     * A collection with the date of the last  sign in in the application
+     */
     private List<Timestamp> signInHistory;
-
+    //Constructor
     public User() {
         super();
     }
-
+    //Getters and setters
     public Integer getId() {
         return id;
     }
@@ -128,6 +155,7 @@ public class User implements Serializable {
     public void setSignInHistory(List<Timestamp> signInHistory) {
         this.signInHistory = signInHistory;
     }
+    //HashCode, equals and toString
 
     @Override
     public int hashCode() {

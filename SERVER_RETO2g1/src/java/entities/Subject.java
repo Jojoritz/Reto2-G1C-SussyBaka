@@ -45,16 +45,18 @@ public class Subject implements Serializable {
     private String level;
 
     /**
-     * @associates <{model.Course}>
+     * @associates <{entities.Course}>
      * The collection of courses that contains this subject
      */
     @OneToMany
     private Collection<Course> courseWithSubject;
 
+    //Constructor
     public Subject() {
         super();
     }
 
+    //Getters and setters
     public Integer getSubjectId() {
         return subjectId;
     }
@@ -103,6 +105,7 @@ public class Subject implements Serializable {
         this.courseWithSubject = courseWithSubject;
     }
 
+    //Hash code, equals and toString
     @Override
     public int hashCode() {
         int hash = 5;

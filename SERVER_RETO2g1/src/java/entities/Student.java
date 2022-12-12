@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 /**
  *
  * @author ioritz
+ * This is the student entity class
  */
 @Entity
 @DiscriminatorValue("student")
@@ -17,14 +18,15 @@ public class Student extends User{
 
     /**
      * @associates <{entities.Course}>
+     * This is a collection with the acctualy studying courses of the student
      */
     @OneToMany
     private Collection<Course> studyingCourses;
-
+    //Constructor
     public Student() {
         super();
     }
-
+    //Getters and setters
     public Collection<Course> getStudyingCourses() {
         return studyingCourses;
     }
@@ -33,6 +35,7 @@ public class Student extends User{
         this.studyingCourses = studyingCourses;
     }
 
+    //hashCode, equals and toString
     @Override
     public int hashCode() {
         int hash = 5;

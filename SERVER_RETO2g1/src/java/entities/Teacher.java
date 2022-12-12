@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 /**
  *
  * @author ioritz
+ * This is the teacher entity class
  */
 @Entity
 @DiscriminatorValue("teacher")
@@ -16,16 +17,17 @@ public class Teacher extends User {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @associates <{model.Course}>
+     * @associates <{entities.Course}>
+     * A collection of the actually teaching courses of the teacher
      */
     
     @OneToMany
     private Collection<Course> teachingCourses;
-    
+    //Constructor
     public Teacher() {
         super();
     }
-
+    //Getters and setters
     public Collection<Course> getTeachingCourses() {
         return teachingCourses;
     }
@@ -34,6 +36,7 @@ public class Teacher extends User {
         this.teachingCourses = teachingCourses;
     }
 
+    //Equals, hashCode and toString
     @Override
     public int hashCode() {
         int hash = 5;
