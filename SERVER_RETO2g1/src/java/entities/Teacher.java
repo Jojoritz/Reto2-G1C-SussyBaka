@@ -2,27 +2,34 @@ package entities;
 
 import java.util.Collection;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+/**
+ *
+ * @author ioritz
+ */
 @Entity
+@DiscriminatorValue("teacher")
 public class Teacher extends User {
     private static final long serialVersionUID = 1L;
 
     /**
      * @associates <{model.Course}>
      */
-    private Collection teachingCourses;
-
-
+    @Column
+    private Collection<Course> teachingCourses;
+    
     public Teacher() {
         super();
     }
 
-    public Collection getTeachingCourses() {
+    public Collection<Course> getTeachingCourses() {
         return teachingCourses;
     }
 
-    public void setTeachingCourses(Collection teachingCourses) {
+    public void setTeachingCourses(Collection<Course> teachingCourses) {
         this.teachingCourses = teachingCourses;
     }
 
@@ -55,6 +62,5 @@ public class Teacher extends User {
     public String toString() {
         return "Teacher{" + "teachingCourses=" + teachingCourses + '}';
     }
-    
     
 }

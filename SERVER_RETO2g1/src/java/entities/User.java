@@ -4,26 +4,35 @@ import java.io.Serializable;
 
 import java.sql.Timestamp;
 
-import java.util.Collection;
 import java.util.List;
 import entities.enumerations.UserPrivilege;
 import entities.enumerations.UserStatus;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ *
+ * @author ioritz
+ */
 @Entity
 @Table(name="USER", schema="reto2_g1c_sussybaka")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="type", discriminatorType=DiscriminatorType.STRING)
+@DiscriminatorValue(value="admin")
 public class User implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     private Integer id;
@@ -41,12 +50,8 @@ public class User implements Serializable {
     private UserStatus status;
     @Enumerated(EnumType.STRING)
     private UserPrivilege privilege;
-
-    /**
-     * @associates <{model.SignIn}>
-     */
-    @OneToMany
-    private List signInHistory;
+    @Temporal(TemporalType.TIMESTAMP)
+    private List<Timestamp> signInHistory;
 
     public User() {
         super();
@@ -92,7 +97,13 @@ public class User implements Serializable {
         this.password = password;
     }
 
-   
+    public Set<Timestamp> getLastPasswordChange() {
+        return lastPasswordChange;
+    }
+
+    public void setLastPasswordChange(Set<Timestamp> lastPasswordChange) {
+        this.lastPasswordChange = lastPasswordChange;
+    }
 
     public UserStatus getStatus() {
         return status;
@@ -110,34 +121,26 @@ public class User implements Serializable {
         this.privilege = privilege;
     }
 
-    public List getSignInHistory() {
+    public List<Timestamp> getSignInHistory() {
         return signInHistory;
     }
 
-    public void setSignInHistory(List signInHistory) {
+    public void setSignInHistory(List<Timestamp> signInHistory) {
         this.signInHistory = signInHistory;
-    }
-
-    public Set<Timestamp> getLastPasswordChange() {
-        return lastPasswordChange;
-    }
-
-    public void setLastPasswordChange(Set<Timestamp> lastPasswordChange) {
-        this.lastPasswordChange = lastPasswordChange;
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.id);
-        hash = 67 * hash + Objects.hashCode(this.login);
-        hash = 67 * hash + Objects.hashCode(this.email);
-        hash = 67 * hash + Objects.hashCode(this.fullName);
-        hash = 67 * hash + Objects.hashCode(this.password);
-        hash = 67 * hash + Objects.hashCode(this.lastPasswordChange);
-        hash = 67 * hash + Objects.hashCode(this.status);
-        hash = 67 * hash + Objects.hashCode(this.privilege);
-        hash = 67 * hash + Objects.hashCode(this.signInHistory);
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.id);
+        hash = 89 * hash + Objects.hashCode(this.login);
+        hash = 89 * hash + Objects.hashCode(this.email);
+        hash = 89 * hash + Objects.hashCode(this.fullName);
+        hash = 89 * hash + Objects.hashCode(this.password);
+        hash = 89 * hash + Objects.hashCode(this.lastPasswordChange);
+        hash = 89 * hash + Objects.hashCode(this.status);
+        hash = 89 * hash + Objects.hashCode(this.privilege);
+        hash = 89 * hash + Objects.hashCode(this.signInHistory);
         return hash;
     }
 
@@ -188,8 +191,5 @@ public class User implements Serializable {
         return "User{" + "id=" + id + ", login=" + login + ", email=" + email + ", fullName=" + fullName + ", password=" + password + ", lastPasswordChange=" + lastPasswordChange + ", status=" + status + ", privilege=" + privilege + ", signInHistory=" + signInHistory + '}';
     }
 
-   
     
-    
-
 }
