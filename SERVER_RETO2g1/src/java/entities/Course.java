@@ -9,7 +9,9 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -53,19 +55,29 @@ public class Course implements Serializable {
     private Boolean isPrivate;
 
     /**
-     * @associates <{model.Student}>
+     * @associates <{Student}>
      * This is a collection with the acctual students of the course
      */
+    @ManyToMany
+    private Collection<Student> courseStudents;
+    
+    /**
+     * This is the actual Teacher of the course
+     */
     @ManyToOne
-    private Collection courseStudents;
     private Teacher teacher;
 
     /**
-     * @associates <{model.Post}>
+     * @associates <{Post}>
      * This is a collection with the acctual post of the course
      */
+    @OneToMany
+    private Collection<Post> coursePosts;
+    
+    /**
+     * This is the actual Subject of the course
+     */
     @ManyToOne
-    private Collection coursePosts;
     private Subject subject;
 
     //Constructor
@@ -169,16 +181,16 @@ public class Course implements Serializable {
      * 
      * @return The students in te course
      */
-    public Collection getCourseStudents() {
+    public Collection<Student> getCourseStudents() {    
         return courseStudents;
     }
 
     /**
      * Sets the students that are in the course
-     * 
+     *
      * @param courseStudents 
      */
-    public void setCourseStudents(Collection courseStudents) {
+    public void setCourseStudents(Collection<Student> courseStudents) {    
         this.courseStudents = courseStudents;
     }
 
@@ -205,7 +217,7 @@ public class Course implements Serializable {
      * 
      * @return Course's posts
      */
-    public Collection getCoursePosts() {
+    public Collection<Post> getCoursePosts() {    
         return coursePosts;
     }
 
@@ -214,7 +226,7 @@ public class Course implements Serializable {
      * 
      * @param coursePosts
      */
-    public void setCoursePosts(Collection coursePosts) {
+    public void setCoursePosts(Collection<Post> coursePosts) {    
         this.coursePosts = coursePosts;
     }
 
