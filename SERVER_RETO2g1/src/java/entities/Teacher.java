@@ -2,6 +2,7 @@ package entities;
 
 import java.util.Collection;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -21,7 +22,7 @@ public class Teacher extends User {
      * A collection of the actually teaching courses of the teacher
      */
     
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "USER")
     private Collection<Course> teachingCourses;
     //Constructor
     public Teacher() {

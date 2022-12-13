@@ -74,10 +74,11 @@ public class User implements Serializable {
      */
     @Enumerated(EnumType.STRING)
     private UserPrivilege privilege;
-    @Temporal(TemporalType.TIMESTAMP)
+    
     /**
      * A collection with the date of the last  sign in in the application
      */
+    @Temporal(TemporalType.TIMESTAMP)
     private List<Timestamp> signInHistory;
     //Constructor
     public User() {

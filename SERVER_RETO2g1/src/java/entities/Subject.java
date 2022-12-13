@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -48,7 +49,7 @@ public class Subject implements Serializable {
      * @associates <{entities.Course}>
      * The collection of courses that contains this subject
      */
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="SUBJECT")
     private Collection<Course> courseWithSubject;
 
     //Constructor
