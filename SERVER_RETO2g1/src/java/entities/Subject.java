@@ -4,9 +4,13 @@ import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -22,6 +26,7 @@ public class Subject implements Serializable {
      * This is the id of the entity
      */
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer subjectId;
     /**
      * The name of the subject
@@ -48,8 +53,15 @@ public class Subject implements Serializable {
      * @associates <{entities.Course}>
      * The collection of courses that contains this subject
      */
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="SUBJECT")
     private Collection<Course> courseWithSubject;
+    
+    /**
+     * @associates <{entities.Teacher}>
+     * The collection of teacher that are specialized in this subject
+     */
+    @ManyToMany
+    private Collection<Teacher> teachersSpecialized;
 
     //Constructor
     public Subject() {
@@ -97,15 +109,25 @@ public class Subject implements Serializable {
         this.level = level;
     }
 
-    public Collection getCourseWithSubject() {
+    public Collection<Course> getCourseWithSubject() {
         return courseWithSubject;
     }
 
-    public void setCourseWithSubject(Collection courseWithSubject) {
+    public void setCourseWithSubject(Collection<Course> courseWithSubject) {
         this.courseWithSubject = courseWithSubject;
     }
 
+    public Collection<Teacher> getTeachersSpecialized() {
+        return teachersSpecialized;
+    }
+
+    public void setTeachersSpecialized(Collection<Teacher> teachersSpecialized) {
+        this.teachersSpecialized = teachersSpecialized;
+    }
+
+    
     //Hash code, equals and toString
+
     @Override
     public int hashCode() {
         int hash = 5;
@@ -115,6 +137,7 @@ public class Subject implements Serializable {
         hash = 97 * hash + Objects.hashCode(this.century);
         hash = 97 * hash + Objects.hashCode(this.level);
         hash = 97 * hash + Objects.hashCode(this.courseWithSubject);
+        hash = 97 * hash + Objects.hashCode(this.teachersSpecialized);
         return hash;
     }
 
@@ -148,12 +171,15 @@ public class Subject implements Serializable {
         if (!Objects.equals(this.courseWithSubject, other.courseWithSubject)) {
             return false;
         }
+        if (!Objects.equals(this.teachersSpecialized, other.teachersSpecialized)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "Subject{" + "subjectId=" + subjectId + ", name=" + name + ", type=" + type + ", century=" + century + ", level=" + level + ", courseWithSubject=" + courseWithSubject + '}';
+        return "Subject{" + "subjectId=" + subjectId + ", name=" + name + ", type=" + type + ", century=" + century + ", level=" + level + ", courseWithSubject=" + courseWithSubject + ", teachersSpecialized=" + teachersSpecialized + '}';
     }
-
+    
 }

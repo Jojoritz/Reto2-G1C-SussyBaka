@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 /**
@@ -20,7 +21,7 @@ public class Student extends User{
      * @associates <{entities.Course}>
      * This is a collection with the acctualy studying courses of the student
      */
-    @OneToMany
+    @ManyToMany
     private Collection<Course> studyingCourses;
     //Constructor
     public Student() {

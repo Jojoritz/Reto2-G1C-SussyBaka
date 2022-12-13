@@ -16,6 +16,8 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -24,11 +26,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- *This is the user entity clas
+ *This is the user entity class
  * @author ioritz
  */
 @Entity
-@Table(name="USER", schema="reto2_g1c_sussybaka")
+@Table(name="USERS", schema="reto2_g1c_sussybaka")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="type", discriminatorType=DiscriminatorType.STRING)
 @DiscriminatorValue(value="admin")
@@ -38,6 +40,7 @@ public class User implements Serializable {
      * The id of the user
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     /**
      * The user to login in the application
@@ -60,7 +63,7 @@ public class User implements Serializable {
     @Column
     private String password;
     /**
-     * A collection with the date of lastest password changes
+     * A collection with the date of latest password changes
      */
     @Temporal(TemporalType.TIMESTAMP)
     private Set<Timestamp> lastPasswordChange;
@@ -74,10 +77,11 @@ public class User implements Serializable {
      */
     @Enumerated(EnumType.STRING)
     private UserPrivilege privilege;
-    @Temporal(TemporalType.TIMESTAMP)
+    
     /**
      * A collection with the date of the last  sign in in the application
      */
+    @Temporal(TemporalType.TIMESTAMP)
     private List<Timestamp> signInHistory;
     //Constructor
     public User() {
