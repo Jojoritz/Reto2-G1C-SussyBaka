@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 /**
@@ -24,12 +25,19 @@ public class Teacher extends User {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "USERS")
     private Collection<Course> teachingCourses;
+    
+    /**
+     * @associates <{entities.Subject}>
+     * A collection with the specialized subject of this teacher
+     */
+    @ManyToMany
+    private Collection<Subject> specializedSubjects;
     //Constructor
     public Teacher() {
         super();
     }
     //Getters and setters
-    public Collection<Course> getTeachingCourses() {
+   public Collection<Course> getTeachingCourses() {
         return teachingCourses;
     }
 
@@ -37,11 +45,21 @@ public class Teacher extends User {
         this.teachingCourses = teachingCourses;
     }
 
+    public Collection<Subject> getSpecializedSubjects() {
+        return specializedSubjects;
+    }
+
+    public void setSpecializedSubjects(Collection<Subject> specializedSubjects) {
+        this.specializedSubjects = specializedSubjects;
+    }
+
     //Equals, hashCode and toString
+
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.teachingCourses);
+        hash = 97 * hash + Objects.hashCode(this.teachingCourses);
+        hash = 97 * hash + Objects.hashCode(this.specializedSubjects);
         return hash;
     }
 
@@ -60,12 +78,18 @@ public class Teacher extends User {
         if (!Objects.equals(this.teachingCourses, other.teachingCourses)) {
             return false;
         }
+        if (!Objects.equals(this.specializedSubjects, other.specializedSubjects)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "Teacher{" + "teachingCourses=" + teachingCourses + '}';
+        return "Teacher{" + "teachingCourses=" + teachingCourses + ", specializedSubjects=" + specializedSubjects + '}';
     }
+
+    
+   
     
 }
