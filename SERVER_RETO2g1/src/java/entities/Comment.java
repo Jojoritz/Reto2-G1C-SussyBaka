@@ -9,9 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.validation.constraints.NotNull;
 
 /**
  * JPA for the entity {@link Comment} This class contains this attributes
@@ -28,33 +30,38 @@ public class Comment implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * ID field for the comment entity
+     * Embedded ID field for the comment entity
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer commentId;
+    private Integer id;
 
     /**
      * Relationship Many-{@link Comment} -- One-{@link Student}
      */
     @ManyToOne
+    @JoinColumn(name = "student_id")
     private Student commentedStudent;
 
     /**
      * Relationship Many-{@link Comment} -- One-{@link Post}
      */
     @ManyToOne
+    @JoinColumn(name = "post_id")
     private Post commentedPost;
 
     /**
      * {@link Timestamp} field saves the time when the {@code Comment} was
      * created
      */
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @NotNull
     private Timestamp dateComment;
 
     /**
      * String field containing the text of the comment
      */
+    @NotNull
     private String commentText;
 
     /**
@@ -65,21 +72,21 @@ public class Comment implements Serializable {
     }
 
     /**
-     * Gets the comment ID
+     * Gets the comment compose ID
      *
-     * @return ID of the comment
+     * @return Compose ID of the comment
      */
     public Integer getCommentId() {
-        return commentId;
+        return id;
     }
 
     /**
-     * Sets the comment ID
+     * Sets the comment compose ID
      *
-     * @param commentId Passes ID for the comment
+     * @param id Passes ID for the comment
      */
-    public void setCommentId(Integer commentId) {
-        this.commentId = commentId;
+    public void setCommentId(Integer id) {
+        this.id = id;
     }
 
     /**
@@ -121,7 +128,7 @@ public class Comment implements Serializable {
 
     /**
      * Gets the creation date of the {@link Comment}
-     * 
+     *
      * @return {@link Timestamp} with the date when the comment was created
      */
     public Timestamp dateComment() {
@@ -130,7 +137,7 @@ public class Comment implements Serializable {
 
     /**
      * Sets the date when the comment was created
-     * 
+     *
      * @param dateComment Passes the timestamp with the creation date
      */
     public void setDate(Timestamp dateComment) {
@@ -139,7 +146,7 @@ public class Comment implements Serializable {
 
     /**
      * Gets the comment text
-     * 
+     *
      * @return String with the text of the comment
      */
     public String getCommentText() {
@@ -148,7 +155,7 @@ public class Comment implements Serializable {
 
     /**
      * Sets the comment test
-     * 
+     *
      * @param commentText Passes the text of the comment
      */
     public void setCommentText(String commentText) {
@@ -162,7 +169,7 @@ public class Comment implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 13 * hash + Objects.hashCode(this.commentId);
+        hash = 13 * hash + Objects.hashCode(this.id);
         hash = 13 * hash + Objects.hashCode(this.commentedStudent);
         hash = 13 * hash + Objects.hashCode(this.commentedPost);
         hash = 13 * hash + Objects.hashCode(this.dateComment);
@@ -193,7 +200,7 @@ public class Comment implements Serializable {
         if (!Objects.equals(this.commentText, other.commentText)) {
             return false;
         }
-        if (!Objects.equals(this.commentId, other.commentId)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         if (!Objects.equals(this.commentedStudent, other.commentedStudent)) {
@@ -215,7 +222,7 @@ public class Comment implements Serializable {
      */
     @Override
     public String toString() {
-        return "Comment{" + "commentId=" + commentId + ", commentedStudent=" + commentedStudent + ", commentedPost=" + commentedPost + ", dateComment=" + dateComment + ", commentText=" + commentText + '}';
+        return "Comment{" + "Id=" + id + ", commentedStudent=" + commentedStudent + ", commentedPost=" + commentedPost + ", dateComment=" + dateComment + ", commentText=" + commentText + '}';
     }
 
 }

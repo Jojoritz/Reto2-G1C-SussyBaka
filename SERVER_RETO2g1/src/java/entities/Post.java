@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 import java.util.Collection;
 import java.util.Objects;
+import javax.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.validation.constraints.NotNull;
 
 /**
  * JPA for the entity {@link Post} This class contains this attributes
@@ -39,27 +42,33 @@ public class Post implements Serializable {
     /**
      * Content field, contains the data in the post
      */
+    @NotNull
     private String content;
 
     /**
      * Publication date field, contains when the post date was created
      */
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @NotNull
     private Timestamp publicationDate;
 
     /**
      * Link {@link Course} of the post
      */
     @ManyToOne
+    @NotNull
     private Course course;
 
     /**
      * Image field contains the relative path to the image
      */
+    @Column(name="image_path")
     private String image;
 
     /**
      * Video field contains the relative path to the video
      */
+    @Column(name="video_path")
     private String video;
 
     /**
