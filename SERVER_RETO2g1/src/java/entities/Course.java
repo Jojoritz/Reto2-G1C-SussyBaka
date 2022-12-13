@@ -6,103 +6,237 @@ import java.sql.Timestamp;
 
 import java.util.Collection;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+/**
+ *
+ * @author Joritz This is the Course entity class
+ */
+@Entity
+@Table(name = "COURSE", schema = "reto2_g1c_sussybaka")
 public class Course implements Serializable {
+
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * ID field for the course entity
+     */
+    @Id
     private Integer courseId;
+
+    /**
+     * String field containing the name of the Course
+     */
+    @Column
     private String name;
+
+    /**
+     * Timestamp field saves the time when the Course was created
+     */
+    @Column
     private Timestamp startDate;
+
+    /**
+     * Boolean field that contains the visibility of the Course
+     */
+    @Column
     private Boolean isVisible;
+
+    /**
+     * Boolean field that contains if the Course is private
+     */
+    @Column
     private Boolean isPrivate;
 
     /**
      * @associates <{model.Student}>
+     * This is a collection with the acctual students of the course
      */
+    @ManyToOne
     private Collection courseStudents;
     private Teacher teacher;
 
     /**
      * @associates <{model.Post}>
+     * This is a collection with the acctual post of the course
      */
+    @ManyToOne
     private Collection coursePosts;
     private Subject subject;
 
+    //Constructor
     public Course() {
         super();
     }
 
+    //Getters & Setters
+    /**
+     * Gets the course ID
+     * 
+     * @return ID of the course
+     */
     public Integer getCourseId() {
         return courseId;
     }
 
+    /**
+     * Sets the course ID
+     * 
+     * @param courseId Passes ID of the course
+     */
     public void setCourseId(Integer courseId) {
         this.courseId = courseId;
     }
 
+    /**
+     * Gets the name of the course
+     * 
+     * @return Name of the course
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the course
+     * 
+     * @param name Name of the course
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets the creation date of the course
+     * 
+     * @return Timestamp with the date of creation of the course
+     */
     public Timestamp getStartDate() {
         return startDate;
     }
 
+    /**
+     * Sets the creation date of the course
+     * 
+     * @param startDate Starting Date
+     */
     public void setStartDate(Timestamp startDate) {
         this.startDate = startDate;
     }
 
+    /**
+     * Gets if the course is visible or not
+     * 
+     * @return Boolean
+     */
     public Boolean getIsVisible() {
         return isVisible;
     }
 
+    /**
+     * Sets if the course is visible or not
+     * 
+     * @param isVisible 
+     */
     public void setIsVisible(Boolean isVisible) {
         this.isVisible = isVisible;
     }
 
+    /**
+     * Gets if the course is private or not
+     * 
+     * @return Boolean
+     */
     public Boolean getIsPrivate() {
         return isPrivate;
     }
 
+    /**
+     * Sets if the course is private or not
+     * 
+     * @param isPrivate 
+     */
     public void setIsPrivate(Boolean isPrivate) {
         this.isPrivate = isPrivate;
     }
 
+    /**
+     * Gets the students that are in the course
+     * 
+     * @return The students in te course
+     */
     public Collection getCourseStudents() {
         return courseStudents;
     }
 
+    /**
+     * Sets the students that are in the course
+     * 
+     * @param courseStudents 
+     */
     public void setCourseStudents(Collection courseStudents) {
         this.courseStudents = courseStudents;
     }
 
+    /**
+     * Gets the Teacher of the course
+     * 
+     * @return Teacher of the course
+     */
     public Teacher getTeacher() {
         return teacher;
     }
 
+    /**
+     * Sets the teacher of the group
+     * 
+     * @param teacher 
+     */
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
     }
 
+    /**
+     * Gets the posts of the course
+     * 
+     * @return Course's posts
+     */
     public Collection getCoursePosts() {
         return coursePosts;
     }
 
+    /**
+     * Sets the posts of the course
+     * 
+     * @param coursePosts
+     */
     public void setCoursePosts(Collection coursePosts) {
         this.coursePosts = coursePosts;
     }
 
+    /**
+     * Gets the subject of the course
+     * 
+     * @return Subject of the course
+     */
     public Subject getSubject() {
         return subject;
     }
 
+    /**
+     * Sets the subject of the course
+     * 
+     * @param subject 
+     */
     public void setSubject(Subject subject) {
         this.subject = subject;
     }
 
+    //hascode, equals & toString
     @Override
     public int hashCode() {
         int hash = 3;
