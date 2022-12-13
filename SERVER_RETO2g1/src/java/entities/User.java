@@ -63,10 +63,10 @@ public class User implements Serializable {
     @Column
     private String password;
     /**
-     * A collection with the date of latest password changes
+     * A timestamp with the date of latest password changes
      */
     @Temporal(TemporalType.TIMESTAMP)
-    private Set<Timestamp> lastPasswordChange;
+    private Timestamp lastPasswordChange;
     /**
      * The status of the user
      */
@@ -128,11 +128,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Set<Timestamp> getLastPasswordChange() {
+    public Timestamp getLastPasswordChange() {
         return lastPasswordChange;
     }
 
-    public void setLastPasswordChange(Set<Timestamp> lastPasswordChange) {
+    public void setLastPasswordChange(Timestamp lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
 
