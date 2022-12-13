@@ -24,11 +24,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- *This is the user entity clas
+ *This is the user entity class
  * @author ioritz
  */
 @Entity
-@Table(name="USER", schema="reto2_g1c_sussybaka")
+@Table(name="USERS", schema="reto2_g1c_sussybaka")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="type", discriminatorType=DiscriminatorType.STRING)
 @DiscriminatorValue(value="admin")
@@ -60,7 +60,7 @@ public class User implements Serializable {
     @Column
     private String password;
     /**
-     * A collection with the date of lastest password changes
+     * A collection with the date of latest password changes
      */
     @Temporal(TemporalType.TIMESTAMP)
     private Set<Timestamp> lastPasswordChange;

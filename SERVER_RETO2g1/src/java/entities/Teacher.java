@@ -22,7 +22,7 @@ public class Teacher extends User {
      * A collection of the actually teaching courses of the teacher
      */
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "USER")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "USERS")
     private Collection<Course> teachingCourses;
     //Constructor
     public Teacher() {
