@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -19,15 +21,16 @@ import javax.persistence.Table;
  * @author Joritz This is the Course entity class
  */
 @Entity
-@Table(name = "COURSE", schema = "reto2_g1c_sussybaka")
+@Table(name = "course", schema = "reto2_g1c_sussybaka")
 public class Course implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * ID field for the course entity
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer courseId;
 
     /**
@@ -60,7 +63,7 @@ public class Course implements Serializable {
      */
     @ManyToMany
     private Collection<Student> courseStudents;
-    
+
     /**
      * This is the actual Teacher of the course
      */
@@ -73,7 +76,7 @@ public class Course implements Serializable {
      */
     @OneToMany
     private Collection<Post> coursePosts;
-    
+
     /**
      * This is the actual Subject of the course
      */
@@ -88,7 +91,7 @@ public class Course implements Serializable {
     //Getters & Setters
     /**
      * Gets the course ID
-     * 
+     *
      * @return ID of the course
      */
     public Integer getCourseId() {
@@ -97,7 +100,7 @@ public class Course implements Serializable {
 
     /**
      * Sets the course ID
-     * 
+     *
      * @param courseId Passes ID of the course
      */
     public void setCourseId(Integer courseId) {
@@ -106,7 +109,7 @@ public class Course implements Serializable {
 
     /**
      * Gets the name of the course
-     * 
+     *
      * @return Name of the course
      */
     public String getName() {
@@ -115,7 +118,7 @@ public class Course implements Serializable {
 
     /**
      * Sets the name of the course
-     * 
+     *
      * @param name Name of the course
      */
     public void setName(String name) {
@@ -124,7 +127,7 @@ public class Course implements Serializable {
 
     /**
      * Gets the creation date of the course
-     * 
+     *
      * @return Timestamp with the date of creation of the course
      */
     public Timestamp getStartDate() {
@@ -133,7 +136,7 @@ public class Course implements Serializable {
 
     /**
      * Sets the creation date of the course
-     * 
+     *
      * @param startDate Starting Date
      */
     public void setStartDate(Timestamp startDate) {
@@ -142,7 +145,7 @@ public class Course implements Serializable {
 
     /**
      * Gets if the course is visible or not
-     * 
+     *
      * @return Boolean
      */
     public Boolean getIsVisible() {
@@ -151,8 +154,8 @@ public class Course implements Serializable {
 
     /**
      * Sets if the course is visible or not
-     * 
-     * @param isVisible 
+     *
+     * @param isVisible
      */
     public void setIsVisible(Boolean isVisible) {
         this.isVisible = isVisible;
@@ -160,7 +163,7 @@ public class Course implements Serializable {
 
     /**
      * Gets if the course is private or not
-     * 
+     *
      * @return Boolean
      */
     public Boolean getIsPrivate() {
@@ -169,8 +172,8 @@ public class Course implements Serializable {
 
     /**
      * Sets if the course is private or not
-     * 
-     * @param isPrivate 
+     *
+     * @param isPrivate
      */
     public void setIsPrivate(Boolean isPrivate) {
         this.isPrivate = isPrivate;
@@ -178,25 +181,25 @@ public class Course implements Serializable {
 
     /**
      * Gets the students that are in the course
-     * 
+     *
      * @return The students in te course
      */
-    public Collection<Student> getCourseStudents() {    
+    public Collection<Student> getCourseStudents() {
         return courseStudents;
     }
 
     /**
      * Sets the students that are in the course
      *
-     * @param courseStudents 
+     * @param courseStudents
      */
-    public void setCourseStudents(Collection<Student> courseStudents) {    
+    public void setCourseStudents(Collection<Student> courseStudents) {
         this.courseStudents = courseStudents;
     }
 
     /**
      * Gets the Teacher of the course
-     * 
+     *
      * @return Teacher of the course
      */
     public Teacher getTeacher() {
@@ -205,8 +208,8 @@ public class Course implements Serializable {
 
     /**
      * Sets the teacher of the group
-     * 
-     * @param teacher 
+     *
+     * @param teacher
      */
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
@@ -214,25 +217,25 @@ public class Course implements Serializable {
 
     /**
      * Gets the posts of the course
-     * 
+     *
      * @return Course's posts
      */
-    public Collection<Post> getCoursePosts() {    
+    public Collection<Post> getCoursePosts() {
         return coursePosts;
     }
 
     /**
      * Sets the posts of the course
-     * 
+     *
      * @param coursePosts
      */
-    public void setCoursePosts(Collection<Post> coursePosts) {    
+    public void setCoursePosts(Collection<Post> coursePosts) {
         this.coursePosts = coursePosts;
     }
 
     /**
      * Gets the subject of the course
-     * 
+     *
      * @return Subject of the course
      */
     public Subject getSubject() {
@@ -241,8 +244,8 @@ public class Course implements Serializable {
 
     /**
      * Sets the subject of the course
-     * 
-     * @param subject 
+     *
+     * @param subject
      */
     public void setSubject(Subject subject) {
         this.subject = subject;

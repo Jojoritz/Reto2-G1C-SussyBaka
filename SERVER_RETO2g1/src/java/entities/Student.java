@@ -5,16 +5,15 @@ import java.util.Objects;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 
 /**
  *
- * @author ioritz
- * This is the student entity class
+ * @author ioritz This is the student entity class
  */
 @Entity
 @DiscriminatorValue("student")
-public class Student extends User{
+public class Student extends User {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -23,15 +22,27 @@ public class Student extends User{
      */
     @ManyToMany
     private Collection<Course> studyingCourses;
+
     //Constructor
     public Student() {
         super();
     }
+
     //Getters and setters
+    /**
+     * Gets the courses that the students are studying
+     *
+     * @return Courses
+     */
     public Collection<Course> getStudyingCourses() {
         return studyingCourses;
     }
 
+    /**
+     * Sets the courses that the students are studying
+     *
+     * @param studyingCourses
+     */
     public void setStudyingCourses(Collection<Course> studyingCourses) {
         this.studyingCourses = studyingCourses;
     }
@@ -67,5 +78,4 @@ public class Student extends User{
         return "Student{" + "studyingCourses=" + studyingCourses + '}';
     }
 
-       
 }
