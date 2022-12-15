@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -68,6 +69,7 @@ public class Subject implements Serializable {
      * The collection of teacher that are specialized in this subject
      */
     @ManyToMany
+    @JoinTable(name = "studying_courses", schema = "reto2_g1c_sussybaka")
     private Collection<Teacher> teachersSpecializedInSubject;
 
     //Constructor

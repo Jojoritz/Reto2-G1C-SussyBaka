@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
@@ -30,6 +31,7 @@ public class Teacher extends User {
      * A collection with the specialized subject of this teacher
      */
     @ManyToMany
+    @JoinTable(name = "specialized_subjects", schema = "reto2_g1c_sussybaka")
     private Collection<Subject> specializedSubjects;
 
     //Constructor
