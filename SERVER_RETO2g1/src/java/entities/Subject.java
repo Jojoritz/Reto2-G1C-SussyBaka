@@ -68,7 +68,7 @@ public class Subject implements Serializable {
      * The collection of teacher that are specialized in this subject
      */
     @ManyToMany
-    private Collection<Teacher> teachersSpecialized;
+    private Collection<Teacher> teachersSpecializedInSubject;
 
     //Constructor
     public Subject() {
@@ -189,17 +189,17 @@ public class Subject implements Serializable {
      *
      * @return
      */
-    public Collection<Teacher> getTeachersSpecialized() {
-        return teachersSpecialized;
+    public Collection<Teacher> getTeachersSpecializedInSubject() {
+        return teachersSpecializedInSubject;
     }
 
     /**
      * Sets the teacher that imparts the subject
      *
-     * @param teachersSpecialized
+     * @param teachersSpecializedInSubject
      */
-    public void setTeachersSpecialized(Collection<Teacher> teachersSpecialized) {
-        this.teachersSpecialized = teachersSpecialized;
+    public void setTeachersSpecializedInSubject(Collection<Teacher> teachersSpecializedInSubject) {
+        this.teachersSpecializedInSubject = teachersSpecializedInSubject;
     }
 
     //Hash code, equals and toString
@@ -212,7 +212,7 @@ public class Subject implements Serializable {
         hash = 97 * hash + Objects.hashCode(this.century);
         hash = 97 * hash + Objects.hashCode(this.level);
         hash = 97 * hash + Objects.hashCode(this.courseWithSubject);
-        hash = 97 * hash + Objects.hashCode(this.teachersSpecialized);
+        hash = 97 * hash + Objects.hashCode(this.teachersSpecializedInSubject);
         return hash;
     }
 
@@ -246,7 +246,7 @@ public class Subject implements Serializable {
         if (!Objects.equals(this.courseWithSubject, other.courseWithSubject)) {
             return false;
         }
-        if (!Objects.equals(this.teachersSpecialized, other.teachersSpecialized)) {
+        if (!Objects.equals(this.teachersSpecializedInSubject, other.teachersSpecializedInSubject)) {
             return false;
         }
         return true;
@@ -254,7 +254,7 @@ public class Subject implements Serializable {
 
     @Override
     public String toString() {
-        return "Subject{" + "subjectId=" + subjectId + ", name=" + name + ", type=" + type + ", century=" + century + ", level=" + level + ", courseWithSubject=" + courseWithSubject + ", teachersSpecialized=" + teachersSpecialized + '}';
+        return "Subject{" + "subjectId=" + subjectId + ", name=" + name + ", type=" + type + ", century=" + century + ", level=" + level + ", courseWithSubject=" + courseWithSubject + ", teachersSpecialized=" + teachersSpecializedInSubject + '}';
     }
 
 }
