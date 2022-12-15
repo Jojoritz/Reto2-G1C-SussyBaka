@@ -14,6 +14,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * This is the entity class of the subject
@@ -22,6 +24,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "SUBJECT", schema = "reto2_g1c_sussybaka")
+@XmlRootElement
 public class Subject implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -173,6 +176,7 @@ public class Subject implements Serializable {
      *
      * @return Course
      */
+    @XmlTransient
     public Collection<Course> getCourseWithSubject() {
         return courseWithSubject;
     }
@@ -191,6 +195,7 @@ public class Subject implements Serializable {
      *
      * @return
      */
+    @XmlTransient
     public Collection<Teacher> getTeachersSpecializedInSubject() {
         return teachersSpecializedInSubject;
     }

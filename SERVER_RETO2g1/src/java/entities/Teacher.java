@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -15,6 +17,7 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @DiscriminatorValue("teacher")
+@XmlRootElement
 public class Teacher extends User {
 
     private static final long serialVersionUID = 1L;
@@ -45,6 +48,7 @@ public class Teacher extends User {
      *
      * @return Course
      */
+    @XmlTransient
     public Collection<Course> getTeachingCourses() {
         return teachingCourses;
     }
@@ -63,6 +67,7 @@ public class Teacher extends User {
      *
      * @return Subject
      */
+    @XmlTransient
     public Collection<Subject> getSpecializedSubjects() {
         return specializedSubjects;
     }
