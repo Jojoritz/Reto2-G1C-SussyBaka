@@ -19,14 +19,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.jboss.logging.Logger;
 
 /**
  *
- * @author 2dam
+ * @author yeguo
  */
-@Stateless
 @Path("entities.post")
 public class PostFacadeREST extends AbstractFacade<Post> {
+
+    private static final Logger LOG = Logger.getLogger("PostFacadeREST");
 
     @PersistenceContext(unitName = "JavaFX-WebApplicationUD5ExamplePU")
     private EntityManager em;
@@ -87,5 +89,5 @@ public class PostFacadeREST extends AbstractFacade<Post> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

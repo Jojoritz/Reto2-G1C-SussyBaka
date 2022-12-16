@@ -7,7 +7,6 @@ package service;
 
 import entities.Comment;
 import java.util.List;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
@@ -22,9 +21,8 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author yeguo
  */
-@Stateless
 @Path("entities.comment")
 public class CommentFacadeREST extends AbstractFacade<Comment> {
 
