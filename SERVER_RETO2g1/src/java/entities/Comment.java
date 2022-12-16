@@ -4,13 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 import java.util.Objects;
+import javax.persistence.EmbeddedId;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
@@ -33,22 +31,21 @@ public class Comment implements Serializable {
     /**
      * Embedded ID field for the comment entity
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @EmbeddedId
+    private StudentComment id;
 
     /**
      * Relationship Many-{@link Comment} -- One-{@link Student}
      */
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @MapsId("studentId")
     private Student commentedStudent;
 
     /**
      * Relationship Many-{@link Comment} -- One-{@link Post}
      */
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @MapsId("commentId")
     private Post commentedPost;
 
     /**
@@ -77,7 +74,7 @@ public class Comment implements Serializable {
      *
      * @return Compose ID of the comment
      */
-    public Integer getCommentId() {
+    public StudentComment getCommentId() {
         return id;
     }
 
@@ -86,7 +83,7 @@ public class Comment implements Serializable {
      *
      * @param id Passes ID for the comment
      */
-    public void setCommentId(Integer id) {
+    public void setCommentId(StudentComment id) {
         this.id = id;
     }
 
