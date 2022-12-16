@@ -64,7 +64,7 @@ public class Subject implements Serializable {
      * @associates <{entities.Course}>
      * The collection of courses that contains this subject
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "SUBJECT")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subject")
     private Collection<Course> courseWithSubject;
 
     /**
