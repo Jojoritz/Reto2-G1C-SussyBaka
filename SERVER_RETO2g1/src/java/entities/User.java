@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -98,7 +99,7 @@ public class User implements Serializable {
     /**
      * A collection with the date of the last sign in in the application
      */
-    @Temporal(TemporalType.TIMESTAMP)
+    @ElementCollection
     @NotNull
     private List<Date> signInHistory;
 
