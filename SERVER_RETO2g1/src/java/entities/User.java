@@ -1,12 +1,10 @@
 package entities;
 
 import java.io.Serializable;
-
-import java.sql.Timestamp;
-
 import java.util.List;
 import entities.enumerations.UserPrivilege;
 import entities.enumerations.UserStatus;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -23,6 +21,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -51,49 +50,57 @@ public class User implements Serializable {
      * The user to login in the application
      */
     @Column
+    @NotNull
     private String login;
 
     /**
      * The user email
      */
     @Column
+    @NotNull
     private String email;
 
     /**
      * The user full name
      */
     @Column
+    @NotNull
     private String fullName;
 
     /**
      * The password of the account
      */
     @Column
+    @NotNull
     private String password;
 
     /**
      * A timestamp with the date of latest password changes
      */
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp lastPasswordChange;
+    @NotNull
+    private Date lastPasswordChange;
 
     /**
      * The status of the user
      */
     @Enumerated(EnumType.STRING)
+    @NotNull
     private UserStatus status;
 
     /**
      * The privilege of the user in the application
      */
     @Enumerated(EnumType.STRING)
+    @NotNull
     private UserPrivilege privilege;
 
     /**
      * A collection with the date of the last sign in in the application
      */
     @Temporal(TemporalType.TIMESTAMP)
-    private List<Timestamp> signInHistory;
+    @NotNull
+    private List<Date> signInHistory;
 
     //Constructor
     public User() {
@@ -196,7 +203,7 @@ public class User implements Serializable {
      *
      * @return Timestamp
      */
-    public Timestamp getLastPasswordChange() {
+    public Date getLastPasswordChange() {
         return lastPasswordChange;
     }
 
@@ -205,7 +212,7 @@ public class User implements Serializable {
      *
      * @param lastPasswordChange
      */
-    public void setLastPasswordChange(Timestamp lastPasswordChange) {
+    public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
 
@@ -250,7 +257,7 @@ public class User implements Serializable {
      *
      * @return
      */
-    public List<Timestamp> getSignInHistory() {
+    public List<Date> getSignInHistory() {
         return signInHistory;
     }
 
@@ -259,7 +266,7 @@ public class User implements Serializable {
      *
      * @param signInHistory
      */
-    public void setSignInHistory(List<Timestamp> signInHistory) {
+    public void setSignInHistory(List<Date> signInHistory) {
         this.signInHistory = signInHistory;
     }
     //HashCode, equals and toString
