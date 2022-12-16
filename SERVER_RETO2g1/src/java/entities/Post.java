@@ -2,9 +2,8 @@ package entities;
 
 import java.io.Serializable;
 
-import java.sql.Timestamp;
-
 import java.util.Collection;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 
@@ -50,7 +49,7 @@ public class Post implements Serializable {
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @NotNull
-    private Timestamp publicationDate;
+    private Date publicationDate;
 
     /**
      * Link {@link Course} of the post
@@ -62,13 +61,13 @@ public class Post implements Serializable {
     /**
      * Image field contains the relative path to the image
      */
-    @Column(name="image_path")
+    @Column(name = "image_path")
     private String image;
 
     /**
      * Video field contains the relative path to the video
      */
-    @Column(name="video_path")
+    @Column(name = "video_path")
     private String video;
 
     /**
@@ -127,7 +126,7 @@ public class Post implements Serializable {
      *
      * @return publicationDate Publication Date
      */
-    public Timestamp getPublicationDate() {
+    public Date getPublicationDate() {
         return publicationDate;
     }
 
@@ -136,7 +135,7 @@ public class Post implements Serializable {
      *
      * @param publicationDate PublicationDate
      */
-    public void setPublicationDate(Timestamp publicationDate) {
+    public void setPublicationDate(Date publicationDate) {
         this.publicationDate = publicationDate;
     }
 

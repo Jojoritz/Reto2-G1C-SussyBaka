@@ -1,8 +1,8 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.Date;
 
-import java.sql.Timestamp;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -19,7 +19,6 @@ import javax.validation.constraints.NotNull;
  * JPA for the entity {@link Comment} This class contains this attributes
  * {@code ID}, {@code commentedStudent}, {@code commentedPost},
  * {@code dateComment}, {@code commentText}
- *
  *
  * @author Henrique Yeguo
  */
@@ -56,7 +55,7 @@ public class Comment implements Serializable {
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @NotNull
-    private Timestamp dateComment;
+    private Date dateComment;
 
     /**
      * String field containing the text of the comment
@@ -131,7 +130,7 @@ public class Comment implements Serializable {
      *
      * @return {@link Timestamp} with the date when the comment was created
      */
-    public Timestamp dateComment() {
+    public Date dateComment() {
         return dateComment;
     }
 
@@ -140,7 +139,7 @@ public class Comment implements Serializable {
      *
      * @param dateComment Passes the timestamp with the creation date
      */
-    public void setDate(Timestamp dateComment) {
+    public void setDate(Date dateComment) {
         this.dateComment = dateComment;
     }
 
