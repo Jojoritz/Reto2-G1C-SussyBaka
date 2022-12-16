@@ -19,6 +19,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -99,9 +100,9 @@ public class User implements Serializable {
     /**
      * A collection with the date of the last sign in in the application
      */
-    @ElementCollection
-    @NotNull
-    private List<Date> signInHistory;
+    
+    @OneToMany
+    private List<SignInHistory> signInHistory;
 
     //Constructor
     public User() {
@@ -258,7 +259,7 @@ public class User implements Serializable {
      *
      * @return
      */
-    public List<Date> getSignInHistory() {
+    public List<SignInHistory> getSignInHistory() {
         return signInHistory;
     }
 
@@ -267,7 +268,7 @@ public class User implements Serializable {
      *
      * @param signInHistory
      */
-    public void setSignInHistory(List<Date> signInHistory) {
+    public void setSignInHistory(List<SignInHistory> signInHistory) {
         this.signInHistory = signInHistory;
     }
     //HashCode, equals and toString
