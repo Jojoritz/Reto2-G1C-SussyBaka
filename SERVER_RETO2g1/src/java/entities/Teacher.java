@@ -26,7 +26,7 @@ public class Teacher extends User {
      * @associates <{entities.Course}>
      * A collection of the actually teaching courses of the teacher
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "USERS")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacher")
     private Collection<Course> teachingCourses;
 
     /**
