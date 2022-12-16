@@ -101,7 +101,7 @@ public class User implements Serializable {
      * A collection with the date of the last sign in in the application
      */
     
-    @OneToMany
+    @ElementCollection
     private List<SignInHistory> signInHistory;
 
     //Constructor
