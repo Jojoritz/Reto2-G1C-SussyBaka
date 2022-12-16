@@ -1,18 +1,16 @@
 package entities;
 
 import java.io.Serializable;
-
-import java.sql.Timestamp;
-
 import java.util.List;
 import entities.enumerations.UserPrivilege;
 import entities.enumerations.UserStatus;
+import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -24,139 +22,252 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *This is the user entity class
+ * This is the user entity class
+ *
  * @author ioritz
  */
 @Entity
-@Table(name="USERS", schema="reto2_g1c_sussybaka")
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="type", discriminatorType=DiscriminatorType.STRING)
-@DiscriminatorValue(value="admin")
+@Table(name = "USERS", schema = "reto2_g1c_sussybaka")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue(value = "admin")
+@XmlRootElement
 public class User implements Serializable {
+
     private static final long serialVersionUID = 1L;
+
     /**
      * The id of the user
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
     /**
      * The user to login in the application
      */
     @Column
+    @NotNull
     private String login;
+
     /**
      * The user email
      */
     @Column
+    @NotNull
     private String email;
+
     /**
      * The user full name
      */
     @Column
+    @NotNull
     private String fullName;
+
     /**
      * The password of the account
      */
     @Column
+    @NotNull
     private String password;
+
     /**
-     * A collection with the date of latest password changes
+     * A timestamp with the date of latest password changes
      */
     @Temporal(TemporalType.TIMESTAMP)
-    private Set<Timestamp> lastPasswordChange;
+    @NotNull
+    private Date lastPasswordChange;
+
     /**
      * The status of the user
      */
     @Enumerated(EnumType.STRING)
+    @NotNull
     private UserStatus status;
+
     /**
      * The privilege of the user in the application
      */
     @Enumerated(EnumType.STRING)
+    @NotNull
     private UserPrivilege privilege;
-    
+
     /**
-     * A collection with the date of the last  sign in in the application
+     * A collection with the date of the last sign in in the application
      */
-    @Temporal(TemporalType.TIMESTAMP)
-    private List<Timestamp> signInHistory;
+    @ElementCollection
+    @NotNull
+    private List<Date> signInHistory;
+
     //Constructor
     public User() {
         super();
     }
+
     //Getters and setters
+    /**
+     * Gets the ID of user
+     *
+     * @return User ID
+     */
     public Integer getId() {
         return id;
     }
 
+    /**
+     * Sets the id of user
+     *
+     * @param id
+     */
     public void setId(Integer id) {
         this.id = id;
     }
 
+    /**
+     * Gets the login of user
+     *
+     * @return login
+     */
     public String getLogin() {
         return login;
     }
 
+    /**
+     * Sets the login of user
+     *
+     * @param login
+     */
     public void setLogin(String login) {
         this.login = login;
     }
 
+    /**
+     * Gets the email of the user
+     *
+     * @return user email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Sets the email of the user
+     *
+     * @param email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Gets the full name of the user
+     *
+     * @return full name
+     */
     public String getFullName() {
         return fullName;
     }
 
+    /**
+     * Sets the full name of the user
+     *
+     * @param fullName
+     */
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
 
+    /**
+     * Gets the password of the user
+     *
+     * @return password
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     * Sets the password of the user
+     *
+     * @param password
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public Set<Timestamp> getLastPasswordChange() {
+    /**
+     * Gets the last time where the user changed his password
+     *
+     * @return Timestamp
+     */
+    public Date getLastPasswordChange() {
         return lastPasswordChange;
     }
 
-    public void setLastPasswordChange(Set<Timestamp> lastPasswordChange) {
+    /**
+     * Sets the last time where the user changed his password
+     *
+     * @param lastPasswordChange
+     */
+    public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
     }
 
+    /**
+     * Gets the status of the user
+     *
+     * @return
+     */
     public UserStatus getStatus() {
         return status;
     }
 
+    /**
+     * Sets the status of the user
+     *
+     * @param status
+     */
     public void setStatus(UserStatus status) {
         this.status = status;
     }
 
+    /**
+     * Gets the privilege of the user
+     *
+     * @return
+     */
     public UserPrivilege getPrivilege() {
         return privilege;
     }
 
+    /**
+     * Sets the privilege of the user
+     *
+     * @param privilege
+     */
     public void setPrivilege(UserPrivilege privilege) {
         this.privilege = privilege;
     }
 
-    public List<Timestamp> getSignInHistory() {
+    /**
+     * Gets the times that the user has signed in
+     *
+     * @return
+     */
+    public List<Date> getSignInHistory() {
         return signInHistory;
     }
 
-    public void setSignInHistory(List<Timestamp> signInHistory) {
+    /**
+     * Sets the times that the user has signed in
+     *
+     * @param signInHistory
+     */
+    public void setSignInHistory(List<Date> signInHistory) {
         this.signInHistory = signInHistory;
     }
     //HashCode, equals and toString
@@ -223,5 +334,4 @@ public class User implements Serializable {
         return "User{" + "id=" + id + ", login=" + login + ", email=" + email + ", fullName=" + fullName + ", password=" + password + ", lastPasswordChange=" + lastPasswordChange + ", status=" + status + ", privilege=" + privilege + ", signInHistory=" + signInHistory + '}';
     }
 
-    
 }

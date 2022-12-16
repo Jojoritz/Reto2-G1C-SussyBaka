@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * JPA for the entity {@link Comment} This class contains this attributes
@@ -24,6 +25,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "comment", schema = "reto2_g1c_sussybaka")
+@XmlRootElement
 public class Comment implements Serializable {
 
     private static final long serialVersionUID = 1L;

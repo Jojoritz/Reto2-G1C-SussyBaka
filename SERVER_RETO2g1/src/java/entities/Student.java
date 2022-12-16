@@ -4,17 +4,20 @@ import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author ioritz
- * This is the student entity class
+ * @author ioritz This is the student entity class
  */
 @Entity
 @DiscriminatorValue("student")
-public class Student extends User{
+@XmlRootElement
+public class Student extends User {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -22,16 +25,31 @@ public class Student extends User{
      * This is a collection with the acctualy studying courses of the student
      */
     @ManyToMany
+    @JoinTable(name = "studying_courses", schema = "reto2_g1c_sussybaka")
     private Collection<Course> studyingCourses;
+
     //Constructor
     public Student() {
         super();
     }
+
     //Getters and setters
+    /**
+     * Gets the courses that the students are studying
+     *
+     * @return Courses
+     */
+    
+    @XmlTransient
     public Collection<Course> getStudyingCourses() {
         return studyingCourses;
     }
 
+    /**
+     * Sets the courses that the students are studying
+     *
+     * @param studyingCourses
+     */
     public void setStudyingCourses(Collection<Course> studyingCourses) {
         this.studyingCourses = studyingCourses;
     }
@@ -67,5 +85,4 @@ public class Student extends User{
         return "Student{" + "studyingCourses=" + studyingCourses + '}';
     }
 
-       
 }
