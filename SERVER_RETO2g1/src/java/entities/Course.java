@@ -2,11 +2,11 @@ package entities;
 
 import java.io.Serializable;
 
-import java.sql.Timestamp;
-
 import java.util.Collection;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +15,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -22,6 +26,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "course", schema = "reto2_g1c_sussybaka")
+@XmlRootElement
 public class Course implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,8 +47,9 @@ public class Course implements Serializable {
     /**
      * Timestamp field saves the time when the Course was created
      */
+    @Temporal(TemporalType.TIMESTAMP)
     @Column
-    private Timestamp startDate;
+    private Date startDate;
 
     /**
      * Boolean field that contains the visibility of the Course
@@ -61,6 +67,7 @@ public class Course implements Serializable {
      * @associates <{Student}>
      * This is a collection with the acctual students of the course
      */
+    @ElementCollection
     @ManyToMany
     private Collection<Student> courseStudents;
 
@@ -74,6 +81,7 @@ public class Course implements Serializable {
      * @associates <{Post}>
      * This is a collection with the acctual post of the course
      */
+    @ElementCollection
     @OneToMany
     private Collection<Post> coursePosts;
 
@@ -130,7 +138,7 @@ public class Course implements Serializable {
      *
      * @return Timestamp with the date of creation of the course
      */
-    public Timestamp getStartDate() {
+    public Date getStartDate() {    
         return startDate;
     }
 
@@ -139,7 +147,7 @@ public class Course implements Serializable {
      *
      * @param startDate Starting Date
      */
-    public void setStartDate(Timestamp startDate) {
+    public void setStartDate(Date startDate) {    
         this.startDate = startDate;
     }
 
@@ -184,6 +192,7 @@ public class Course implements Serializable {
      *
      * @return The students in te course
      */
+    @XmlTransient
     public Collection<Student> getCourseStudents() {
         return courseStudents;
     }
@@ -220,6 +229,7 @@ public class Course implements Serializable {
      *
      * @return Course's posts
      */
+    @XmlTransient
     public Collection<Post> getCoursePosts() {
         return coursePosts;
     }

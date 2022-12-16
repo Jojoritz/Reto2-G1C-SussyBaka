@@ -17,6 +17,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * JPA for the entity {@link Post} This class contains this attributes
@@ -28,6 +30,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "post", schema = "reto2_g1c_sussybaka")
+@XmlRootElement
 public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -199,6 +202,7 @@ public class Post implements Serializable {
      *
      * @return postComments
      */
+    @XmlTransient
     public Collection<Comment> getPostComments() {
         return postComments;
     }
