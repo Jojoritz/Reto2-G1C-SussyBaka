@@ -78,7 +78,7 @@ public class Post implements Serializable {
      *
      * @associates <{model.Comment}>
      */
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy="commentedStudent")
     private Collection<Comment> postComments;
 
     /**
