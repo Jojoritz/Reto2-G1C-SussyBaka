@@ -67,7 +67,6 @@ public class Course implements Serializable {
      * @associates <{Student}>
      * This is a collection with the acctual students of the course
      */
-    @ElementCollection
     @ManyToMany
     private Collection<Student> courseStudents;
 
@@ -81,7 +80,6 @@ public class Course implements Serializable {
      * @associates <{Post}>
      * This is a collection with the acctual post of the course
      */
-    @ElementCollection
     @OneToMany
     private Collection<Post> coursePosts;
 
