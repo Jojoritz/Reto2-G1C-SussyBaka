@@ -2,15 +2,17 @@ package entities;
 
 import java.io.Serializable;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -39,12 +41,17 @@ public class Post implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "post_id")
     private Integer postId;
+
+    @NotNull
+    private String title;
 
     /**
      * Content field, contains the data in the post
      */
     @NotNull
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     /**
@@ -57,7 +64,8 @@ public class Post implements Serializable {
     /**
      * Link {@link Course} of the post
      */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "course_id")
     @NotNull
     private Course course;
 
@@ -78,8 +86,8 @@ public class Post implements Serializable {
      *
      * @associates <{model.Comment}>
      */
-    @OneToMany(mappedBy="commentedPost")
-    private Collection<Comment> postComments;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private Set<Comment> postComments;
 
     /**
      * {@link Post} class empty constructor
@@ -104,6 +112,24 @@ public class Post implements Serializable {
      */
     public void setPostId(Integer postId) {
         this.postId = postId;
+    }
+
+    /**
+     * Gets the title of the post
+     *
+     * @return Returns the title of the post
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Sets the title for the post
+     *
+     * @param title String value with the title for the post
+     */
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     /**
@@ -202,7 +228,7 @@ public class Post implements Serializable {
      * @return postComments
      */
     @XmlTransient
-    public Collection<Comment> getPostComments() {
+    public Set<Comment> getPostComments() {
         return postComments;
     }
 
@@ -211,7 +237,7 @@ public class Post implements Serializable {
      *
      * @param postComments PostComments
      */
-    public void setPostComments(Collection<Comment> postComments) {
+    public void setPostComments(Set<Comment> postComments) {
         this.postComments = postComments;
     }
 

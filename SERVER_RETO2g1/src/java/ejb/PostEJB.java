@@ -6,7 +6,8 @@
 package ejb;
 
 import ejb.interfaces.FilterBy;
-import ejb.interfaces.PostEJBInterface;
+import ejb.interfaces.InterfaceEJBCRUD;
+
 import entities.Post;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -16,7 +17,7 @@ import javax.ejb.Stateless;
  * @author yeguo
  */
 @Stateless
-public class PostEJB implements PostEJBInterface {
+public class PostEJB implements InterfaceEJBCRUD<Post> {
 
     @Override
     public void create(Post entity) {
@@ -40,11 +41,6 @@ public class PostEJB implements PostEJBInterface {
 
     @Override
     public List<Post> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<Post> filterBy(Object o, FilterBy param) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

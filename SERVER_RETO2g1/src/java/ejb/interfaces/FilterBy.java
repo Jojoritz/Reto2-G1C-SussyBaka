@@ -1,14 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb.interfaces;
 
 /**
+ * This Enumeration contains all the options that the search filters by
  *
  * @author yeguo
  */
 public enum FilterBy {
-    NAME,DATE,TYPE,LEVEL
+    NONE, NAME, DATE, TYPE, LEVEL
 }

@@ -46,6 +46,7 @@ public class User implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
     private Integer id;
 
     /**
@@ -100,7 +101,6 @@ public class User implements Serializable {
     /**
      * A collection with the date of the last sign in in the application
      */
-    
     @ElementCollection
     private List<SignInHistory> signInHistory;
 

@@ -3,7 +3,8 @@ package ejb.interfaces;
 import java.util.List;
 
 /**
- * This generic interface creates basic {@code CRUD} contract:
+ * This generic interface declares basic {@code CRUD} contract to improve
+ * boilerplate code:
  * <li>{@link #create Create}</li>
  * <li>{@link #edit Edit}</li>
  * <li>{@link #remove Remove}</li>
@@ -13,7 +14,7 @@ import java.util.List;
  * @author yeguo
  * @param <T> Generic type
  */
-public interface AbstractEJBCRUD<T> {
+public interface InterfaceEJBCRUD<T> {
 
     public void create(T entity);
 

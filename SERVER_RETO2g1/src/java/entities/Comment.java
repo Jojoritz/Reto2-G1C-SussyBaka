@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 import java.util.Objects;
-import javax.persistence.EmbeddedId;
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
+import javax.persistence.Column;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
@@ -22,7 +26,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Henrique Yeguo
  */
 @Entity
-@Table(name = "comment", schema = "reto2_g1c_sussybaka")
+@Table(name = "student_post_comment", schema = "reto2_g1c_sussybaka")
+@AssociationOverrides({
+    @AssociationOverride(name = "pk.student",
+            joinColumns = @JoinColumn(name = "user_id"))
+    ,
+    @AssociationOverride(name = "pk.post",
+            joinColumns = @JoinColumn(name = "post_id"))
+})
 @XmlRootElement
 public class Comment implements Serializable {
 
@@ -30,27 +41,23 @@ public class Comment implements Serializable {
 
     /**
      * Embedded ID field for the comment entity
+     *
+     * @EmbeddedId private StudentPostID pk = new StudentPostID();
      */
-    @EmbeddedId
-    private StudentComment id;
+    @Id
+    @Column(name = "comment_id")
+    private Integer commentID;
 
-    /**
-     * Relationship Many-{@link Comment} -- One-{@link Student}
-     */
-    @ManyToOne
-    @MapsId("studentId")
-    private Student commentedStudent;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Student student;
 
-    /**
-     * Relationship Many-{@link Comment} -- One-{@link Post}
-     */
-    @ManyToOne
-    @MapsId("commentId")
-    private Post commentedPost;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Post post;
 
     /**
      * {@link Timestamp} field saves the time when the {@code Comment} was
      * created
+     *
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @NotNull
@@ -58,6 +65,7 @@ public class Comment implements Serializable {
 
     /**
      * String field containing the text of the comment
+     *
      */
     @NotNull
     private String commentText;
@@ -67,61 +75,6 @@ public class Comment implements Serializable {
      */
     public Comment() {
         super();
-    }
-
-    /**
-     * Gets the comment compose ID
-     *
-     * @return Compose ID of the comment
-     */
-    public StudentComment getCommentId() {
-        return id;
-    }
-
-    /**
-     * Sets the comment compose ID
-     *
-     * @param id Passes ID for the comment
-     */
-    public void setCommentId(StudentComment id) {
-        this.id = id;
-    }
-
-    /**
-     * Gets the {@link Student} that created the comment
-     *
-     * @return The student owner of the comment
-     */
-    public Student getCommentedStudent() {
-        return commentedStudent;
-    }
-
-    /**
-     * Sets the {@link Student} who owns the {@link Comment}
-     *
-     * @param commentedStudent
-     */
-    public void setCommentedStudent(Student commentedStudent) {
-        this.commentedStudent = commentedStudent;
-    }
-
-    /**
-     * Gets the {@link Post} where the {@link Comment} was created on
-     *
-     * @return The post where the comment is posted
-     */
-    public Post getCommentedPost() {
-        return commentedPost;
-    }
-
-    /**
-     * Sets the {@link Post}
-     *
-     * @param commentedPost Passes the {@code Post} where the {@link Comment}
-     * was created on
-     */
-    public void setCommentedPost(Post commentedPost) {
-        this.commentedPost = commentedPost;
     }
 
     /**
@@ -167,11 +120,11 @@ public class Comment implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 13 * hash + Objects.hashCode(this.id);
-        hash = 13 * hash + Objects.hashCode(this.commentedStudent);
-        hash = 13 * hash + Objects.hashCode(this.commentedPost);
-        hash = 13 * hash + Objects.hashCode(this.dateComment);
-        hash = 13 * hash + Objects.hashCode(this.commentText);
+        hash = 79 * hash + Objects.hashCode(this.commentID);
+        hash = 79 * hash + Objects.hashCode(this.student);
+        hash = 79 * hash + Objects.hashCode(this.post);
+        hash = 79 * hash + Objects.hashCode(this.dateComment);
+        hash = 79 * hash + Objects.hashCode(this.commentText);
         return hash;
     }
 
@@ -183,6 +136,8 @@ public class Comment implements Serializable {
      * @param obj Object
      * @return boolean True or False if object is equal
      */
+
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -198,13 +153,13 @@ public class Comment implements Serializable {
         if (!Objects.equals(this.commentText, other.commentText)) {
             return false;
         }
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.commentID, other.commentID)) {
             return false;
         }
-        if (!Objects.equals(this.commentedStudent, other.commentedStudent)) {
+        if (!Objects.equals(this.student, other.student)) {
             return false;
         }
-        if (!Objects.equals(this.commentedPost, other.commentedPost)) {
+        if (!Objects.equals(this.post, other.post)) {
             return false;
         }
         if (!Objects.equals(this.dateComment, other.dateComment)) {
@@ -214,13 +169,15 @@ public class Comment implements Serializable {
     }
 
     /**
-     * This implementation returns a concatenated String of all attributes
-     *
-     * @return Concatenated string with all the attributes
+     * Gets a concatenated string with the values of all atributes
+     * 
+     * @return Concatenated string with all attributes
      */
     @Override
     public String toString() {
-        return "Comment{" + "Id=" + id + ", commentedStudent=" + commentedStudent + ", commentedPost=" + commentedPost + ", dateComment=" + dateComment + ", commentText=" + commentText + '}';
+        return "Comment{" + "commentID=" + commentID + ", student=" + student + ", post=" + post + ", dateComment=" + dateComment + ", commentText=" + commentText + '}';
     }
+
+
 
 }

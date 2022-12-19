@@ -5,7 +5,7 @@
  */
 package ejb;
 
-import ejb.interfaces.CommentEJBInterface;
+import ejb.interfaces.InterfaceEJBCRUD;
 import entities.Comment;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -15,7 +15,7 @@ import javax.ejb.Stateless;
  * @author yeguo
  */
 @Stateless
-public class CommentEJB implements CommentEJBInterface {
+public class CommentEJB implements InterfaceEJBCRUD<Comment> {
 
     @Override
     public void create(Comment entity) {
