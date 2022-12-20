@@ -5,11 +5,12 @@
  */
 package ejb;
 
-import ejb.interfaces.FilterBy;
-import ejb.interfaces.InterfaceEJBCRUD;
+import ejb.interfaces.PostEJBLocal;
+import entities.Comment;
 
 import entities.Post;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Stateless;
 
 /**
@@ -17,7 +18,7 @@ import javax.ejb.Stateless;
  * @author yeguo
  */
 @Stateless
-public class PostEJB implements InterfaceEJBCRUD<Post> {
+public class PostEJB implements PostEJBLocal {
 
     @Override
     public void create(Post entity) {
@@ -35,12 +36,17 @@ public class PostEJB implements InterfaceEJBCRUD<Post> {
     }
 
     @Override
-    public Post find(Object id) {
+    public List<Post> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Post> findAll() {
+    public Post find(Integer id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Set<Comment> getComments(Post post) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

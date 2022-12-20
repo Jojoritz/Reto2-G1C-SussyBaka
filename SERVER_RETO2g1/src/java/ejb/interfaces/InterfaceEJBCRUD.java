@@ -1,5 +1,6 @@
 package ejb.interfaces;
 
+import exception.*;
 import java.util.List;
 
 /**
@@ -16,14 +17,44 @@ import java.util.List;
  */
 public interface InterfaceEJBCRUD<T> {
 
-    public void create(T entity);
+    /**
+     * Creates/inserts the data of the entity passed
+     *
+     * @param entity
+     * @throws CreateException If the creation method threw an exception
+     */
+    public void create(T entity) throws CreateException;
 
-    public void edit(T entity);
+    /**
+     * Edits/Modify the data of the entity passed
+     *
+     * @param entity
+     * @throws UpdateException If the creation method threw an exception
+     */
+    public void edit(T entity) throws UpdateException;
 
-    public void remove(T entity);
+    /**
+     * Deletes/Removes all the data from the entity passed
+     *
+     * @param entity
+     * @throws DeleteException If the creation method threw an exception
+     */
+    public void remove(T entity) throws DeleteException;
 
-    public T find(Object id);
+    /**
+     * Finds a single entity value by using the ID
+     *
+     * @param id The ID of the entity to find
+     * @return The {@code Entity} object containing the data
+     * @throws ReadException
+     */
+    public T find(Integer id) throws ReadException;
 
-    public List<T> findAll();
+    /**
+     * Finds all values from the Entity
+     * 
+     * @return @throws ReadException
+     */
+    public List<T> findAll() throws ReadException;
 
 }

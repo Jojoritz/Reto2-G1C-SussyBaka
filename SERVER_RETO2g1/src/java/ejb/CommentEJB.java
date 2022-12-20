@@ -5,7 +5,7 @@
  */
 package ejb;
 
-import ejb.interfaces.InterfaceEJBCRUD;
+import ejb.interfaces.CommentEJBLocal;
 import entities.Comment;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -15,7 +15,7 @@ import javax.ejb.Stateless;
  * @author yeguo
  */
 @Stateless
-public class CommentEJB implements InterfaceEJBCRUD<Comment> {
+public class CommentEJB implements CommentEJBLocal {
 
     @Override
     public void create(Comment entity) {
@@ -33,7 +33,7 @@ public class CommentEJB implements InterfaceEJBCRUD<Comment> {
     }
 
     @Override
-    public Comment find(Object id) {
+    public Comment find(Integer id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
