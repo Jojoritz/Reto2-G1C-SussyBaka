@@ -6,6 +6,7 @@ import entities.enumerations.UserPrivilege;
 import entities.enumerations.UserStatus;
 import java.util.Date;
 import java.util.Objects;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -19,7 +20,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -89,6 +89,7 @@ public class User implements Serializable {
      */
     @Enumerated(EnumType.STRING)
     @NotNull
+    @Column(name = "user_status")
     private UserStatus status;
 
     /**
@@ -101,8 +102,10 @@ public class User implements Serializable {
     /**
      * A collection with the date of the last sign in in the application
      */
-    @ElementCollection(targetClass = SignInHistory.class)
-    private List<SignInHistory> signInHistory;
+    @ElementCollection(targetClass = Date.class)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @CollectionTable(name = "user_signInHistory", schema = "reto2_g1c_sussybaka")
+    private List<Date> signInHistory;
 
     //Constructor
     public User() {
@@ -259,7 +262,7 @@ public class User implements Serializable {
      *
      * @return
      */
-    public List<SignInHistory> getSignInHistory() {
+    public List<Date> getSignInHistory() {
         return signInHistory;
     }
 
@@ -268,7 +271,7 @@ public class User implements Serializable {
      *
      * @param signInHistory
      */
-    public void setSignInHistory(List<SignInHistory> signInHistory) {
+    public void setSignInHistory(List<Date> signInHistory) {
         this.signInHistory = signInHistory;
     }
     //HashCode, equals and toString

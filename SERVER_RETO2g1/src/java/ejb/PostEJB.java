@@ -9,6 +9,7 @@ import ejb.interfaces.PostEJBLocal;
 import entities.Comment;
 
 import entities.Post;
+import exception.ReadException;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.Stateless;
@@ -40,13 +41,9 @@ public class PostEJB implements PostEJBLocal {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Post find(Integer id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
-    public Set<Comment> getComments(Post post) {
+    public Post find(Object obj) throws ReadException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -5,11 +5,15 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -65,10 +69,10 @@ public class Course implements Serializable {
 
     /**
      * @associates <{Student}>
-     * This is a collection with the acctual students of the course
+     * This is a collection with the actual students of the course
      */
-    @ManyToMany
-    private Collection<Student> courseStudents;
+    @ManyToMany(mappedBy = "studyingCourses")
+    private Set<Student> courseStudents;
 
     /**
      * This is the actual Teacher of the course
@@ -78,16 +82,16 @@ public class Course implements Serializable {
 
     /**
      * @associates <{Post}>
-     * This is a collection with the acctual post of the course
+     * This is a collection with the actual post of the course
      */
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Collection<Post> coursePosts;
 
     /**
      * This is the actual Subject of the course
      */
     @ManyToOne
-    private Subject subject;
+    private Subject subjects;
 
     //Constructor
     public Course() {
@@ -136,7 +140,7 @@ public class Course implements Serializable {
      *
      * @return Timestamp with the date of creation of the course
      */
-    public Date getStartDate() {    
+    public Date getStartDate() {
         return startDate;
     }
 
@@ -145,7 +149,7 @@ public class Course implements Serializable {
      *
      * @param startDate Starting Date
      */
-    public void setStartDate(Date startDate) {    
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
@@ -188,10 +192,10 @@ public class Course implements Serializable {
     /**
      * Gets the students that are in the course
      *
-     * @return The students in te course
+     * @return The students in the course
      */
     @XmlTransient
-    public Collection<Student> getCourseStudents() {
+    public Set<Student> getCourseStudents() {
         return courseStudents;
     }
 
@@ -200,7 +204,7 @@ public class Course implements Serializable {
      *
      * @param courseStudents
      */
-    public void setCourseStudents(Collection<Student> courseStudents) {
+    public void setCourseStudents(Set<Student> courseStudents) {
         this.courseStudents = courseStudents;
     }
 
@@ -247,7 +251,7 @@ public class Course implements Serializable {
      * @return Subject of the course
      */
     public Subject getSubject() {
-        return subject;
+        return subjects;
     }
 
     /**
@@ -256,7 +260,7 @@ public class Course implements Serializable {
      * @param subject
      */
     public void setSubject(Subject subject) {
-        this.subject = subject;
+        this.subjects = subject;
     }
 
     //hascode, equals & toString
@@ -271,7 +275,7 @@ public class Course implements Serializable {
         hash = 83 * hash + Objects.hashCode(this.courseStudents);
         hash = 83 * hash + Objects.hashCode(this.teacher);
         hash = 83 * hash + Objects.hashCode(this.coursePosts);
-        hash = 83 * hash + Objects.hashCode(this.subject);
+        hash = 83 * hash + Objects.hashCode(this.subjects);
         return hash;
     }
 
@@ -311,7 +315,7 @@ public class Course implements Serializable {
         if (!Objects.equals(this.coursePosts, other.coursePosts)) {
             return false;
         }
-        if (!Objects.equals(this.subject, other.subject)) {
+        if (!Objects.equals(this.subjects, other.subjects)) {
             return false;
         }
         return true;
@@ -319,7 +323,7 @@ public class Course implements Serializable {
 
     @Override
     public String toString() {
-        return "Course{" + "courseId=" + courseId + ", name=" + name + ", startDate=" + startDate + ", isVisible=" + isVisible + ", isPrivate=" + isPrivate + ", courseStudents=" + courseStudents + ", teacher=" + teacher + ", coursePosts=" + coursePosts + ", subject=" + subject + '}';
+        return "Course{" + "courseId=" + courseId + ", name=" + name + ", startDate=" + startDate + ", isVisible=" + isVisible + ", isPrivate=" + isPrivate + ", courseStudents=" + courseStudents + ", teacher=" + teacher + ", coursePosts=" + coursePosts + ", subject=" + subjects + '}';
     }
 
 }

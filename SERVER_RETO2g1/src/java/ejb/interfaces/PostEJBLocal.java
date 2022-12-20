@@ -16,8 +16,6 @@ import javax.ejb.Local;
  */
 @Local
 public interface PostEJBLocal extends InterfaceEJBCRUD<Post>{
-    
-    public Set<Comment> getComments(Post post);
-    
+
     
 }

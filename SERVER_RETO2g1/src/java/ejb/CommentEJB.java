@@ -7,7 +7,10 @@ package ejb;
 
 import ejb.interfaces.CommentEJBLocal;
 import entities.Comment;
+import entities.Post;
+import exception.ReadException;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Stateless;
 
 /**
@@ -32,13 +35,19 @@ public class CommentEJB implements CommentEJBLocal {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+
     @Override
-    public Comment find(Integer id) {
+    public List<Comment> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Comment> findAll() {
+    public Comment find(Object obj) throws ReadException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Set<Comment> getComments(Post post) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

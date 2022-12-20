@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,6 +34,7 @@ public class Subject implements Serializable {
      * This is the id of the entity
      */
     @Id
+    @Column(name = "subject_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer subjectId;
 
@@ -57,23 +59,22 @@ public class Subject implements Serializable {
     /**
      * The level of the subject
      */
-    @Column
+    @Column(name = "sub_level")
     private String level;
 
     /**
      * @associates <{entities.Course}>
      * The collection of courses that contains this subject
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subject")
-    private Collection<Course> courseWithSubject;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subjects")
+    private Set<Course> courseWithSubject;
 
     /**
      * @associates <{entities.Teacher}>
      * The collection of teacher that are specialized in this subject
      */
-    @ManyToMany
-    @JoinTable(name = "studying_courses", schema = "reto2_g1c_sussybaka")
-    private Collection<Teacher> teachersSpecializedInSubject;
+    @ManyToMany(mappedBy = "specializedSubjects")
+    private Set<Teacher> teachersSpecializedInSubject;
 
     //Constructor
     public Subject() {
@@ -177,7 +178,7 @@ public class Subject implements Serializable {
      * @return Course
      */
     @XmlTransient
-    public Collection<Course> getCourseWithSubject() {
+    public Set<Course> getCourseWithSubject() {
         return courseWithSubject;
     }
 
@@ -186,7 +187,7 @@ public class Subject implements Serializable {
      *
      * @param courseWithSubject
      */
-    public void setCourseWithSubject(Collection<Course> courseWithSubject) {
+    public void setCourseWithSubject(Set<Course> courseWithSubject) {
         this.courseWithSubject = courseWithSubject;
     }
 
@@ -196,7 +197,7 @@ public class Subject implements Serializable {
      * @return
      */
     @XmlTransient
-    public Collection<Teacher> getTeachersSpecializedInSubject() {
+    public Set<Teacher> getTeachersSpecializedInSubject() {
         return teachersSpecializedInSubject;
     }
 
@@ -205,7 +206,7 @@ public class Subject implements Serializable {
      *
      * @param teachersSpecializedInSubject
      */
-    public void setTeachersSpecializedInSubject(Collection<Teacher> teachersSpecializedInSubject) {
+    public void setTeachersSpecializedInSubject(Set<Teacher> teachersSpecializedInSubject) {
         this.teachersSpecializedInSubject = teachersSpecializedInSubject;
     }
 

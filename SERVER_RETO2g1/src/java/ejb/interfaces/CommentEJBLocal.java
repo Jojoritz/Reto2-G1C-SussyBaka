@@ -6,6 +6,8 @@
 package ejb.interfaces;
 
 import entities.Comment;
+import entities.Post;
+import java.util.Set;
 import javax.ejb.Local;
 
 /**
@@ -14,5 +16,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface CommentEJBLocal extends InterfaceEJBCRUD<Comment>{
+        
+    public Set<Comment> getComments(Post post);
     
 }

@@ -63,7 +63,7 @@ public class Post implements Serializable {
     /**
      * Link {@link Course} of the post
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @NotNull
     private Course course;
 

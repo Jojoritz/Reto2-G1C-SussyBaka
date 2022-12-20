@@ -44,11 +44,11 @@ public interface InterfaceEJBCRUD<T> {
     /**
      * Finds a single entity value by using the ID
      *
-     * @param id The ID of the entity to find
+     * @param obj The ID of the entity to find
      * @return The {@code Entity} object containing the data
      * @throws ReadException
      */
-    public T find(Integer id) throws ReadException;
+    public T find(Object obj) throws ReadException;
 
     /**
      * Finds all values from the Entity

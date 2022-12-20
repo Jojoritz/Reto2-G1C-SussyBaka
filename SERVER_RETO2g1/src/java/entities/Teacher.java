@@ -2,9 +2,11 @@ package entities;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -27,15 +29,17 @@ public class Teacher extends User {
      * A collection of the actually teaching courses of the teacher
      */
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacher")
-    private Collection<Course> teachingCourses;
+    private Set<Course> teachingCourses;
 
     /**
      * @associates <{entities.Subject}>
      * A collection with the specialized subject of this teacher
      */
-    @ManyToMany
-    @JoinTable(name = "specialized_subjects", schema = "reto2_g1c_sussybaka")
-    private Collection<Subject> specializedSubjects;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "specialized_subjects", schema = "reto2_g1c_sussybaka",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id"))
+    private Set<Subject> specializedSubjects;
 
     //Constructor
     public Teacher() {
@@ -49,7 +53,7 @@ public class Teacher extends User {
      * @return Course
      */
     @XmlTransient
-    public Collection<Course> getTeachingCourses() {
+    public Set<Course> getTeachingCourses() {
         return teachingCourses;
     }
 
@@ -58,7 +62,7 @@ public class Teacher extends User {
      *
      * @param teachingCourses
      */
-    public void setTeachingCourses(Collection<Course> teachingCourses) {
+    public void setTeachingCourses(Set<Course> teachingCourses) {
         this.teachingCourses = teachingCourses;
     }
 
@@ -68,7 +72,7 @@ public class Teacher extends User {
      * @return Subject
      */
     @XmlTransient
-    public Collection<Subject> getSpecializedSubjects() {
+    public Set<Subject> getSpecializedSubjects() {
         return specializedSubjects;
     }
 
@@ -77,7 +81,7 @@ public class Teacher extends User {
      *
      * @param specializedSubjects
      */
-    public void setSpecializedSubjects(Collection<Subject> specializedSubjects) {
+    public void setSpecializedSubjects(Set<Subject> specializedSubjects) {
         this.specializedSubjects = specializedSubjects;
     }
 

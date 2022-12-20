@@ -4,14 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 import java.util.Objects;
-import javax.persistence.AssociationOverride;
-import javax.persistence.AssociationOverrides;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -27,31 +24,19 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "student_post_comment", schema = "reto2_g1c_sussybaka")
-@AssociationOverrides({
-    @AssociationOverride(name = "pk.student",
-            joinColumns = @JoinColumn(name = "user_id"))
-    ,
-    @AssociationOverride(name = "pk.post",
-            joinColumns = @JoinColumn(name = "post_id"))
-})
 @XmlRootElement
 public class Comment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Embedded ID field for the comment entity
-     *
-     * @EmbeddedId private StudentPostID pk = new StudentPostID();
-     */
     @Id
     @Column(name = "comment_id")
     private Integer commentID;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     private Student student;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     private Post post;
 
     /**
@@ -136,8 +121,6 @@ public class Comment implements Serializable {
      * @param obj Object
      * @return boolean True or False if object is equal
      */
-
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -170,14 +153,12 @@ public class Comment implements Serializable {
 
     /**
      * Gets a concatenated string with the values of all atributes
-     * 
+     *
      * @return Concatenated string with all attributes
      */
     @Override
     public String toString() {
         return "Comment{" + "commentID=" + commentID + ", student=" + student + ", post=" + post + ", dateComment=" + dateComment + ", commentText=" + commentText + '}';
     }
-
-
 
 }

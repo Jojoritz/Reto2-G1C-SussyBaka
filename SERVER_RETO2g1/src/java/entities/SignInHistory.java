@@ -5,14 +5,10 @@
  */
 package entities;
 
+import java.io.Serializable;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
 import java.util.Date;
 import java.util.Objects;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -22,7 +18,7 @@ import javax.validation.constraints.NotNull;
  * @author ioritz
  */
 @Embeddable
-public class SignInHistory {
+public class SignInHistory implements Serializable {
     
     /**
      * The date of the signIn

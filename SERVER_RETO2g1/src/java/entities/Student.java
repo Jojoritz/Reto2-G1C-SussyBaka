@@ -2,8 +2,10 @@ package entities;
 
 import java.util.Collection;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -24,8 +26,10 @@ public class Student extends User {
      * @associates <{entities.Course}>
      * This is a collection with the acctualy studying courses of the student
      */
-    @ManyToMany
-    @JoinTable(name = "studying_courses", schema = "reto2_g1c_sussybaka")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "studying_courses", schema = "reto2_g1c_sussybaka",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Collection<Course> studyingCourses;
 
     //Constructor
@@ -39,7 +43,6 @@ public class Student extends User {
      *
      * @return Courses
      */
-    
     @XmlTransient
     public Collection<Course> getStudyingCourses() {
         return studyingCourses;
