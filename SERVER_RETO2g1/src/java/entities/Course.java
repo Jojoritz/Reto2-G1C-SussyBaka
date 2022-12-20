@@ -80,7 +80,7 @@ public class Course implements Serializable {
      * @associates <{Post}>
      * This is a collection with the acctual post of the course
      */
-    @OneToMany
+    @OneToMany(mappedBy = "post")
     private Collection<Post> coursePosts;
 
     /**
