@@ -11,7 +11,10 @@ import exception.CreateException;
 import exception.DeleteException;
 import exception.ReadException;
 import exception.UpdateException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
@@ -19,9 +22,12 @@ import java.util.List;
  */
 public class CourseEJB implements CourseEJBLocal {
 
+    @PersistenceContext
+    private EntityManager em;
+
     @Override
     public void create(Course entity) throws CreateException {
-        
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
