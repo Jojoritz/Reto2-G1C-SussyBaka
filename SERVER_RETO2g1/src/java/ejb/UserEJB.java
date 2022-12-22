@@ -18,7 +18,7 @@ import javax.persistence.EntityManager;
  *
  * @author ioritz
  */
-public class UserEJB implements UserEJBLocal{
+public class UserEJB extends UserEJBLocal{
     private EntityManager em;
     
     @Override

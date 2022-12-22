@@ -15,12 +15,12 @@ import javax.ejb.Local;
  * @author ioritz
  */
 @Local
-public interface UserEJBLocal extends InterfaceEJBCRUD<User>{
+public abstract class UserEJBLocal extends AbstractEJB<User>{
     /**
      * A method to obtain all data from the users and the relationship of the user
      * @param user the user we are searching for
      * @return The user with the data, relationships included
      * @throws ReadException if the login data is wrong or dont exist
      */
-    public User getUserData(User user) throws ReadException;
+    public abstract User getUserData(User user) throws ReadException;
 }
