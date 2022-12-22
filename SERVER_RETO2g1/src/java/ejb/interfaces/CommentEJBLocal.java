@@ -15,8 +15,6 @@ import javax.ejb.Local;
  * @author yeguo
  */
 @Local
-public interface CommentEJBLocal extends InterfaceEJBCRUD<Comment>{
-        
-    public Set<Comment> getComments(Post post);
-    
+public abstract class CommentEJBLocal extends AbstractEJB<Comment> {
+
 }
