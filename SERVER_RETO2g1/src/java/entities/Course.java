@@ -12,10 +12,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -25,8 +25,37 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Joritz This is the Course entity class
+ * @author Joritz 
+ * 
+ * This is the Course entity class
  */
+
+@NamedQueries({
+        @NamedQuery(
+                name="createCourse", query="INSERT INTO COURSE(name, startDate, isVisible, isPrivate, teacher, subject) VALUES(:name, :startDate, :isVisible, :isPrivate, :teacher, :subject)"
+        ),
+        
+        @NamedQuery(
+                name="editCourse", query="UPDATE COURSE SET c WHERE course_id=:course_id"
+        ),
+        
+        @NamedQuery(
+                name="removeCourse", query="DELETE c FROM COURSE WHERE course_id=:courseId"
+        ),
+        
+        @NamedQuery(
+                name="findAllCourses", query="SELECT c FROM COURSE WHERE course_id=:courseId"
+        ),
+        
+        @NamedQuery(
+                name="findCourseByName", query="SELECT c FROM COURSE WHERE c.name=:name"
+        ),
+        
+        @NamedQuery(
+                name="findCourseByDate", query="SELECT c FROM COURSE WHERE c.startdate=:startdate"
+        )
+    })
+
 @Entity
 @Table(name = "course", schema = "reto2_g1c_sussybaka")
 @XmlRootElement
