@@ -30,23 +30,23 @@ import javax.xml.bind.annotation.XmlTransient;
  * This is the Course entity class
  */
 
-/**@NamedQueries({
+@NamedQueries({
+        @NamedQuery(
+                name="findAllCourses", query="SELECT c FROM Course c"
+        ),
     
         @NamedQuery(
-                name="findCourse", query="SELECT c FROM COURSE WHERE c.course_id=:courseId"
-        ),
-        @NamedQuery(
-                name="findAllCourses", query="SELECT c FROM COURSE"
+                name="findCourse", query="SELECT c FROM Course c WHERE c.courseId =:courseId"
         ),
         
         @NamedQuery(
-                name="findCourseByName", query="SELECT c FROM COURSE WHERE c.name=:name"
+                name="findCourseByName", query="SELECT c FROM Course c WHERE c.name LIKE :name"
         ),
         
         @NamedQuery(
-                name="findCourseByDate", query="SELECT c FROM COURSE WHERE c.startdate=:startdate"
+                name="findCourseByDate", query="SELECT c FROM Course c WHERE CAST(c.startDate as date) =:startdate"
         )
-    })*/
+    })
 
 @Entity
 @Table(name = "course", schema = "reto2_g1c_sussybaka")

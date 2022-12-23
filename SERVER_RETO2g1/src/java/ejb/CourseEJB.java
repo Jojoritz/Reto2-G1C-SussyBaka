@@ -11,8 +11,8 @@ import exception.CreateException;
 import exception.DeleteException;
 import exception.ReadException;
 import exception.UpdateException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -22,6 +22,7 @@ import javax.persistence.PersistenceContext;
  */
 public class CourseEJB implements CourseEJBLocal {
 
+    private static final Logger LOG = Logger.getLogger("ejb.CourseEJB");
     @PersistenceContext
     private EntityManager em;
 
@@ -42,22 +43,50 @@ public class CourseEJB implements CourseEJBLocal {
 
     @Override
     public Course find(Object obj) throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Course course = new Course();
+        try {
+            course = (Course) em.createNamedQuery("findCourse").setParameter("courseId", 1);
+        } catch (Exception e) {
+            LOG.severe(e.getMessage());
+            throw new ReadException(e.getMessage());
+        }
+        return course;
     }
 
     @Override
     public List<Course> findAll() throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Course> courses = null;
+        try {
+            courses = em.createNamedQuery("findAllCourses").getResultList();
+        } catch (Exception e) {
+            LOG.severe(e.getMessage());
+            throw new ReadException(e.getMessage());
+        }
+        return courses;
     }
 
     @Override
     public Course findByName(Course entity) throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Course course = new Course();
+        try {
+            course = (Course) em.createNamedQuery("findCourseByName").setParameter("name", "Gerardo");
+        } catch (Exception e) {
+            LOG.severe(e.getMessage());
+            throw new ReadException(e.getMessage());
+        }
+        return course;
     }
 
     @Override
     public Course findByDate(Course entity) throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Course course = new Course();
+        try {
+            course = (Course) em.createNamedQuery("findCourseByDate").setParameter("startDate", "23/12/2022");
+        } catch (Exception e) {
+            LOG.severe(e.getMessage());
+            throw new ReadException(e.getMessage());
+        }
+        return course;
     }
 
 }
