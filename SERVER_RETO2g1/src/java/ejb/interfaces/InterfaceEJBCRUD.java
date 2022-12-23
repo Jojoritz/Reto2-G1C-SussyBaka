@@ -42,7 +42,7 @@ public interface InterfaceEJBCRUD<T> {
     public void remove(T entity) throws DeleteException;
 
     /**
-     * Finds a single entity value by using the ID
+     * Finds a value of an entity by using the ID
      *
      * @param obj The ID of the entity to find
      * @return The {@code Entity} object containing the data
@@ -51,8 +51,8 @@ public interface InterfaceEJBCRUD<T> {
     public T find(Object obj) throws ReadException;
 
     /**
-     * Finds all values from the Entity
-     * 
+     * Finds all date from an entity
+     *
      * @return @throws ReadException
      */
     public List<T> findAll() throws ReadException;

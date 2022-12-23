@@ -25,6 +25,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -55,14 +56,14 @@ public class User implements Serializable {
     /**
      * The user to login in the application
      */
-    @Column
+    @Column(unique=true)
     @NotNull
     private String login;
 
     /**
      * The user email
      */
-    @Column
+    @Column(unique=true)
     @NotNull
     private String email;
 

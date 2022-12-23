@@ -18,28 +18,7 @@ import javax.ejb.Stateless;
  * @author yeguo
  */
 @Stateless
-public class CommentEJB implements CommentEJBLocal {
-
-    @Override
-    public void create(Comment entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void edit(Comment entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void remove(Comment entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
-    @Override
-    public List<Comment> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+public class CommentEJB extends CommentEJBLocal {
 
     @Override
     public Comment find(Object obj) throws ReadException {
@@ -47,7 +26,7 @@ public class CommentEJB implements CommentEJBLocal {
     }
 
     @Override
-    public Set<Comment> getComments(Post post) {
+    public List<Comment> findAll() throws ReadException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

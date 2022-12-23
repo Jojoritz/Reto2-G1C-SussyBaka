@@ -13,10 +13,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -28,6 +31,19 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Henrique Yeguo
  */
+@NamedQueries({
+    @NamedQuery(
+            name = "getCommentsByPostID",
+            query = "FROM Comment c WHERE c.post.postId = :idPost")
+    ,
+    @NamedQuery(
+            name = "findByDate",
+            query = "FROM Post p WHERE CAST(p.publicationDate as date) = :date")
+    ,
+    @NamedQuery(
+            name = "findByDateRange",
+            query = "FROM Post p Where CAST(p.publicationDate as date) < :startDate AND CAST(p.publicationDate as date) > :endDate")
+})
 @Entity
 @Table(name = "post", schema = "reto2_g1c_sussybaka")
 @XmlRootElement
@@ -71,12 +87,14 @@ public class Post implements Serializable {
      * Image field contains the relative path to the image
      */
     @Column(name = "image_path")
+    @Null
     private String image;
 
     /**
      * Video field contains the relative path to the video
      */
     @Column(name = "video_path")
+    @Null
     private String video;
 
     /**
