@@ -29,7 +29,7 @@ public abstract class AbstractEJB<T> implements InterfaceEJBCRUD<T> {
             = Logger.getLogger("ejb.interfaces.AbstractEJB");
 
     @PersistenceContext
-    private EntityManager em;
+    protected EntityManager em;
 
     @Override
     public void create(T entity) throws CreateException {
