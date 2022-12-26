@@ -32,27 +32,19 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @NamedQueries({
         @NamedQuery(
-                name="createCourse", query="INSERT INTO COURSE(name, startDate, isVisible, isPrivate, teacher, subject) VALUES(:name, :startDate, :isVisible, :isPrivate, :teacher, :subject)"
+                name="findAllCourses", query="SELECT c FROM Course c"
+        ),
+    
+        @NamedQuery(
+                name="findCourse", query="SELECT c FROM Course c WHERE c.courseId =:courseId"
         ),
         
         @NamedQuery(
-                name="editCourse", query="UPDATE COURSE SET c WHERE course_id=:course_id"
+                name="findCourseByName", query="SELECT c FROM Course c WHERE c.name LIKE :name"
         ),
         
         @NamedQuery(
-                name="removeCourse", query="DELETE c FROM COURSE WHERE course_id=:courseId"
-        ),
-        
-        @NamedQuery(
-                name="findAllCourses", query="SELECT c FROM COURSE WHERE course_id=:courseId"
-        ),
-        
-        @NamedQuery(
-                name="findCourseByName", query="SELECT c FROM COURSE WHERE c.name=:name"
-        ),
-        
-        @NamedQuery(
-                name="findCourseByDate", query="SELECT c FROM COURSE WHERE c.startdate=:startdate"
+                name="findCourseByDate", query="SELECT c FROM Course c WHERE CAST(c.startDate as date) =:startdate"
         )
     })
 
