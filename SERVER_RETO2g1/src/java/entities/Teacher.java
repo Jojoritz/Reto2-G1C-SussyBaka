@@ -19,11 +19,14 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author ioritz This is the teacher entity class
  */
-@NamedQueries(
+@NamedQueries({
         @NamedQuery(
-                name="getTeacherCourseData", query="SELECT tc FROM Teacher t, IN(t.teachingCourses) tc "
-                        + "WHERE u.id = :id"
+                name="getTeacherCourseData", query="SELECT tc FROM Teacher t, IN(t.teachingCourses) tc WHERE t.id = :id"
+        ),
+        @NamedQuery(
+                name="getTeacherSubjectData", query="SELECT ts FROM Teacher t, IN(t.specializedSubjects) ts WHERE t.id = :id"
         )
+}
 )
 @Entity
 @DiscriminatorValue("teacher")
