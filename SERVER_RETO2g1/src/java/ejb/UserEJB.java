@@ -8,6 +8,7 @@ package ejb;
 import ejb.interfaces.UserEJBLocal;
 import entities.Course;
 import static entities.Course_.teacher;
+import entities.Student;
 import entities.Subject;
 import entities.Teacher;
 import entities.User;
@@ -38,7 +39,10 @@ public class UserEJB extends UserEJBLocal {
            
             //TODO a condition where if the user is a teacher executes one named query and if it is a student another to obtain corresponding relationships data
             if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
+                Set<Course> studyingCourses = (Set<Course>) em.createNamedQuery("getStudentCourseData")
+                        .setParameter("id", user.getId()).getResultList();
                 
+                ((Student)user).setStudyingCourses(studyingCourses);
             }
             else if (user.getPrivilege().equals(UserPrivilege.TEACHER)) {
                 Set<Course> teachingCourses = (Set<Course>) em.createNamedQuery("getTeacherCourseData")

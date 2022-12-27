@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -15,6 +17,12 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author ioritz This is the student entity class
  */
+
+@NamedQueries({
+    @NamedQuery(
+            name="getStudentCourseData", query="SELECT sc FROM Student s, IN(s.studyingCourses) sc WHERE s.id = :id"
+    )
+})
 @Entity
 @DiscriminatorValue("student")
 @XmlRootElement
