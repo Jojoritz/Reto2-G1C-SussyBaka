@@ -6,8 +6,6 @@
 package ejb.interfaces;
 
 import entities.Comment;
-import entities.Post;
-import java.util.Set;
 import javax.ejb.Local;
 
 /**
