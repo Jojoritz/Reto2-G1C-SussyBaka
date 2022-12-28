@@ -13,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -23,6 +25,27 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author ioritz
  */
+
+@NamedQueries(
+    {
+       @NamedQuery(
+               name="getSubjectByName", query="SELECT s FROM Subject s WHERE s.name LIKE :name"
+       ),
+        @NamedQuery(
+                name="getSubjectsByType", query="SELECT s FROM Subject s WHERE s.type LIKE :type"
+        ),
+        @NamedQuery(
+                name="getSubjectsByLevel", query="SELECT s FROM Subject s WHERE s.level LIKE :level"
+        ),
+        @NamedQuery(
+                name="getSubjectCourseRelationship", query="SELECT cs FROM Subject s, IN(s.courseWithSubject) cs WHERE s.subjectId = :subjectId"
+        ),
+        @NamedQuery(
+                name="getSubjectTeacherRelationship", query="SELECT ts FROM Subject s, IN(s.teachersSpecializedInSubject) ts WHERE s.subjectId = :subjectId"
+        ),
+    }
+)
+
 @Entity
 @Table(name = "SUBJECT", schema = "reto2_g1c_sussybaka")
 @XmlRootElement

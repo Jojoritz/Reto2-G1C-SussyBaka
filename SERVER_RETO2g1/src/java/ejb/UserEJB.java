@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureQuery;
+import javax.persistence.criteria.CriteriaQuery;
 
 /**
  *
@@ -34,27 +35,29 @@ import javax.persistence.StoredProcedureQuery;
 public class UserEJB extends UserEJBLocal {
 
     @Override
-    public User getUserData(User user) throws ReadException {
+    public User getUserRelationshipsData(User user) throws ReadException {
         try {
-           
-            //TODO a condition where if the user is a teacher executes one named query and if it is a student another to obtain corresponding relationships data
+
+            // a condition where if the user is a teacher executes one named query
+            //and if it is a student another to obtain corresponding relationships data
             if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
+                //Obtaining the studying courses of the student and saving in a collection to latter set in the user studying courses collection
                 Set<Course> studyingCourses = (Set<Course>) em.createNamedQuery("getStudentCourseData")
                         .setParameter("id", user.getId()).getResultList();
-                
-                ((Student)user).setStudyingCourses(studyingCourses);
-            }
-            else if (user.getPrivilege().equals(UserPrivilege.TEACHER)) {
+
+                ((Student) user).setStudyingCourses(studyingCourses);
+            } else if (user.getPrivilege().equals(UserPrivilege.TEACHER)) {
+                //Obtaining the teaching courses of the teacher and saving in a collection
                 Set<Course> teachingCourses = (Set<Course>) em.createNamedQuery("getTeacherCourseData")
                         .setParameter("id", user.getId()).getResultList();
-                   
-                Set<Subject> teacherSpecializedSubjects= (Set<Subject>) em.createNamedQuery("getTeacherSubjectData")
+                //Obtaining the specialized subject of the teacher and saving in a collection
+                Set<Subject> teacherSpecializedSubjects = (Set<Subject>) em.createNamedQuery("getTeacherSubjectData")
                         .setParameter("id", user.getId()).getResultList();
                 
-                
-                ((Teacher)user).setTeachingCourses(teachingCourses);
-                ((Teacher)user).setSpecializedSubjects(teacherSpecializedSubjects);
-                
+                //Setting the obtained data to the teacher
+                ((Teacher) user).setTeachingCourses(teachingCourses);
+                ((Teacher) user).setSpecializedSubjects(teacherSpecializedSubjects);
+
             }
         } catch (Exception e) {
             throw new ReadException();
@@ -65,12 +68,27 @@ public class UserEJB extends UserEJBLocal {
 
     @Override
     public User find(Object obj) throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        User user;
+        try {
+            user = em.find(User.class, obj);
+        } catch (Exception e) {
+            throw new ReadException();
+        }
+        return user;
     }
 
     @Override
     public List<User> findAll() throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<User> users = null;
+        try {
+            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            cq.select(cq.from(User.class));
+            users = em.createQuery(cq).getResultList();
+        } catch (Exception e) {
+            throw new ReadException();
+        }
+
+        return users;
     }
 
 }

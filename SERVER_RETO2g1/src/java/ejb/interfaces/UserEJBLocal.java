@@ -22,5 +22,5 @@ public abstract class UserEJBLocal extends AbstractEJB<User>{
      * @return The user with the data, relationships included
      * @throws ReadException if the login data is wrong or dont exist
      */
-    public abstract User getUserData(User user) throws ReadException;
+    public abstract User getUserRelationshipsData(User user) throws ReadException;
 }
