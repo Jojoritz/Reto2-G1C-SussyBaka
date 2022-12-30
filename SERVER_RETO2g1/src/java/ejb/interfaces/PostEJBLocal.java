@@ -44,4 +44,13 @@ public abstract class PostEJBLocal extends AbstractEJB<Post> {
      */
     public abstract Set<Post> getPostByDateRange(Course course);
 
+    /**
+     * Gets all the posts that contains a specific title name
+     * 
+     * @param course The entity course on where to get the post
+     * @param title The title string to use as filter
+     * @return Returns a SET with all the post founded filtering by 
+     */
+    public abstract Set<Post> getPostByTitle(Course course, String title);
+
 }
