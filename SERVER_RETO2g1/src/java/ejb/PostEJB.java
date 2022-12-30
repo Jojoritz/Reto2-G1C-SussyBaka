@@ -23,15 +23,6 @@ import javax.ejb.Stateless;
 @Stateless
 public class PostEJB extends PostEJBLocal {
 
-    @Override
-    public List<Post> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Post find(Object obj) throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public Set<Comment> getComments(Post post) {
@@ -45,6 +36,11 @@ public class PostEJB extends PostEJBLocal {
 
     @Override
     public Set<Post> getPostByDateRange(Course course) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Set<Post> getPostByTitle(Course course, String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

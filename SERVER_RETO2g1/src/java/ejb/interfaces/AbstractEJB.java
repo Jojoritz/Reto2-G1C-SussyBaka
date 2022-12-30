@@ -9,29 +9,44 @@ import exception.CreateException;
 import exception.DeleteException;
 import exception.ReadException;
 import exception.UpdateException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.Local;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
+ * This generic interface declares basic {@code CUD} contract to improve
+ * boilerplate code:
+ * <li>{@link #create Create}</li>
+ * <li>{@link #edit Edit}</li>
+ * <li>{@link #remove Remove}</li>
  *
  * @author yeguo
- * @param <T> Object type
+ * @param <T> Generic type
  */
-public abstract class AbstractEJB<T> implements InterfaceEJBCRUD<T> {
+@Local
+public abstract class AbstractEJB<T> {
+
+    private Class<T> entityClass;
 
     /**
      * Logger for the class.
      */
     private static final Logger LOG
-            = Logger.getLogger("ejb.interfaces.AbstractEJB");
+            = Logger.getLogger(AbstractEJB.class.getName());
 
     @PersistenceContext
     protected EntityManager em;
 
-    @Override
+    /**
+     * Creates/inserts the data of the entity passed
+     *
+     * @param entity
+     * @throws CreateException If the creation method threw an exception
+     */
     public void create(T entity) throws CreateException {
         try {
             LOG.info(String.format("EJB: Creating %s", entity.getClass().getName()));
@@ -44,7 +59,12 @@ public abstract class AbstractEJB<T> implements InterfaceEJBCRUD<T> {
         }
     }
 
-    @Override
+    /**
+     * Edits/Modify the data of the entity passed
+     *
+     * @param entity
+     * @throws UpdateException If the creation method threw an exception
+     */
     public void edit(T entity) throws UpdateException {
         try {
             em.merge(entity);
@@ -55,7 +75,12 @@ public abstract class AbstractEJB<T> implements InterfaceEJBCRUD<T> {
 
     }
 
-    @Override
+    /**
+     * Deletes/Removes all the data from the entity passed
+     *
+     * @param entity
+     * @throws DeleteException If the creation method threw an exception
+     */
     public void remove(T entity) throws DeleteException {
         try {
             entity = em.merge(entity);
@@ -65,10 +90,21 @@ public abstract class AbstractEJB<T> implements InterfaceEJBCRUD<T> {
         }
     }
 
-    @Override
-    public abstract T find(Object obj) throws ReadException;
-
-    @Override
-    public abstract List<T> findAll() throws ReadException;
+    /**
+     * Finds a
+     *
+     * @param obj Primary key of the entity
+     * @return Returns the entity found by using the primary key, can be NULL
+     * @throws ReadException If the read
+     */
+    public T find(Object obj) throws ReadException {
+        T entity;
+        try {
+            entity = em.find(entityClass, obj);
+            return entity;
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
+    }
 
 }
