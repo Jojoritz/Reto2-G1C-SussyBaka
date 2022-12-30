@@ -7,25 +7,16 @@ package ejb;
 
 import ejb.interfaces.UserEJBLocal;
 import entities.Course;
-import static entities.Course_.teacher;
 import entities.Student;
 import entities.Subject;
 import entities.Teacher;
 import entities.User;
 import entities.enumerations.UserPrivilege;
 import exception.CreateException;
-import exception.DeleteException;
 import exception.ReadException;
-import exception.UpdateException;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.StoredProcedureQuery;
-import javax.persistence.criteria.CriteriaQuery;
 
 /**
  *
@@ -34,19 +25,23 @@ import javax.persistence.criteria.CriteriaQuery;
 @Stateless
 public class UserEJB extends UserEJBLocal {
 
+    private static final Logger LOGGER = Logger.getLogger(UserEJB.class.getName());
+    
     @Override
     public User getUserRelationshipsData(User user) throws ReadException {
         try {
-
+            LOGGER.info("Starting getting the relationships of the user");
             // a condition where if the user is a teacher executes one named query
             //and if it is a student another to obtain corresponding relationships data
             if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
+                LOGGER.info("Getting the student relationships of the student");
                 //Obtaining the studying courses of the student and saving in a collection to latter set in the user studying courses collection
                 Set<Course> studyingCourses = (Set<Course>) em.createNamedQuery("getStudentCourseData")
                         .setParameter("id", user.getId()).getResultList();
 
                 ((Student) user).setStudyingCourses(studyingCourses);
             } else if (user.getPrivilege().equals(UserPrivilege.TEACHER)) {
+                LOGGER.info("Starting getting the relationships of the teacher");
                 //Obtaining the teaching courses of the teacher and saving in a collection
                 Set<Course> teachingCourses = (Set<Course>) em.createNamedQuery("getTeacherCourseData")
                         .setParameter("id", user.getId()).getResultList();
@@ -60,36 +55,38 @@ public class UserEJB extends UserEJBLocal {
 
             }
         } catch (Exception e) {
-            throw new ReadException();
+            LOGGER.severe(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
 
         return user;
     }
-
     @Override
-    public User find(Object obj) throws ReadException {
-        User user;
+    public void create(User entity) throws CreateException{
+        
         try {
-            user = (User) em.createNamedQuery("getUserLogin").setParameter("login",)
-                    .setParameter("password", ).getSingleResult();
+            User findedUser = find(entity);
+            if (findedUser != null) {
+                throw new Exception("The user all ready exist");
+            }
+            LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName()));
+            em.persist(entity);
+            LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
         } catch (Exception e) {
-            throw new ReadException();
+            LOGGER.severe(e.getMessage());
+            throw new CreateException(e.getMessage());
         }
-        return user;
     }
-
     @Override
-    public List<User> findAll() throws ReadException {
-        List<User> users = null;
+    public User find(Object obj) throws ReadException{
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(User.class));
-            users = em.createQuery(cq).getResultList();
+            User passedUser = (User) obj;
+            User user = (User) em.createNamedQuery("getUserLogin").setParameter("login", passedUser.getLogin())
+                    .setParameter("password", passedUser.getPassword()).getSingleResult();
+            return user;
         } catch (Exception e) {
-            throw new ReadException();
+            throw new ReadException(e.getMessage());
         }
-
-        return users;
     }
-
+    
 }
