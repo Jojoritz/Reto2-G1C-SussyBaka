@@ -70,7 +70,8 @@ public class UserEJB extends UserEJBLocal {
     public User find(Object obj) throws ReadException {
         User user;
         try {
-            user = em.find(User.class, obj);
+            user = (User) em.createNamedQuery("getUserLogin").setParameter("login",)
+                    .setParameter("password", ).getSingleResult();
         } catch (Exception e) {
             throw new ReadException();
         }
