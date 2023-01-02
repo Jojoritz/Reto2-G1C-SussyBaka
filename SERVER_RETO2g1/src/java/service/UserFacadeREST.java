@@ -36,7 +36,7 @@ public class UserFacadeREST{
      * EJB object with the busines logic
      */
     
-    @EJB
+    @EJB(beanName = "UserEJB")
     private UserEJBLocal ejb;
     /**
      * The logger of this class

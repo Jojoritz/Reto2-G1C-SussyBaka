@@ -10,100 +10,88 @@ import entities.Course;
 import entities.Subject;
 import entities.Teacher;
 import exception.ReadException;
-import java.util.List;
+import java.util.logging.Logger;
 import java.util.Set;
 import javax.ejb.Stateless;
-import javax.persistence.criteria.CriteriaQuery;
 
 /**
  *
  * @author ioritz the Subject EJB
  *
  */
-@Stateless
+@Stateless(name = "SubjectEJB")
 public class SubjectEJB extends SubjectEJBLocal {
 
+    private static final Logger LOGGER = Logger.getLogger(SubjectEJB.class.getName());
+    
     @Override
-    public Subject searchByName(Subject obj) throws ReadException {
+    public Subject searchByName(String name) throws ReadException {
+        Subject subject = null;
         try {
+            
             //Getting the subject collection by name
-            obj = (Subject) em.createNamedQuery("getSubjectByName").
-                    setParameter("name", obj.getName()).getSingleResult();
+            LOGGER.info("Searching the subject by name");
+            subject = (Subject) em.createNamedQuery("getSubjectByName").
+                    setParameter("name", name).getSingleResult();
 
         } catch (Exception e) {
-            throw new ReadException();
+            LOGGER.severe("An error ocurred when searching the subject");
+            throw new ReadException("An error ocurred when searching the subject");
+            
         }
-        return obj;
+        return subject;
     }
 
     @Override
-    public Set<Subject> searchByType(Subject obj) throws ReadException {
+    public Set<Subject> searchByType(String type) throws ReadException {
         Set<Subject> subjects = null;
         try {
+            LOGGER.info("Searching the subject by type");
             //Getting the subject collection by type
             subjects = (Set<Subject>) em.createNamedQuery("getSubjectsByType")
-                    .setParameter("type", obj.getType()).getResultList();
+                    .setParameter("type", type).getResultList();
         } catch (Exception e) {
-            throw new ReadException();
+            LOGGER.severe("An error ocurred when searching the subject");
+            throw new ReadException("An error ocurred when searching the subject");
         }
         return subjects;
     }
 
     @Override
-    public Set<Subject> searchByLevel(Subject obj) throws ReadException {
+    public Set<Subject> searchByLevel(String level) throws ReadException {
         Set<Subject> subjects = null;
         try {
+            LOGGER.info("Searching the subject by level");
             //Getting the subject collection by level
             subjects = (Set<Subject>) em.createNamedQuery("getSubjectsByLevel")
-                    .setParameter("level", obj.getLevel()).getResultList();
+                    .setParameter("level", level).getResultList();
         } catch (Exception e) {
-            throw new ReadException();
+            LOGGER.severe("An error ocurred when searching the subject");
+            throw new ReadException("An error ocurred when searching the subject");
         }
         return subjects;
     }
 
     @Override
-    public Subject getSubjectRelationshipsData(Subject obj) throws ReadException {
+    public Subject getSubjectRelationshipsData(Subject subject) throws ReadException {
         try {
+            LOGGER.info("Searching the data of the relationships of the subject with other entityes");
             //Getting the course with subject relation
+            LOGGER.info("Searching the data of the course and subject relationship");
             Set<Course> coursesWithSubject = (Set<Course>) em.createNamedQuery("getSubjectCourseRelationship")
-                    .setParameter("subjectId", obj.getSubjectId()).getResultList();
-            
+                    .setParameter("subjectId", subject.getSubjectId()).getResultList();
+            LOGGER.info("Searching the data of the subject and teachers relationship");
             Set<Teacher> teachersSpecialized = (Set<Teacher>) em.createNamedQuery("getSubjectTeacherRelationship")
-                    .setParameter("subjectId", obj.getSubjectId()).getResultList();
+                    .setParameter("subjectId", subject.getSubjectId()).getResultList();
             
             //Setting the relations in the entity
-            obj.setCourseWithSubject(coursesWithSubject);
-            obj.setTeachersSpecializedInSubject(teachersSpecialized);
-        } catch (Exception e) {
-            throw new ReadException();
-        }
-        return obj;
-    }
-
-    @Override
-    public Subject find(Object obj) throws ReadException {
-        Subject subject;
-        try {
-            subject = em.find(Subject.class, obj);
+            subject.setCourseWithSubject(coursesWithSubject);
+            subject.setTeachersSpecializedInSubject(teachersSpecialized);
         } catch (Exception e) {
             throw new ReadException();
         }
         return subject;
     }
 
-    @Override
-    public List<Subject> findAll() throws ReadException {
-        List<Subject> subjects = null;
-        try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Subject.class));
-            subjects = em.createQuery(cq).getResultList();
-        } catch (Exception e) {
-            throw new ReadException();
-        }
-
-        return subjects;
-    }
 
 }

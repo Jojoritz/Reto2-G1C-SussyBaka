@@ -22,7 +22,7 @@ import javax.ejb.Stateless;
  *
  * @author ioritz
  */
-@Stateless
+@Stateless(name="UserEJB")
 public class UserEJB extends UserEJBLocal {
 
     private static final Logger LOGGER = Logger.getLogger(UserEJB.class.getName());
