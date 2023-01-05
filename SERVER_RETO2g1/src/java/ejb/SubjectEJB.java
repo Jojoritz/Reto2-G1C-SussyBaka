@@ -93,5 +93,6 @@ public class SubjectEJB extends SubjectEJBLocal {
         return subject;
     }
 
+    
 
 }

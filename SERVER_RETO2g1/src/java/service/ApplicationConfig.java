@@ -35,9 +35,7 @@ public class ApplicationConfig extends Application {
         resources.add(service.CommentFacadeREST.class);
         resources.add(service.CourseFacadeREST.class);
         resources.add(service.PostFacadeREST.class);
-        resources.add(service.StudentFacadeREST.class);
         resources.add(service.SubjectFacadeREST.class);
-        resources.add(service.TeacherFacadeREST.class);
         resources.add(service.UserFacadeREST.class);
     }
 

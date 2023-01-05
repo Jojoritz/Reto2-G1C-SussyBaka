@@ -98,13 +98,13 @@ public class SubjectFacadeREST {
     /**
      * A method to find the subject
      *
-     * @param obj the data to find the subject
+     * @param subject the data to find the subject
      * @return the subject with the data
      */
     @GET
     @Path("{obj}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Subject find(@PathParam("obj") Object obj) {
+    public Subject find(@PathParam("obj") Subject obj) {
         Subject subject = null;
         try {
             LOGGER.info("Searching the subject");
@@ -123,9 +123,9 @@ public class SubjectFacadeREST {
      * @return the subject with the data
      */
     @GET
-    @Path("{name}")
+    @Path("subject/name/{nameParam}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Subject searchByName(@PathParam("name") String name) {
+    public Subject searchByName(@PathParam("nameParam") String name) {
         Subject subject = null;
         try {
             LOGGER.info("Searching the subject by name");
@@ -144,9 +144,9 @@ public class SubjectFacadeREST {
      * @return A set of subjects of this type
      */
     @GET
-    @Path("{type}")
+    @Path("subject/type/{typeParam}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Set<Subject> searchByType(@PathParam("type") String type) {
+    public Set<Subject> searchByType(@PathParam("typeParam") String type) {
         Set<Subject> subjects = null;
         try {
             LOGGER.info("Searching the subjects by the type");
@@ -165,9 +165,9 @@ public class SubjectFacadeREST {
      * @return A set of subjects, with the subjects of the indicated level
      */
     @GET
-    @Path("{level}")
+    @Path("subject/level/{levelParam}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Set<Subject> searchByLevel(@PathParam("level") String level) {
+    public Set<Subject> searchByLevel(@PathParam("levelParam") String level) {
         Set<Subject> subjects = null;
         try {
             LOGGER.info("Searching the subjects by the level");
@@ -184,7 +184,7 @@ public class SubjectFacadeREST {
      * @return the subject with the relationships data
      */
     @GET
-    @Path("{subject}")
+    @Path("subject/{subject}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Subject getSubjectRelationshipsData(@PathParam("subject")Subject subject){
         try {

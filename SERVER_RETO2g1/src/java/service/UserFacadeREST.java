@@ -88,15 +88,19 @@ public class UserFacadeREST{
             throw new InternalServerErrorException(e.getMessage());
         }
     }
-    
+    /**
+     * GET method to find a user
+     * @param xtUser the data of the user to find
+     * @return the user finded
+     */
     @GET
-    @Path("{obj}")
+    @Path("{user}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User find(@PathParam("obj")Object obj){
+    public User find(@PathParam("extUser")User extUser){
         User user = null;
         try {
             LOGGER.info("Searching the user");
-            user = ejb.find(obj);
+            user = ejb.find(extUser);
             
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
@@ -106,9 +110,13 @@ public class UserFacadeREST{
         return user;
         
     }
-    
+    /**
+     * GET method to search a user relationships with other entityes
+     * @param user the data of the user to search the relationships
+     * @return the user with the data
+     */
     @GET
-    @Path("{user}")
+    @Path("user/{user}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public User findUserRelationships(@PathParam("user") User user){
        User searchedUser = null;

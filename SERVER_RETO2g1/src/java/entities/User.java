@@ -1,5 +1,7 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.List;
 import entities.enumerations.UserPrivilege;
@@ -34,10 +36,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author ioritz
  */
-
 @NamedQueries(
         @NamedQuery(
-                name="getUserLogin", query="SELECT u FROM User u WHERE u.login = :login AND u.password = :password"
+                name = "getUserLogin", query = "SELECT u FROM User u WHERE u.login = :login AND u.password = :password"
         )
 )
 
@@ -62,14 +63,14 @@ public class User implements Serializable {
     /**
      * The user to login in the application
      */
-    @Column(unique=true)
+    @Column(unique = true)
     @NotNull
     private String login;
 
     /**
      * The user email
      */
-    @Column(unique=true)
+    @Column(unique = true)
     @NotNull
     private String email;
 
@@ -83,7 +84,7 @@ public class User implements Serializable {
     /**
      * The password of the account
      */
-    @Column
+    @Column(name="user_password")
     @NotNull
     private String password;
 
@@ -91,6 +92,8 @@ public class User implements Serializable {
      * A timestamp with the date of latest password changes
      */
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonSerialize(as = Date.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @NotNull
     private Date lastPasswordChange;
 
@@ -114,6 +117,8 @@ public class User implements Serializable {
      */
     @ElementCollection(targetClass = Date.class)
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @JsonSerialize(as=Date.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @CollectionTable(name = "user_signInHistory", schema = "reto2_g1c_sussybaka")
     private List<Date> signInHistory;
 
