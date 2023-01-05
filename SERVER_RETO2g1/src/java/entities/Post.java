@@ -33,16 +33,16 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @NamedQueries({
     @NamedQuery(
-            name = "getCommentsByPostID",
-            query = "FROM Comment c WHERE c.post.postId = :idPost")
-    ,
-    @NamedQuery(
             name = "findByDate",
-            query = "FROM Post p WHERE CAST(p.publicationDate as date) = :date")
+            query = "FROM Post p WHERE DATE(p.publicationDate) = DATE(:date)")
     ,
     @NamedQuery(
             name = "findByDateRange",
-            query = "FROM Post p Where CAST(p.publicationDate as date) < :startDate AND CAST(p.publicationDate as date) > :endDate")
+            query = "FROM Post p Where DATE(p.publicationDate) BETWEEN DATE(:startDate) AND DATE(:endDate)")
+    ,
+    @NamedQuery(
+            name = "findByTitle",
+            query = "FROM Post p WHERE p.title = :title")
 })
 @Entity
 @Table(name = "post", schema = "reto2_g1c_sussybaka")

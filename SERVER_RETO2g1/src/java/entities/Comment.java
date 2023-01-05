@@ -7,9 +7,10 @@ import java.util.Objects;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Henrique Yeguo
  */
+@NamedQueries(
+        @NamedQuery(
+                name = "getCommentsByPostID",
+                query = "FROM Comment c WHERE c.post.postId = :idPost")
+)
 @Entity
 @Table(name = "student_post_comment", schema = "reto2_g1c_sussybaka")
 @XmlRootElement
