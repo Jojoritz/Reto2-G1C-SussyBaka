@@ -35,7 +35,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author ioritz
  */
 
-
+@NamedQueries(
+        @NamedQuery(
+                name="getUserLogin", query="SELECT u FROM User u WHERE u.login = :login AND u.password = :password"
+        )
+)
 
 @Entity
 @Table(name = "USERS", schema = "reto2_g1c_sussybaka")
