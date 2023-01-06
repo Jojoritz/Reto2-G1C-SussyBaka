@@ -43,4 +43,11 @@ public abstract class SubjectEJBLocal extends AbstractEJB<Subject>{
      * @throws ReadException if there any error happened when searching the subject data
      */
     public abstract Subject getSubjectRelationshipsData(Subject subject) throws ReadException;
+    
+    /**
+     * The method to obtain the data of all the subjects
+     * @return A set of subjects
+     * @throws ReadException  if any error happend when searching the subject data
+     */
+    public abstract Set<Subject> findAll() throws ReadException;
 }

@@ -102,7 +102,7 @@ public class SubjectFacadeREST {
      * @return the subject with the data
      */
     @GET
-    @Path("{obj}")
+    @Path("subject/{obj}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Subject find(@PathParam("obj") Subject obj) {
         Subject subject = null;
@@ -178,15 +178,17 @@ public class SubjectFacadeREST {
         }
         return subjects;
     }
+
     /**
      * A method to find the subject relationships data
+     *
      * @param subject the subject data to search the relationships data
      * @return the subject with the relationships data
      */
     @GET
     @Path("subject/{subject}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Subject getSubjectRelationshipsData(@PathParam("subject")Subject subject){
+    public Subject getSubjectRelationshipsData(@PathParam("subject") Subject subject) {
         try {
             LOGGER.info("Searching the data of the subject relationships");
             subject = ejb.getSubjectRelationshipsData(subject);
@@ -194,10 +196,25 @@ public class SubjectFacadeREST {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());
         }
-        
+
         return subject;
     }
-    
-    
+    /**
+     * The method to find the subjects
+     * @return A set of subjects
+     */
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Set<Subject> findAll() {
+        Set<Subject> subjects = null;
+        try {
+            LOGGER.info("Searching all the subjects");
+            subjects = ejb.findAll();
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            throw new NotFoundException(e.getMessage());
+        }
+        return subjects;
+    }
 
 }

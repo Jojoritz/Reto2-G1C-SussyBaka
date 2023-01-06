@@ -13,6 +13,7 @@ import exception.ReadException;
 import java.util.logging.Logger;
 import java.util.Set;
 import javax.ejb.Stateless;
+import javax.persistence.criteria.CriteriaQuery;
 
 /**
  *
@@ -88,9 +89,26 @@ public class SubjectEJB extends SubjectEJBLocal {
             subject.setCourseWithSubject(coursesWithSubject);
             subject.setTeachersSpecializedInSubject(teachersSpecialized);
         } catch (Exception e) {
-            throw new ReadException();
+            LOGGER.severe("An error ocurred when searching the data of the subject");
+            throw new ReadException("An error ocurred when searching the data of the subject");
         }
         return subject;
+    }
+
+    @Override
+    public Set<Subject> findAll() throws ReadException {
+        Set<Subject> subjects = null;
+        CriteriaQuery cq = null;
+        try {
+            LOGGER.info("Searching the subjects");
+            cq = em.getCriteriaBuilder().createQuery();
+            cq.select(cq.from(Subject.class));
+        
+        } catch (Exception e) {
+            LOGGER.severe("An error ocurred when searching the subjecet");
+            throw new ReadException("An error ocurred when searching the subjects");
+        }
+        return subjects;
     }
 
     

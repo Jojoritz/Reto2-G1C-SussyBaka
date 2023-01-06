@@ -14,6 +14,7 @@ import entities.User;
 import entities.enumerations.UserPrivilege;
 import exception.CreateException;
 import exception.ReadException;
+import java.security.SecureRandom;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -70,6 +71,7 @@ public class UserEJB extends UserEJBLocal {
                 throw new Exception("The user all ready exist");
             }
             LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName()));
+            entity = hashEntityPassword(entity);
             em.persist(entity);
             LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
         } catch (Exception e) {
@@ -87,6 +89,26 @@ public class UserEJB extends UserEJBLocal {
         } catch (Exception e) {
             throw new ReadException(e.getMessage());
         }
+    }
+
+    /**
+     * The method to hash the password of the user
+     * @param entity The user with thte password without hashed
+     * @return the user with the hashed password
+     */
+    private User hashEntityPassword(User entity) {
+        //TODO do the method to hash the password. Look at the exercise done in 
+        //class and, javadoc and the chatGPT
+
+        //Contraseña a hashear
+       /* String password = entity.getPassword();
+        
+        //Generando la salt
+        SecureRandom random = SecureRandom.getInstance("")
+        byte[] salt = 
+        */
+        
+        return entity;
     }
     
 }

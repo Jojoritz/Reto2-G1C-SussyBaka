@@ -82,7 +82,7 @@ public class Subject implements Serializable {
     /**
      * The level of the subject
      */
-    @Column(name = "sub_level")
+    @Column(name = "subject_level")
     private String level;
 
     /**
