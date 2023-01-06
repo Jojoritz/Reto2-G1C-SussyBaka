@@ -13,7 +13,6 @@ import entities.Post;
 import exception.ReadException;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.Stateless;
 
 /**
@@ -23,25 +22,44 @@ import javax.ejb.Stateless;
 @Stateless
 public class PostEJB extends PostEJBLocal {
 
-
     @Override
-    public Set<Comment> getComments(Post post) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Post> getPostByDate(Course course, Date date) throws ReadException {
+        try {
+            List<Post> posts;
+            LOG.info("PostEJB: Get all post from a specify date...");
+            posts = em.createNamedQuery("findByDate").
+                    setParameter("date", date).getResultList();
+            return posts;
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
     }
 
     @Override
-    public Set<Post> getPostByDate(Course course, Date date) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Post> getPostByDateRange(Course course, Date startDate, Date endDate) throws ReadException {
+        try {
+            List<Post> posts;
+            LOG.info("PostEJB: Get all post by date range...");
+            posts = em.createNamedQuery("findByDateRange")
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate).getResultList();
+            return posts;
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
     }
 
     @Override
-    public Set<Post> getPostByDateRange(Course course) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Set<Post> getPostByTitle(Course course, String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Post> getPostByTitle(Course course, String title) throws ReadException {
+        try {
+            List<Post> posts;
+            LOG.info("PostEJB: Get all post by title...");
+            posts = em.createNamedQuery("findByTitle").
+                    setParameter("title", title).getResultList();
+            return posts;
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
     }
 
 }

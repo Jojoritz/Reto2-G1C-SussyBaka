@@ -9,8 +9,7 @@ import exception.CreateException;
 import exception.DeleteException;
 import exception.ReadException;
 import exception.UpdateException;
-import java.lang.reflect.Method;
-import java.util.List;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Local;
@@ -28,14 +27,14 @@ import javax.persistence.PersistenceContext;
  * @param <T> Generic type
  */
 @Local
-public abstract class AbstractEJB<T> {
+public abstract class AbstractEJB<T extends Serializable> {
 
     private Class<T> entityClass;
 
     /**
      * Logger for the class.
      */
-    private static final Logger LOG
+    protected static final Logger LOG
             = Logger.getLogger(AbstractEJB.class.getName());
 
     @PersistenceContext
@@ -91,7 +90,7 @@ public abstract class AbstractEJB<T> {
     }
 
     /**
-     * Finds a
+     * Finds the entity value using the primary key object passed by parameter
      *
      * @param obj Primary key of the entity
      * @return Returns the entity found by using the primary key, can be NULL
