@@ -20,7 +20,7 @@ import javax.persistence.criteria.CriteriaQuery;
  * @author ioritz the Subject EJB
  *
  */
-@Stateless(name = "SubjectEJB")
+@Stateless
 public class SubjectEJB extends SubjectEJBLocal {
 
     private static final Logger LOGGER = Logger.getLogger(SubjectEJB.class.getName());
@@ -98,12 +98,10 @@ public class SubjectEJB extends SubjectEJBLocal {
     @Override
     public Set<Subject> findAll() throws ReadException {
         Set<Subject> subjects = null;
-        CriteriaQuery cq = null;
+        
         try {
             LOGGER.info("Searching the subjects");
-            cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Subject.class));
-        
+            subjects = (Set<Subject>) em.createNamedQuery("findAllSubjects").getResultList();
         } catch (Exception e) {
             LOGGER.severe("An error ocurred when searching the subjecet");
             throw new ReadException("An error ocurred when searching the subjects");

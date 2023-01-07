@@ -28,6 +28,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @NamedQueries(
     {
+        @NamedQuery(
+                name="findAllSubjects", query="SELECT s FROM Subject s"
+        ),
        @NamedQuery(
                name="getSubjectByName", query="SELECT s FROM Subject s WHERE s.name LIKE :name"
        ),

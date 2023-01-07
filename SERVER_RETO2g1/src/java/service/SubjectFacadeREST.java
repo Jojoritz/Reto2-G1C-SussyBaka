@@ -102,7 +102,7 @@ public class SubjectFacadeREST {
      * @return the subject with the data
      */
     @GET
-    @Path("subject/{obj}")
+    @Path("{obj}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Subject find(@PathParam("obj") Subject obj) {
         Subject subject = null;

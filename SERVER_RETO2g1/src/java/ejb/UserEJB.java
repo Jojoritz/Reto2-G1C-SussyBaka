@@ -14,7 +14,8 @@ import entities.User;
 import entities.enumerations.UserPrivilege;
 import exception.CreateException;
 import exception.ReadException;
-import java.security.SecureRandom;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -23,7 +24,7 @@ import javax.ejb.Stateless;
  *
  * @author ioritz
  */
-@Stateless(name="UserEJB")
+@Stateless
 public class UserEJB extends UserEJBLocal {
 
     private static final Logger LOGGER = Logger.getLogger(UserEJB.class.getName());
@@ -66,12 +67,13 @@ public class UserEJB extends UserEJBLocal {
     public void create(User entity) throws CreateException{
         
         try {
+            LOGGER.info("Searching if the user exist");
             User findedUser = find(entity);
             if (findedUser != null) {
                 throw new Exception("The user all ready exist");
             }
             LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName()));
-            entity = hashEntityPassword(entity);
+            entity = hashUserPassword(entity);
             em.persist(entity);
             LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
         } catch (Exception e) {
@@ -95,20 +97,38 @@ public class UserEJB extends UserEJBLocal {
      * The method to hash the password of the user
      * @param entity The user with thte password without hashed
      * @return the user with the hashed password
+     * @throws Exception if any error ocurred when hashing the password
      */
-    private User hashEntityPassword(User entity) {
-        //TODO do the method to hash the password. Look at the exercise done in 
-        //class and, javadoc and the chatGPT
-
+    public User hashUserPassword(User entity) throws Exception{
+        MessageDigest messageDigest = null;
         //Contraseña a hashear
-       /* String password = entity.getPassword();
-        
-        //Generando la salt
-        SecureRandom random = SecureRandom.getInstance("")
-        byte[] salt = 
-        */
+        String hashedPassword = null;
+        try {
+            LOGGER.info("Hashing the password");
+            messageDigest = MessageDigest.getInstance("MD5");
+            
+            byte dataBytes[] = entity.getPassword().getBytes();
+            messageDigest.update(dataBytes);
+            
+            byte resumen[] = messageDigest.digest();
+            hashedPassword = toHexString(resumen);
+        } catch (NoSuchAlgorithmException e) {
+            LOGGER.severe("An error ocurred while hashing the password");
+            throw new Exception("An error ocurred while hashing the password");
+        }
+       
         
         return entity;
+    }
+
+    private String toHexString(byte[] resumen){
+        StringBuffer hashedPassword = new StringBuffer();
+        
+        for (byte b : resumen) {
+            hashedPassword.append(b);
+        }
+        
+        return hashedPassword.toString();
     }
     
 }
