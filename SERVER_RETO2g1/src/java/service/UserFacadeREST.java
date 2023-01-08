@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package server.service;
+package service;
 
-import server.ejb.interfaces.UserEJBLocal;
-import server.entities.User;
-import server.exception.CreateException;
-import server.exception.DeleteException;
-import server.exception.ReadException;
-import server.exception.UpdateException;
+import ejb.interfaces.UserEJBLocal;
+import entities.User;
+import exception.CreateException;
+import exception.DeleteException;
+import exception.ReadException;
+import exception.UpdateException;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;

@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package server.ejb.interfaces;
+package ejb.interfaces;
 
-import server.entities.Subject;
-import server.exception.ReadException;
+import entities.Subject;
+import exception.ReadException;
 import java.util.Set;
 
 /**

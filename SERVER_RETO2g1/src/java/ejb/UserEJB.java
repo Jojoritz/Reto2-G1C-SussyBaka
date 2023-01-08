@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package server.ejb;
+package ejb;
 
-import server.ejb.interfaces.UserEJBLocal;
-import server.entities.Course;
-import server.entities.Student;
-import server.entities.Subject;
-import server.entities.Teacher;
-import server.entities.User;
-import server.entities.enumerations.UserPrivilege;
-import server.exception.CreateException;
-import server.exception.ReadException;
+import ejb.interfaces.UserEJBLocal;
+import entities.Course;
+import entities.Student;
+import entities.Subject;
+import entities.Teacher;
+import entities.User;
+import entities.enumerations.UserPrivilege;
+import exception.CreateException;
+import exception.ReadException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Set;

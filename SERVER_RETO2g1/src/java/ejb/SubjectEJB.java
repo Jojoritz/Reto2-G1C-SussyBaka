@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package server.ejb;
+package ejb;
 
-import server.ejb.interfaces.SubjectEJBLocal;
-import server.entities.Course;
-import server.entities.Subject;
-import server.entities.Teacher;
-import server.exception.ReadException;
+import ejb.interfaces.SubjectEJBLocal;
+import entities.Course;
+import entities.Subject;
+import entities.Teacher;
+import exception.ReadException;
 import java.util.logging.Logger;
 import java.util.Set;
 import javax.ejb.Stateless;

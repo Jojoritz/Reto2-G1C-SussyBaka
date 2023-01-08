@@ -5,12 +5,12 @@
  */
 package service;
 
-import server.ejb.interfaces.SubjectEJBLocal;
-import server.entities.Subject;
-import server.exception.CreateException;
-import server.exception.DeleteException;
-import server.exception.ReadException;
-import server.exception.UpdateException;
+import ejb.interfaces.SubjectEJBLocal;
+import entities.Subject;
+import exception.CreateException;
+import exception.DeleteException;
+import exception.ReadException;
+import exception.UpdateException;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.EJB;

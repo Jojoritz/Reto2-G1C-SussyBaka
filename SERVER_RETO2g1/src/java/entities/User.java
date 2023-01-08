@@ -1,11 +1,11 @@
-package server.entities;
+package entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.List;
-import server.entities.enumerations.UserPrivilege;
-import server.entities.enumerations.UserStatus;
+import entities.enumerations.UserPrivilege;
+import entities.enumerations.UserStatus;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.CollectionTable;

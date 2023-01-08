@@ -32,11 +32,11 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(server.service.CommentFacadeREST.class);
-        resources.add(server.service.CourseFacadeREST.class);
-        resources.add(server.service.PostFacadeREST.class);
-        resources.add(server.service.UserFacadeREST.class);
+        resources.add(service.CommentFacadeREST.class);
+        resources.add(service.CourseFacadeREST.class);
+        resources.add(service.PostFacadeREST.class);
         resources.add(service.SubjectFacadeREST.class);
+        resources.add(service.UserFacadeREST.class);
     }
 
 }
