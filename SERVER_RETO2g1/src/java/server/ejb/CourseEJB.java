@@ -8,30 +8,27 @@ package server.ejb;
 import server.ejb.interfaces.CourseEJBLocal;
 import server.entities.Course;
 import server.exception.ReadException;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author Joritz
  */
+@Stateless
 public class CourseEJB extends CourseEJBLocal {
 
-    @Override
-    public Course find(Object obj) throws ReadException {
-        Course course = new Course();
-        try {
-            course = (Course) em.createNamedQuery("findCourse").setParameter("courseId", 1);
-        } catch (Exception e) {
-            LOG.severe(e.getMessage());
-            throw new ReadException(e.getMessage());
-        }
-        return course;
-    }
+    private static final Logger LOG = Logger.getLogger("ejb.CourseEJB");
 
+    @Override
     public List<Course> findAll() throws ReadException {
         List<Course> courses = null;
+        LOG.info("CourseEJB: Getting all Courses...");
+        //Getting the collection with Courses
         try {
-            courses = em.createNamedQuery("findAllCourses").getResultList();
+            courses = (List<Course>) em.createNamedQuery("findAllCourses").getResultList();
         } catch (Exception e) {
             LOG.severe(e.getMessage());
             throw new ReadException(e.getMessage());
@@ -40,10 +37,12 @@ public class CourseEJB extends CourseEJBLocal {
     }
 
     @Override
-    public Course findByName(Course entity) throws ReadException {
+    public Course findById(Integer id) throws ReadException {
         Course course = new Course();
+        LOG.info("CourseEJB: Getting Course by id...");
+        //Getting the Course by ID
         try {
-            course = (Course) em.createNamedQuery("findCourseByName").setParameter("name", "Gerardo");
+            course = (Course) em.createNamedQuery("findCourse").setParameter("courseId", id);
         } catch (Exception e) {
             LOG.severe(e.getMessage());
             throw new ReadException(e.getMessage());
@@ -52,15 +51,30 @@ public class CourseEJB extends CourseEJBLocal {
     }
 
     @Override
-    public Course findByDate(Course entity) throws ReadException {
-        Course course = new Course();
+    public List<Course> findByName(String name) throws ReadException {
+        List<Course> courses = null;
+        LOG.info("CourseEJB: Getting Courses by name...");
+        //Getting the Collection of Courses by Name
         try {
-            course = (Course) em.createNamedQuery("findCourseByDate").setParameter("startDate", "23/12/2022");
+            courses = (List<Course>) em.createNamedQuery("findCourseByName").setParameter("name", name);
         } catch (Exception e) {
             LOG.severe(e.getMessage());
-            throw new ReadException(e.getMessage());
+            throw new ReadException();
         }
-        return course;
+        return courses;
     }
 
+    @Override
+    public List<Course> findByDate(Date startDate) throws ReadException {
+        List<Course> courses = null;
+        LOG.info("CourseEJB: Getting all Courses from a specific date...");
+        //Getting the Collection of Courses by Date
+        try {
+            courses = (List<Course>) em.createNamedQuery("findCourseByDate").setParameter("startDate", startDate);
+        } catch (Exception e) {
+            LOG.severe(e.getMessage());
+            throw new ReadException();
+        }
+        return courses;
+    }
 }

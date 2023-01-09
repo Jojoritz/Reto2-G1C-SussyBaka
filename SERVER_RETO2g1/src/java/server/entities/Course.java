@@ -32,10 +32,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @NamedQueries({
         @NamedQuery(
-                name="findAllCourses", query="SELECT c FROM Course c"
-        ),
-    
-        @NamedQuery(
                 name="findCourse", query="SELECT c FROM Course c WHERE c.courseId =:courseId"
         ),
         
