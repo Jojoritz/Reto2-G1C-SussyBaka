@@ -102,13 +102,13 @@ public class SubjectFacadeREST {
      * @return the subject with the data
      */
     @GET
-    @Path("{obj}")
+    @Path("subject/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Subject find(@PathParam("obj") Subject obj) {
+    public Subject find(@PathParam("id") Integer id) {
         Subject subject = null;
         try {
             LOGGER.info("Searching the subject");
-            subject = ejb.find(obj);
+            subject = ejb.find(id);
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());
