@@ -9,15 +9,50 @@ import server.entities.Course;
 import server.exception.ReadException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ejb.Local;
+import server.exception.CreateException;
+import server.exception.DeleteException;
+import server.exception.UpdateException;
 
 /**
  *
  * @author Joritz
  */
 @Local
-public abstract class CourseEJBLocal extends AbstractEJB<Course>{
+public interface CourseEJBLocal{
+        
+    /**
+     * Logger for the class.
+     */
+    static final Logger LOG
+            = Logger.getLogger(AbstractEJB.class.getName());
     
+    /**
+     * Creates/inserts the data of the entity passed
+     *
+     * @param entity
+     * @throws CreateException If the creation method threw an exception
+     */
+    public void create(Course entity) throws CreateException;
+
+    /**
+     * Edits/Modify the data of the entity passed
+     *
+     * @param entity
+     * @throws UpdateException If the creation method threw an exception
+     */
+    public void edit(Course entity) throws UpdateException;
+
+    /**
+     * Deletes/Removes all the data from the entity passed
+     *
+     * @param entity
+     * @throws DeleteException If the creation method threw an exception
+     */
+    public void remove(Course entity) throws DeleteException;
+    
+    public Course find(Integer id) throws ReadException;
     /**
      * Gets the Course with a specific id
      * 
@@ -26,7 +61,7 @@ public abstract class CourseEJBLocal extends AbstractEJB<Course>{
      * @throws ReadException Throws exception if there was any error
      * when getting the Course by id
      */
-    public abstract Course findById(Integer id) throws ReadException;
+    public Course findById(Integer id) throws ReadException;
     
     /**
      * Gets all the Courses
@@ -35,7 +70,7 @@ public abstract class CourseEJBLocal extends AbstractEJB<Course>{
      * @throws ReadException Throws exception if there was any error
      * when getting the Courses
      */
-    public abstract List<Course> findAll() throws ReadException;
+    public List<Course> findAll() throws ReadException;
     
     /**
      * Gets the Courses with a specific name
@@ -45,7 +80,7 @@ public abstract class CourseEJBLocal extends AbstractEJB<Course>{
      * @throws ReadException Throws exception if there was any error
      * when getting the Courses by name
      */
-    public abstract List<Course> findByName(String name) throws ReadException;
+    public List<Course> findByName(String name) throws ReadException;
     
     /**
      * Gets the Courses with a specific Date
@@ -55,6 +90,6 @@ public abstract class CourseEJBLocal extends AbstractEJB<Course>{
      * @throws ReadException Throws exception if there was any error
      * when getting the Courses by date
      */
-    public abstract List<Course> findByDate(Date startDate) throws ReadException;
+    public List<Course> findByDate(Date startDate) throws ReadException;
 }
 

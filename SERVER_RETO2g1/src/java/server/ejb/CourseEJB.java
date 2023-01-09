@@ -10,17 +10,70 @@ import server.entities.Course;
 import server.exception.ReadException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import server.exception.CreateException;
+import server.exception.DeleteException;
+import server.exception.UpdateException;
 
 /**
  *
  * @author Joritz
  */
 @Stateless
-public class CourseEJB extends CourseEJBLocal {
+public class CourseEJB implements CourseEJBLocal {
 
     private static final Logger LOG = Logger.getLogger("ejb.CourseEJB");
+    @PersistenceContext
+    EntityManager em;
+
+    @Override
+    public void create(Course entity) throws CreateException {
+        try {
+            LOG.info(String.format("EJB: Creating %s", entity.getClass().getName()));
+            em.persist(entity);
+            LOG.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, String.format("EJB: Exception on creating %s, {0}",
+                    entity.getClass().getName()), e.getMessage());
+            throw new CreateException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void edit(Course entity) throws UpdateException {
+        try {
+            em.merge(entity);
+            em.flush();
+        } catch (Exception e) {
+            throw new UpdateException(e.getMessage());
+        }
+
+    }
+
+    @Override
+    public void remove(Course entity) throws DeleteException {
+        try {
+            entity = em.merge(entity);
+            em.remove(entity);
+        } catch (Exception e) {
+            throw new DeleteException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Course find(Integer id) throws ReadException {
+        Course entity;
+        try {
+            entity = em.find(Course.class, id);
+            return entity;
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
+    }
 
     @Override
     public List<Course> findAll() throws ReadException {
