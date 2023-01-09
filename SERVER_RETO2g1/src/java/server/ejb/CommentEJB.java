@@ -115,4 +115,9 @@ public class CommentEJB implements CommentEJBLocal {
         }
     }
 
+    @Override
+    public Comment find(Object obj) throws ReadException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
