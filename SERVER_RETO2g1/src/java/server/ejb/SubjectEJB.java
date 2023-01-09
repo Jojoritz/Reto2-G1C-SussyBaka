@@ -25,6 +25,7 @@ import server.exception.DeleteException;
 import server.exception.ReadException;
 import server.exception.UpdateException;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Local;
@@ -62,12 +63,12 @@ public class SubjectEJB implements SubjectEJBLocal {
     }
 
     @Override
-    public Set<Subject> searchByType(String type) throws ReadException {
-        Set<Subject> subjects = null;
+    public List<Subject> searchByType(String type) throws ReadException {
+        List<Subject> subjects = null;
         try {
             LOGGER.info("Searching the subject by type");
             //Getting the subject collection by type
-            subjects = (Set<Subject>) em.createNamedQuery("getSubjectsByType")
+            subjects =  em.createNamedQuery("getSubjectsByType")
                     .setParameter("type", type).getResultList();
         } catch (Exception e) {
             LOGGER.severe("An error ocurred when searching the subject");
@@ -77,12 +78,12 @@ public class SubjectEJB implements SubjectEJBLocal {
     }
 
     @Override
-    public Set<Subject> searchByLevel(String level) throws ReadException {
-        Set<Subject> subjects = null;
+    public List<Subject> searchByLevel(String level) throws ReadException {
+        List<Subject> subjects = null;
         try {
             LOGGER.info("Searching the subject by level");
             //Getting the subject collection by level
-            subjects = (Set<Subject>) em.createNamedQuery("getSubjectsByLevel")
+            subjects = em.createNamedQuery("getSubjectsByLevel")
                     .setParameter("level", level).getResultList();
         } catch (Exception e) {
             LOGGER.severe("An error ocurred when searching the subject");
@@ -114,12 +115,12 @@ public class SubjectEJB implements SubjectEJBLocal {
     }
 
     @Override
-    public Set<Subject> findAll() throws ReadException {
-        Set<Subject> subjects = null;
+    public List<Subject> findAll() throws ReadException {
+        List<Subject> subjects = null;
 
         try {
             LOGGER.info("Searching the subjects");
-            subjects = (Set<Subject>) em.createNamedQuery("findAllSubjects").getResultList();
+            subjects =  em.createNamedQuery("findAllSubjects").getResultList();
         } catch (Exception e) {
             LOGGER.severe("An error ocurred when searching the subjecet");
             throw new ReadException("An error ocurred when searching the subjects");

@@ -105,6 +105,7 @@ public class CommentEJB implements CommentEJBLocal {
      * @return Returns the entity found by using the primary key, can be NULL
      * @throws ReadException If the read
      */
+    @Override
     public Comment find(Integer obj) throws ReadException {
         Comment entity;
         try {
@@ -115,9 +116,6 @@ public class CommentEJB implements CommentEJBLocal {
         }
     }
 
-    @Override
-    public Comment find(Object obj) throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 
 }

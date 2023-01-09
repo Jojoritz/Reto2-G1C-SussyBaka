@@ -5,6 +5,7 @@
  */
 package server.ejb.interfaces;
 
+import java.util.List;
 import server.entities.Subject;
 import server.exception.ReadException;
 import java.util.Set;
@@ -30,14 +31,14 @@ public interface SubjectEJBLocal{
      * @return a set with the data of the subjects of searching type
      * @throws ReadException if any error happened when searching the subject
      */
-    public Set<Subject> searchByType(String type) throws ReadException;
+    public List<Subject> searchByType(String type) throws ReadException;
     /**
      * The method to search the subject of on concret level
      * @param level the data we need to search the subject
      * @return a set with the data of the subjects of searching level
      * @throws ReadException if any error happened when searching the subject
      */
-    public Set<Subject> searchByLevel(String level) throws ReadException;
+    public List<Subject> searchByLevel(String level) throws ReadException;
     
     /**
      * The method to obtain the data of the subject relationships with other entities
@@ -52,7 +53,7 @@ public interface SubjectEJBLocal{
      * @return A set of subjects
      * @throws ReadException  if any error happend when searching the subject data
      */
-    public Set<Subject> findAll() throws ReadException;
+    public List<Subject> findAll() throws ReadException;
     
       /**
      * Creates/inserts the data of the entity passed

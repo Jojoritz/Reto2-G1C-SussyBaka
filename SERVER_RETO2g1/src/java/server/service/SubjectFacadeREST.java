@@ -5,6 +5,7 @@
  */
 package server.service;
 
+import java.util.List;
 import server.ejb.interfaces.SubjectEJBLocal;
 import server.entities.Subject;
 import server.exception.CreateException;
@@ -144,10 +145,10 @@ public class SubjectFacadeREST {
      * @return A set of subjects of this type
      */
     @GET
-    @Path("subject/type/{typeParam}")
+    @Path("subject/type/{type}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Set<Subject> searchByType(@PathParam("typeParam") String type) {
-        Set<Subject> subjects = null;
+    public List<Subject> searchByType(@PathParam("type") String type) {
+        List<Subject> subjects = null;
         try {
             LOGGER.info("Searching the subjects by the type");
             subjects = ejb.searchByType(type);
@@ -165,10 +166,10 @@ public class SubjectFacadeREST {
      * @return A set of subjects, with the subjects of the indicated level
      */
     @GET
-    @Path("subject/level/{levelParam}")
+    @Path("subject/level/{level}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Set<Subject> searchByLevel(@PathParam("levelParam") String level) {
-        Set<Subject> subjects = null;
+    public List<Subject> searchByLevel(@PathParam("level") String level) {
+        List<Subject> subjects = null;
         try {
             LOGGER.info("Searching the subjects by the level");
             subjects = ejb.searchByLevel(level);
@@ -205,8 +206,8 @@ public class SubjectFacadeREST {
      */
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Set<Subject> findAll() {
-        Set<Subject> subjects = null;
+    public List<Subject> findAll() {
+        List<Subject> subjects = null;
         try {
             LOGGER.info("Searching all the subjects");
             subjects = ejb.findAll();

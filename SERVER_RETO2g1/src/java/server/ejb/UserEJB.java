@@ -74,7 +74,7 @@ public class UserEJB implements UserEJBLocal {
         
         try {
             LOGGER.info("Searching if the user exist");
-            User findedUser = find(entity);
+            User findedUser = find(entity.getLogin());
             if (findedUser != null) {
                 throw new Exception("The user all ready exist");
             }
@@ -88,10 +88,9 @@ public class UserEJB implements UserEJBLocal {
         }
     }
     @Override
-    public User find(User user) throws ReadException{
+    public User find(String login) throws ReadException{
         try {
-            user = (User) em.createNamedQuery("getUserLogin").setParameter("login", user.getLogin())
-                    .setParameter("password", user.getPassword()).getSingleResult();
+            User user = (User) em.createNamedQuery("getUserLogin").setParameter("login", login).getSingleResult();
             return user;
         } catch (Exception e) {
             throw new ReadException(e.getMessage());

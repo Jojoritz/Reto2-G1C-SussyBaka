@@ -67,6 +67,6 @@ public interface CommentEJBLocal {
      * @return Returns the entity found by using the primary key, can be NULL
      * @throws ReadException If the read
      */
-    public Comment find(Object obj) throws ReadException;
+    public Comment find(Integer obj) throws ReadException;
 
 }

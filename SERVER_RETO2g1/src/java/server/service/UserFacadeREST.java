@@ -94,13 +94,13 @@ public class UserFacadeREST{
      * @return the user finded
      */
     @GET
-    @Path("{user}")
+    @Path("user/login/{login}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User find(@PathParam("extUser")User extUser){
+    public User find(@PathParam("login")String login){
         User user = null;
         try {
             LOGGER.info("Searching the user");
-            user = ejb.find(extUser);
+            user = ejb.find(login);
             
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());

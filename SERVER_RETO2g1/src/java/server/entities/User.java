@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @NamedQueries(
         @NamedQuery(
-                name = "getUserLogin", query = "SELECT u FROM User u WHERE u.login = :login AND u.password = :password"
+                name = "getUserLogin", query = "SELECT u FROM User u WHERE u.login = :login"
         )
 )
 
