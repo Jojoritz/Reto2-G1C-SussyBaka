@@ -37,7 +37,7 @@ public class PostFacadeREST {
 
     private static final Logger LOG = Logger.getLogger("PostFacadeREST");
 
-    @EJB
+    @EJB(beanName = "PostEJB")
     private PostEJBLocal ejb;
 
     @POST
