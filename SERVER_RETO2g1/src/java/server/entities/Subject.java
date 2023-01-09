@@ -50,7 +50,7 @@ import javax.xml.bind.annotation.XmlTransient;
 )
 
 @Entity
-@Table(name = "SUBJECT", schema = "reto2_g1c_sussybaka")
+@Table(name = "SUBJECTS", schema = "reto2_g1c_sussybaka")
 @XmlRootElement
 public class Subject implements Serializable {
 

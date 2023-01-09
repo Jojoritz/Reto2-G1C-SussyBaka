@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package service;
+package server.service;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -35,8 +35,8 @@ public class ApplicationConfig extends Application {
         resources.add(server.service.CommentFacadeREST.class);
         resources.add(server.service.CourseFacadeREST.class);
         resources.add(server.service.PostFacadeREST.class);
+        resources.add(server.service.SubjectFacadeREST.class);
         resources.add(server.service.UserFacadeREST.class);
-        resources.add(service.SubjectFacadeREST.class);
     }
 
 }
