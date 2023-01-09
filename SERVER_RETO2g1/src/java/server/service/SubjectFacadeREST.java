@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package service;
+package server.service;
 
 import server.ejb.interfaces.SubjectEJBLocal;
 import server.entities.Subject;
