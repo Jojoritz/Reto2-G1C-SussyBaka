@@ -136,7 +136,7 @@ public class PostEJB implements PostEJBLocal {
      * @throws ReadException If the read
      */
     @Override
-    public Post find(Integer obj) throws ReadException {
+    public Post find(Object obj) throws ReadException {
         Post entity;
         try {
             LOG.info("hola");
