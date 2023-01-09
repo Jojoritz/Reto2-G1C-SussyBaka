@@ -12,8 +12,24 @@ import server.entities.Teacher;
 import server.exception.ReadException;
 import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Level;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaQuery;
+import server.exception.CreateException;
+import server.exception.DeleteException;
+import server.exception.UpdateException;
+import server.exception.CreateException;
+import server.exception.DeleteException;
+import server.exception.ReadException;
+import server.exception.UpdateException;
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.Local;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
@@ -21,15 +37,17 @@ import javax.persistence.criteria.CriteriaQuery;
  *
  */
 @Stateless
-public class SubjectEJB extends SubjectEJBLocal {
+public class SubjectEJB implements SubjectEJBLocal {
 
     private static final Logger LOGGER = Logger.getLogger(SubjectEJB.class.getName());
-    
+    @PersistenceContext
+    private EntityManager em;
+
     @Override
     public Subject searchByName(String name) throws ReadException {
         Subject subject = null;
         try {
-            
+
             //Getting the subject collection by name
             LOGGER.info("Searching the subject by name");
             subject = (Subject) em.createNamedQuery("getSubjectByName").
@@ -38,7 +56,7 @@ public class SubjectEJB extends SubjectEJBLocal {
         } catch (Exception e) {
             LOGGER.severe("An error ocurred when searching the subject");
             throw new ReadException("An error ocurred when searching the subject");
-            
+
         }
         return subject;
     }
@@ -84,7 +102,7 @@ public class SubjectEJB extends SubjectEJBLocal {
             LOGGER.info("Searching the data of the subject and teachers relationship");
             Set<Teacher> teachersSpecialized = (Set<Teacher>) em.createNamedQuery("getSubjectTeacherRelationship")
                     .setParameter("subjectId", subject.getSubjectId()).getResultList();
-            
+
             //Setting the relations in the entity
             subject.setCourseWithSubject(coursesWithSubject);
             subject.setTeachersSpecializedInSubject(teachersSpecialized);
@@ -98,7 +116,7 @@ public class SubjectEJB extends SubjectEJBLocal {
     @Override
     public Set<Subject> findAll() throws ReadException {
         Set<Subject> subjects = null;
-        
+
         try {
             LOGGER.info("Searching the subjects");
             subjects = (Set<Subject>) em.createNamedQuery("findAllSubjects").getResultList();
@@ -109,6 +127,48 @@ public class SubjectEJB extends SubjectEJBLocal {
         return subjects;
     }
 
-    
+    @Override
+    public void create(Subject subject) throws CreateException {
+        try {
+            LOGGER.info(String.format("EJB: Creating %s", subject.getClass().getName()));
+            em.persist(subject);
+            LOGGER.info(String.format("EJB: %s created successfully", subject.getClass().getName()));
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, String.format("EJB: Exception on creating %s, {0}",
+                    subject.getClass().getName()), e.getMessage());
+            throw new CreateException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void edit(Subject subject) throws UpdateException {
+        try {
+            em.merge(subject);
+            em.flush();
+        } catch (Exception e) {
+            throw new UpdateException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void remove(Subject subject) throws DeleteException {
+        try {
+            subject = em.merge(subject);
+            em.remove(subject);
+        } catch (Exception e) {
+            throw new DeleteException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Subject find(Integer id) throws ReadException {
+        Subject subject;
+        try {
+            subject = em.find(Subject.class, id);
+            return subject;
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
+    }
 
 }

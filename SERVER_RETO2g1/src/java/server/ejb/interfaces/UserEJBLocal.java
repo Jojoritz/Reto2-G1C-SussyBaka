@@ -8,18 +8,55 @@ package server.ejb.interfaces;
 import server.entities.User;
 import server.exception.ReadException;
 import javax.ejb.Local;
+import server.entities.Subject;
+import server.exception.CreateException;
+import server.exception.DeleteException;
+import server.exception.UpdateException;
 
 /**
  * The interface that extends to add user use case methods
  * @author ioritz
  */
 @Local
-public abstract class UserEJBLocal extends AbstractEJB<User>{
+public interface UserEJBLocal{
     /**
      * A method to obtain all data from the users and the relationship of the user
      * @param user the user we are searching for
      * @return The user with the data, relationships included
      * @throws ReadException if the login data is wrong or dont exist
      */
-    public abstract User getUserRelationshipsData(User user) throws ReadException;
+    public User getUserRelationshipsData(User user) throws ReadException;
+    
+     /**
+     * Creates/inserts the data of the entity passed
+     *
+     * @param user the data of the user to create
+     * @throws CreateException If the creation method threw an exception
+     */
+    public void create(User user) throws CreateException;
+
+    /**
+     * Edits/Modify the data of the entity passed
+     *
+     * @param user the data of the user to edit
+     * @throws UpdateException If the creation method threw an exception
+     */
+    public void edit(User user) throws UpdateException;
+
+    /**
+     * Deletes/Removes all the data from the entity passed
+     *
+     * @param user the data of the entity to remove
+     * @throws DeleteException If the creation method threw an exception
+     */
+    public void remove(User user) throws DeleteException;
+
+    /**
+     * Finds the entity value using the primary key object passed by parameter
+     *
+     * @param user Primary key of the entity
+     * @return Returns the entity found by using the primary key, can be NULL
+     * @throws ReadException If the read
+     */
+    public User find(User user) throws ReadException;
 }

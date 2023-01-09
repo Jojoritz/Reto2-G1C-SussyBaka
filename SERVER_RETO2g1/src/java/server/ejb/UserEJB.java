@@ -19,15 +19,21 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import server.exception.DeleteException;
+import server.exception.UpdateException;
 
 /**
  *
  * @author ioritz
  */
 @Stateless
-public class UserEJB extends UserEJBLocal {
+public class UserEJB implements UserEJBLocal {
 
     private static final Logger LOGGER = Logger.getLogger(UserEJB.class.getName());
+    @PersistenceContext
+    private EntityManager em;
     
     @Override
     public User getUserRelationshipsData(User user) throws ReadException {
@@ -82,11 +88,10 @@ public class UserEJB extends UserEJBLocal {
         }
     }
     @Override
-    public User find(Object obj) throws ReadException{
+    public User find(User user) throws ReadException{
         try {
-            User passedUser = (User) obj;
-            User user = (User) em.createNamedQuery("getUserLogin").setParameter("login", passedUser.getLogin())
-                    .setParameter("password", passedUser.getPassword()).getSingleResult();
+            user = (User) em.createNamedQuery("getUserLogin").setParameter("login", user.getLogin())
+                    .setParameter("password", user.getPassword()).getSingleResult();
             return user;
         } catch (Exception e) {
             throw new ReadException(e.getMessage());
@@ -95,11 +100,11 @@ public class UserEJB extends UserEJBLocal {
 
     /**
      * The method to hash the password of the user
-     * @param entity The user with thte password without hashed
+     * @param user The user with thte password without hashed
      * @return the user with the hashed password
      * @throws Exception if any error ocurred when hashing the password
      */
-    public User hashUserPassword(User entity) throws Exception{
+    public User hashUserPassword(User user) throws Exception{
         MessageDigest messageDigest = null;
         //Contraseña a hashear
         String hashedPassword = null;
@@ -107,28 +112,52 @@ public class UserEJB extends UserEJBLocal {
             LOGGER.info("Hashing the password");
             messageDigest = MessageDigest.getInstance("MD5");
             
-            byte dataBytes[] = entity.getPassword().getBytes();
+            byte dataBytes[] = user.getPassword().getBytes();
             messageDigest.update(dataBytes);
             
-            byte resumen[] = messageDigest.digest();
-            hashedPassword = toHexString(resumen);
+            byte resume[] = messageDigest.digest();
+            hashedPassword = toHexString(resume);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.severe("An error ocurred while hashing the password");
             throw new Exception("An error ocurred while hashing the password");
         }
        
         
-        return entity;
+        return user;
     }
-
-    private String toHexString(byte[] resumen){
+    /**
+     * A method to convert the resume in bytes to hexadecimal string
+     * @param resume the resume in byte
+     * @return the resume in string in hexadecimal
+     */
+    private String toHexString(byte[] resume){
         StringBuffer hashedPassword = new StringBuffer();
         
-        for (byte b : resumen) {
+        for (byte b : resume) {
             hashedPassword.append(b);
         }
         
         return hashedPassword.toString();
+    }
+
+    @Override
+    public void edit(User user) throws UpdateException {
+        try {
+            em.merge(user);
+            em.flush();
+        } catch (Exception e) {
+            throw new UpdateException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void remove(User user) throws DeleteException {
+         try {
+            user = em.merge(user);
+            em.remove(user);
+        } catch (Exception e) {
+            throw new DeleteException(e.getMessage());
+        }
     }
     
 }
