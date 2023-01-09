@@ -186,7 +186,7 @@ public class SubjectFacadeREST {
      * @return the subject with the relationships data
      */
     @GET
-    @Path("subject/{subject}")
+    @Path("subject/relationships/{subject}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Subject getSubjectRelationshipsData(@PathParam("subject") Subject subject) {
         try {
