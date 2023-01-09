@@ -25,7 +25,7 @@ public abstract class CommentEJBLocal extends AbstractEJB<Comment> {
      *
      * @param id The ID of the post from where to get the comments {@link Post}
      * @return Returns a List with all the comments from the post
-     * @throws exception.ReadException Throws exception if there was any error
+     * @throws ReadException Throws exception if there was any error
      * when getting the comments
      */
     public abstract List<Comment> getComments(Integer id) throws ReadException;

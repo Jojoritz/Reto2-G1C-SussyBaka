@@ -5,7 +5,6 @@
  */
 package server.service;
 
-import server.ejb.CommentEJB;
 import server.entities.Comment;
 import server.exception.CreateException;
 import server.exception.DeleteException;
@@ -25,6 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import server.ejb.interfaces.CommentEJBLocal;
 
 /**
  *
@@ -37,7 +37,7 @@ public class CommentFacadeREST {
             = Logger.getLogger(CommentFacadeREST.class.getName());
 
     @EJB
-    private CommentEJB ejb;
+    private CommentEJBLocal ejb;
 
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
