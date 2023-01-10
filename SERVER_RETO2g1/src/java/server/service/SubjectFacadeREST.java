@@ -29,7 +29,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author ioritz
  */
 @Path("entities.subject")
 public class SubjectFacadeREST {

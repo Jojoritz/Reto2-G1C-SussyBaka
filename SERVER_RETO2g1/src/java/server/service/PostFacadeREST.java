@@ -30,7 +30,7 @@ import server.ejb.interfaces.PostEJBLocal;
 
 /**
  *
- * @author yeguo
+ * @author ioritz
  */
 @Path("entities,post")
 public class PostFacadeREST {

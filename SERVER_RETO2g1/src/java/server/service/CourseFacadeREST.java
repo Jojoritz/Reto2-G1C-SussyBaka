@@ -27,7 +27,7 @@ import server.exception.UpdateException;
 
 /**
  *
- * @author 2dam
+ * @author Joritz
  */
 @Path("entities.course")
 public class CourseFacadeREST {
