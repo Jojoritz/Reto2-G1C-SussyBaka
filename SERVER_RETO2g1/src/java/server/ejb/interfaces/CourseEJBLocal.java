@@ -52,7 +52,6 @@ public interface CourseEJBLocal{
      */
     public void remove(Course entity) throws DeleteException;
     
-    public Course find(Integer id) throws ReadException;
     /**
      * Gets the Course with a specific id
      * 
@@ -61,8 +60,8 @@ public interface CourseEJBLocal{
      * @throws ReadException Throws exception if there was any error
      * when getting the Course by id
      */
-    public Course findById(Integer id) throws ReadException;
-    
+    public Course find(Integer id) throws ReadException;
+
     /**
      * Gets all the Courses
      * 

@@ -90,20 +90,6 @@ public class CourseEJB implements CourseEJBLocal {
     }
 
     @Override
-    public Course findById(Integer id) throws ReadException {
-        Course course = new Course();
-        LOG.info("CourseEJB: Getting Course by id...");
-        //Getting the Course by ID
-        try {
-            course = (Course) em.createNamedQuery("findCourse").setParameter("courseId", id);
-        } catch (Exception e) {
-            LOG.severe(e.getMessage());
-            throw new ReadException(e.getMessage());
-        }
-        return course;
-    }
-
-    @Override
     public List<Course> findByName(String name) throws ReadException {
         List<Course> courses = null;
         LOG.info("CourseEJB: Getting Courses by name...");
