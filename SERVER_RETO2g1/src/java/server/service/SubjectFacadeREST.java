@@ -183,16 +183,17 @@ public class SubjectFacadeREST {
     /**
      * A method to find the subject relationships data
      *
-     * @param subject the subject data to search the relationships data
+     * @param id the subject data to search the relationships data
      * @return the subject with the relationships data
      */
     @GET
-    @Path("subject/relationships/{subject}")
+    @Path("subject/relationships/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Subject getSubjectRelationshipsData(@PathParam("subject") Subject subject) {
+    public Subject getSubjectRelationshipsData(@PathParam("id") Integer id) {
+        Subject subject;
         try {
             LOGGER.info("Searching the data of the subject relationships");
-            subject = ejb.getSubjectRelationshipsData(subject);
+            subject = ejb.getSubjectRelationshipsData(id);
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());

@@ -46,7 +46,7 @@ public interface SubjectEJBLocal{
      * @return the subject with all the data
      * @throws ReadException if there any error happened when searching the subject data
      */
-    public Subject getSubjectRelationshipsData(Subject subject) throws ReadException;
+    public Subject getSubjectRelationshipsData(Integer id) throws ReadException;
     
     /**
      * The method to obtain the data of all the subjects

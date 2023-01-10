@@ -93,20 +93,23 @@ public class SubjectEJB implements SubjectEJBLocal {
     }
 
     @Override
-    public Subject getSubjectRelationshipsData(Subject subject) throws ReadException {
+    public Subject getSubjectRelationshipsData(Integer id) throws ReadException {
+        Subject subject;
         try {
+            subject = find(id);
+            
             LOGGER.info("Searching the data of the relationships of the subject with other entityes");
             //Getting the course with subject relation
             LOGGER.info("Searching the data of the course and subject relationship");
-            Set<Course> coursesWithSubject = (Set<Course>) em.createNamedQuery("getSubjectCourseRelationship")
-                    .setParameter("subjectId", subject.getSubjectId()).getResultList();
+            List<Course> coursesWithSubject =  em.createNamedQuery("getSubjectCourseRelationship")
+                    .setParameter("subjectId", id).getResultList();
             LOGGER.info("Searching the data of the subject and teachers relationship");
-            Set<Teacher> teachersSpecialized = (Set<Teacher>) em.createNamedQuery("getSubjectTeacherRelationship")
-                    .setParameter("subjectId", subject.getSubjectId()).getResultList();
+            List<Teacher> teachersSpecialized =  em.createNamedQuery("getSubjectTeacherRelationship")
+                    .setParameter("subjectId", id).getResultList();
 
             //Setting the relations in the entity
-            subject.setCourseWithSubject(coursesWithSubject);
-            subject.setTeachersSpecializedInSubject(teachersSpecialized);
+            subject.getCourseWithSubject().addAll(coursesWithSubject);
+            subject.getTeachersSpecializedInSubject().addAll(teachersSpecialized);
         } catch (Exception e) {
             LOGGER.severe("An error ocurred when searching the data of the subject");
             throw new ReadException("An error ocurred when searching the data of the subject");
