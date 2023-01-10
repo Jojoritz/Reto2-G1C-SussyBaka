@@ -25,7 +25,7 @@ public interface UserEJBLocal{
      * @return The user with the data, relationships included
      * @throws ReadException if the login data is wrong or dont exist
      */
-    public User getUserRelationshipsData(User user) throws ReadException;
+    public User getUserRelationshipsData(Integer id) throws ReadException;
     
      /**
      * Creates/inserts the data of the entity passed
@@ -58,5 +58,5 @@ public interface UserEJBLocal{
      * @return Returns the entity found by using the primary key, can be NULL
      * @throws ReadException If the read
      */
-    public User find(String login) throws ReadException;
+    public User signIn(String login, String password) throws ReadException;
 }

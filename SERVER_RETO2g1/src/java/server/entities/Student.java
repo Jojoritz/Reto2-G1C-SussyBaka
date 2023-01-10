@@ -2,6 +2,7 @@ package server.entities;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -38,7 +39,7 @@ public class Student extends User {
     @JoinTable(name = "studying_courses", schema = "reto2_g1c_sussybaka",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private Collection<Course> studyingCourses;
+    private Set<Course> studyingCourses;
 
     //Constructor
     public Student() {
@@ -52,7 +53,7 @@ public class Student extends User {
      * @return Courses
      */
     @XmlTransient
-    public Collection<Course> getStudyingCourses() {
+    public Set<Course> getStudyingCourses() {
         return studyingCourses;
     }
 
@@ -61,7 +62,7 @@ public class Student extends User {
      *
      * @param studyingCourses
      */
-    public void setStudyingCourses(Collection<Course> studyingCourses) {
+    public void setStudyingCourses(Set<Course> studyingCourses) {
         this.studyingCourses = studyingCourses;
     }
 

@@ -16,8 +16,10 @@ import server.exception.CreateException;
 import server.exception.ReadException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,30 +38,32 @@ public class UserEJB implements UserEJBLocal {
     private EntityManager em;
     
     @Override
-    public User getUserRelationshipsData(User user) throws ReadException {
+    public User getUserRelationshipsData(Integer id) throws ReadException {
+        User user;
         try {
+            user = em.find(User.class, id);
             LOGGER.info("Starting getting the relationships of the user");
             // a condition where if the user is a teacher executes one named query
             //and if it is a student another to obtain corresponding relationships data
             if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
                 LOGGER.info("Getting the student relationships of the student");
                 //Obtaining the studying courses of the student and saving in a collection to latter set in the user studying courses collection
-                Set<Course> studyingCourses = (Set<Course>) em.createNamedQuery("getStudentCourseData")
-                        .setParameter("id", user.getId()).getResultList();
-
-                ((Student) user).setStudyingCourses(studyingCourses);
+                List<Course> studyingCourses =  em.createNamedQuery("getStudentCourseData")
+                        .setParameter("id", id).getResultList();
+                
+                ((Student) user).setStudyingCourses(studyingCourses.stream().collect(Collectors.toSet()));
             } else if (user.getPrivilege().equals(UserPrivilege.TEACHER)) {
                 LOGGER.info("Starting getting the relationships of the teacher");
                 //Obtaining the teaching courses of the teacher and saving in a collection
-                Set<Course> teachingCourses = (Set<Course>) em.createNamedQuery("getTeacherCourseData")
-                        .setParameter("id", user.getId()).getResultList();
+                List<Course> teachingCourses =  em.createNamedQuery("getTeacherCourseData")
+                        .setParameter("id", id).getResultList();
                 //Obtaining the specialized subject of the teacher and saving in a collection
-                Set<Subject> teacherSpecializedSubjects = (Set<Subject>) em.createNamedQuery("getTeacherSubjectData")
-                        .setParameter("id", user.getId()).getResultList();
+                List<Subject> teacherSpecializedSubjects =  em.createNamedQuery("getTeacherSubjectData")
+                        .setParameter("id", id).getResultList();
                 
                 //Setting the obtained data to the teacher
-                ((Teacher) user).setTeachingCourses(teachingCourses);
-                ((Teacher) user).setSpecializedSubjects(teacherSpecializedSubjects);
+                ((Teacher) user).setTeachingCourses(teachingCourses.stream().collect(Collectors.toSet()));
+                ((Teacher) user).setSpecializedSubjects(teacherSpecializedSubjects.stream().collect(Collectors.toSet()));
 
             }
         } catch (Exception e) {
@@ -74,12 +78,13 @@ public class UserEJB implements UserEJBLocal {
         
         try {
             LOGGER.info("Searching if the user exist");
-            User findedUser = find(entity.getLogin());
+            User findedUser = em.find(User.class, entity.getId());
             if (findedUser != null) {
                 throw new Exception("The user all ready exist");
             }
             LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName()));
-            entity = hashUserPassword(entity);
+            entity.setPassword(hashUserPassword(entity.getPassword())); 
+            
             em.persist(entity);
             LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
         } catch (Exception e) {
@@ -88,9 +93,10 @@ public class UserEJB implements UserEJBLocal {
         }
     }
     @Override
-    public User find(String login) throws ReadException{
+    public User signIn(String login, String password) throws ReadException{
         try {
-            User user = (User) em.createNamedQuery("getUserLogin").setParameter("login", login).getSingleResult();
+            String hashedPassword = hashUserPassword(password);
+            User user = (User) em.createNamedQuery("getUserLogin").setParameter("login", login).setParameter("password", hashedPassword).getSingleResult();
             return user;
         } catch (Exception e) {
             throw new ReadException(e.getMessage());
@@ -99,11 +105,11 @@ public class UserEJB implements UserEJBLocal {
 
     /**
      * The method to hash the password of the user
-     * @param user The user with thte password without hashed
-     * @return the user with the hashed password
+     * @param user The password without hashed
+     * @return the hashed password
      * @throws Exception if any error ocurred when hashing the password
      */
-    public User hashUserPassword(User user) throws Exception{
+    private String hashUserPassword(String password) throws Exception{
         MessageDigest messageDigest = null;
         //Contraseña a hashear
         String hashedPassword = null;
@@ -111,7 +117,7 @@ public class UserEJB implements UserEJBLocal {
             LOGGER.info("Hashing the password");
             messageDigest = MessageDigest.getInstance("MD5");
             
-            byte dataBytes[] = user.getPassword().getBytes();
+            byte dataBytes[] = password.getBytes();
             messageDigest.update(dataBytes);
             
             byte resume[] = messageDigest.digest();
@@ -122,7 +128,7 @@ public class UserEJB implements UserEJBLocal {
         }
        
         
-        return user;
+        return hashedPassword;
     }
     /**
      * A method to convert the resume in bytes to hexadecimal string

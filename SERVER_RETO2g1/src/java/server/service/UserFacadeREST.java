@@ -89,18 +89,18 @@ public class UserFacadeREST{
         }
     }
     /**
-     * GET method to find a user
-     * @param xtUser the data of the user to find
+     * GET method to signIn a user
+     * @param xtUser the data of the user to signIn
      * @return the user finded
      */
     @GET
-    @Path("user/login/{login}")
+    @Path("user/login/{login}/{password}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User find(@PathParam("login")String login){
+    public User signIn(@PathParam("login")String login, @PathParam("password")String password){
         User user = null;
         try {
             LOGGER.info("Searching the user");
-            user = ejb.find(login);
+            user = ejb.signIn(login, password);
             
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
@@ -116,13 +116,13 @@ public class UserFacadeREST{
      * @return the user with the data
      */
     @GET
-    @Path("user/{user}")
+    @Path("user/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User findUserRelationships(@PathParam("user") User user){
+    public User findUserRelationships(@PathParam("id") Integer id){
        User searchedUser = null;
         try {
             LOGGER.info("searching the relationships of the user");
-            searchedUser = ejb.getUserRelationshipsData(user);
+            searchedUser = ejb.getUserRelationshipsData(id);
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());

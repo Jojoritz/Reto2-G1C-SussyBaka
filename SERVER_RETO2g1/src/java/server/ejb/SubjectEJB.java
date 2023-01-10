@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.ejb.Local;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -108,8 +109,8 @@ public class SubjectEJB implements SubjectEJBLocal {
                     .setParameter("subjectId", id).getResultList();
 
             //Setting the relations in the entity
-            subject.getCourseWithSubject().addAll(coursesWithSubject);
-            subject.getTeachersSpecializedInSubject().addAll(teachersSpecialized);
+            subject.setCourseWithSubject(coursesWithSubject.stream().collect(Collectors.toSet()));
+            subject.setTeachersSpecializedInSubject(teachersSpecialized.stream().collect(Collectors.toSet()));
         } catch (Exception e) {
             LOGGER.severe("An error ocurred when searching the data of the subject");
             throw new ReadException("An error ocurred when searching the data of the subject");
