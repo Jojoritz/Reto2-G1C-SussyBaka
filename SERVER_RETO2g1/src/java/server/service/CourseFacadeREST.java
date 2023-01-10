@@ -5,6 +5,7 @@
  */
 package server.service;
 
+import java.util.Date;
 import server.entities.Course;
 import java.util.List;
 import java.util.logging.Level;
@@ -71,24 +72,50 @@ public class CourseFacadeREST {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Course find(@PathParam("id") Integer id) {
+        Course course = null;
         try {
-            return ejb.find(id);
+            course = ejb.find(id);
         } catch (ReadException ex) {
             Logger.getLogger(CourseFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return course;
     }
 
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Course> findAll() {
+        List<Course> courses = null;
         try {
-            return ejb.findAll();
+            courses = ejb.findAll();
         } catch (ReadException ex) {
             Logger.getLogger(CourseFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return courses;
     }
 
+    @GET
+    @Path("course/{name}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Course> findByName(@PathParam("name") String name){
+        List<Course> courses = null;
+        try {
+            courses = ejb.findByName(name);
+        } catch (ReadException ex) {
+            Logger.getLogger(CourseFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return courses;
+    }
     
+    @GET
+    @Path("course/date/{startDate}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Course> findByDate(@PathParam("startDate") Date startDate){
+        List<Course> courses = null;
+        try {
+            courses = ejb.findByDate(startDate);
+        } catch (ReadException ex) {
+            Logger.getLogger(CourseFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return courses;
+    }
 }
