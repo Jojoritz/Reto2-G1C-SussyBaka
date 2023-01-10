@@ -17,7 +17,6 @@ import server.exception.ReadException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
@@ -78,13 +77,13 @@ public class UserEJB implements UserEJBLocal {
         
         try {
             LOGGER.info("Searching if the user exist");
+            entity.setPassword(hashUserPassword(entity.getPassword()));
+            
             User findedUser = em.find(User.class, entity.getId());
             if (findedUser != null) {
                 throw new Exception("The user all ready exist");
             }
-            LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName()));
-            entity.setPassword(hashUserPassword(entity.getPassword())); 
-            
+            LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName())); 
             em.persist(entity);
             LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
         } catch (Exception e) {

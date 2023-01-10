@@ -8,7 +8,6 @@ package server.ejb.interfaces;
 import server.entities.User;
 import server.exception.ReadException;
 import javax.ejb.Local;
-import server.entities.Subject;
 import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.UpdateException;

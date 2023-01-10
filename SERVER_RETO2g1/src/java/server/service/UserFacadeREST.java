@@ -11,7 +11,6 @@ import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.ReadException;
 import server.exception.UpdateException;
-import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;

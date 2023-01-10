@@ -9,27 +9,15 @@ import server.ejb.interfaces.SubjectEJBLocal;
 import server.entities.Course;
 import server.entities.Subject;
 import server.entities.Teacher;
-import server.exception.ReadException;
-import java.util.logging.Logger;
-import java.util.Set;
-import java.util.logging.Level;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaQuery;
-import server.exception.CreateException;
-import server.exception.DeleteException;
-import server.exception.UpdateException;
 import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.ReadException;
 import server.exception.UpdateException;
-import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.ejb.Local;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -169,7 +157,7 @@ public class SubjectEJB implements SubjectEJBLocal {
     public Subject find(Integer id) throws ReadException {
         Subject subject;
         try {
-            subject = em.find(Subject.class, id);
+            subject = em.createNamedQuery("findById", Subject.class).setParameter("subjectId", id).getSingleResult();
             return subject;
         } catch (Exception e) {
             throw new ReadException(e.getMessage());

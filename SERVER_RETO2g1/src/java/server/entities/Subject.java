@@ -2,7 +2,6 @@ package server.entities;
 
 import java.io.Serializable;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -11,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -28,6 +26,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @NamedQueries(
     {
+        @NamedQuery(
+                name="findById", query="SELECT new server.entities.Subject(s.subjectId, s.name, s.type, s.century, s.level) FROM Subject s WHERE s.subjectId = :subjectId"
+        ),
         @NamedQuery(
                 name="findAllSubjects", query="SELECT s FROM Subject s"
         ),
@@ -105,6 +106,15 @@ public class Subject implements Serializable {
     //Constructor
     public Subject() {
         super();
+    }
+    
+    public Subject(Integer subjectId, String name, String type, String century, String level){
+        this.subjectId = subjectId;
+        this.name = name;
+        this.type = type;
+        this.century = century;
+        this.level = level;
+        
     }
 
     //Getters and setters
