@@ -86,7 +86,7 @@ public class SubjectEJB implements SubjectEJBLocal {
         Subject subject;
         try {
             subject = find(id);
-            LOGGER.info(subject.toString());
+            
             LOGGER.info("Searching the data of the relationships of the subject with other entityes");
             //Getting the course with subject relation
             LOGGER.info("Searching the data of the course and subject relationship");
@@ -100,9 +100,8 @@ public class SubjectEJB implements SubjectEJBLocal {
             //Setting the relations in the entity
             subject.setCourseWithSubject(coursesWithSubject.stream().collect(Collectors.toSet()));
             subject.setTeachersSpecializedInSubject(teachersSpecialized.stream().collect(Collectors.toSet()));
-            LOGGER.info(subject.toString());
+            
         } catch (Exception e) {
-            e.printStackTrace();
             LOGGER.severe("An error ocurred when searching the data of the subject");
             throw new ReadException("An error ocurred when searching the data of the subject");
         }
