@@ -146,8 +146,9 @@ public class SubjectEJB implements SubjectEJBLocal {
     }
 
     @Override
-    public void remove(Subject subject) throws DeleteException {
+    public void remove(Integer id) throws DeleteException {
         try {
+            Subject subject = find(id);
             subject = em.merge(subject);
             em.remove(subject);
         } catch (Exception e) {

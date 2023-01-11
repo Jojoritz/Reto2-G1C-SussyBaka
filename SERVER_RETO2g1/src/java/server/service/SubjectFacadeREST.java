@@ -85,11 +85,11 @@ public class SubjectFacadeREST {
      * @param subject the data of the subject to remove
      */
     @DELETE
-    @Path("{subject}")
-    public void removeSubject(@PathParam("subject") Subject subject) {
+    @Path("{id}")
+    public void removeSubject(@PathParam("id") Integer id) {
         try {
             LOGGER.info("Deleting the subject");
-            ejb.remove(subject);
+            ejb.remove(id);
         } catch (DeleteException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
