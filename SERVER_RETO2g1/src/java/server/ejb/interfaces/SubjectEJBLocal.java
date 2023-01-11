@@ -76,7 +76,7 @@ public interface SubjectEJBLocal{
      * @param entity
      * @throws DeleteException If the creation method threw an exception
      */
-    public void remove(Subject subject) throws DeleteException;
+    public void remove(Integer id) throws DeleteException;
 
     /**
      * Finds the entity value using the primary key object passed by parameter
