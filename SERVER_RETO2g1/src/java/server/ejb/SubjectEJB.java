@@ -34,21 +34,21 @@ public class SubjectEJB implements SubjectEJBLocal {
     private EntityManager em;
 
     @Override
-    public Subject searchByName(String name) throws ReadException {
-        Subject subject = null;
+    public List<Subject> searchByName(String name) throws ReadException {
+        List<Subject> subjects = null;
         try {
 
             //Getting the subject collection by name
             LOGGER.info("Searching the subject by name");
-            subject = (Subject) em.createNamedQuery("getSubjectByName").
-                    setParameter("name", name).getSingleResult();
+            subjects =  em.createNamedQuery("getSubjectByName").
+                    setParameter("name", name).getResultList();
 
         } catch (Exception e) {
             LOGGER.severe("An error ocurred when searching the subject");
             throw new ReadException("An error ocurred when searching the subject");
 
         }
-        return subject;
+        return subjects;
     }
 
     @Override
