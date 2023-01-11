@@ -23,7 +23,7 @@ public interface SubjectEJBLocal{
      * @return The data of the subject with this name
      * @throws ReadException if any error happened when searching the subject
      */
-    public Subject searchByName(String name) throws ReadException;
+    public List<Subject> searchByName(String name) throws ReadException;
     /**
      * The method to search the subject of one concret type
      * @param type the data we need to search the subject
