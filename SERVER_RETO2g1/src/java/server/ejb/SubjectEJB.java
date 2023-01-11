@@ -96,9 +96,11 @@ public class SubjectEJB implements SubjectEJBLocal {
             List<Teacher> teachersSpecialized =  em.createNamedQuery("getSubjectTeacherRelationship")
                     .setParameter("subjectId", id).getResultList();
 
+            LOGGER.info("Saving in the subject");
             //Setting the relations in the entity
             subject.setCourseWithSubject(coursesWithSubject.stream().collect(Collectors.toSet()));
             subject.setTeachersSpecializedInSubject(teachersSpecialized.stream().collect(Collectors.toSet()));
+            
         } catch (Exception e) {
             LOGGER.severe("An error ocurred when searching the data of the subject");
             throw new ReadException("An error ocurred when searching the data of the subject");

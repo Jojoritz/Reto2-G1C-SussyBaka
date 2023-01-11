@@ -194,6 +194,7 @@ public class SubjectFacadeREST {
         try {
             LOGGER.info("Searching the data of the subject relationships");
             subject = ejb.getSubjectRelationshipsData(id);
+            LOGGER.info(subject.toString());
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());
