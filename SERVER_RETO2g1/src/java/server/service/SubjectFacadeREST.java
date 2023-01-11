@@ -85,11 +85,11 @@ public class SubjectFacadeREST {
      * @param subject the data of the subject to remove
      */
     @DELETE
-    @Path("{subject}")
-    public void removeSubject(@PathParam("subject") Subject subject) {
+    @Path("subject/{id}")
+    public void removeSubject(@PathParam("id") Integer id) {
         try {
             LOGGER.info("Deleting the subject");
-            ejb.remove(subject);
+            ejb.remove(id);
         } catch (DeleteException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
@@ -126,16 +126,16 @@ public class SubjectFacadeREST {
     @GET
     @Path("subject/name/{nameParam}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Subject searchByName(@PathParam("nameParam") String name) {
-        Subject subject = null;
+    public List<Subject> searchByName(@PathParam("nameParam") String name) {
+       List<Subject> subjects = null;
         try {
             LOGGER.info("Searching the subject by name");
-            subject = ejb.searchByName(name);
+            subjects = ejb.searchByName(name);
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());
         }
-        return subject;
+        return subjects;
     }
 
     /**
