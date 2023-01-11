@@ -29,36 +29,36 @@ public interface PostEJBLocal {
     /**
      * Gets all the post from a specific date
      *
-     * @param course The entity course on where to get the post
+     * @param courseId The id of the course on where to get the post
      * @param date Date to filter by
      * @return Returns a SET with all the post founded by a specific date
      * @throws ReadException Throws exception if there was any error when
      * getting the posts by date
      */
-    public List<Post> getPostByDate(Course course, Date date) throws ReadException;
+    public List<Post> getPostByDate(Integer courseId, Date date) throws ReadException;
 
     /**
      * Gets all the post from a range of dates
      *
-     * @param course The entity course on where to get the post
+     * @param courseId The id of the course on where to get the post
      * @param startDate Start date
      * @param endDate End date
      * @return Returns a SET with all the post founded by range of dates
      * @throws ReadException Throws exception if there was any error when
      * getting the posts by date range
      */
-    public List<Post> getPostByDateRange(Course course, Date startDate, Date endDate) throws ReadException;
+    public List<Post> getPostByDateRange(Integer courseId, Date startDate, Date endDate) throws ReadException;
 
     /**
      * Gets all the posts that contains a specific title name
      *
-     * @param course The entity course on where to get the post
+     * @param courseId The id of the course on where to get the post
      * @param title The title string to use as filter
      * @return Returns a SET with all the post founded filtering by
      * @throws ReadException Throws exception if there was any error when
      * getting the posts by the post title
      */
-    public List<Post> getPostByTitle(Course course, String title) throws ReadException;
+    public List<Post> getPostByTitle(Integer courseId, String title) throws ReadException;
 
     
     /**

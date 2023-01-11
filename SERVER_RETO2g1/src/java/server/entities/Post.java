@@ -1,5 +1,6 @@
 package server.entities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 
 import java.util.Date;
@@ -19,7 +20,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -33,22 +34,33 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @NamedQueries({
     @NamedQuery(
-            name = "findByDate",
-            query = "FROM Post p WHERE DATE(p.publicationDate) = DATE(:date)")
+            name = "findPostById",
+            query = "SELECT new server.entities.Post(p.postId, p.title, p.content, p.publicationDate, p.image, p.video) FROM Post p where p.postId = :postId")
     ,
     @NamedQuery(
-            name = "findByDateRange",
-            query = "FROM Post p Where DATE(p.publicationDate) BETWEEN DATE(:startDate) AND DATE(:endDate)")
+            name = "findPostByDate",
+            query = "SELECT new server.entities.Post(p.postId, p.title, p.content, p.publicationDate, p.image, p.video) FROM Post p WHERE DATE(p.publicationDate) = DATE(:date) AND p.course.courseId = :courseId")
     ,
     @NamedQuery(
-            name = "findByTitle",
-            query = "FROM Post p WHERE p.title = :title")
+            name = "findPostByDateRange",
+            query = "SELECT new server.entities.Post(p.postId, p.title, p.content, p.publicationDate, p.image, p.video) FROM Post p WHERE DATE(p.publicationDate) BETWEEN DATE(:startDate) AND DATE(:endDate) AND p.course.courseId = :courseId")
+    ,
+    @NamedQuery(
+            name = "findPostByTitle",
+            query = "SELECT new server.entities.Post(p.postId, p.title, p.content, p.publicationDate, p.image, p.video) FROM Post p WHERE p.title = :title AND p.course.courseId = :courseId")
 })
 @Entity
 @Table(name = "post", schema = "reto2_g1c_sussybaka")
 @XmlRootElement
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Post implements Serializable {
-
+/*
+    @Query(value = "SELECT new 
+    com.cdp.ecosaas.coredb.uua.sync.vo.UuaUserNotifyTemp(uu.id,ue.sysCode,ue.sysName,uu.idNumber,uu.email,uu.phone,ue.tenantId,unc.isAuto,unc.isEmail,unc.isMobile,unc.emailLang,unc.msmLang, uu.mailNotify, uu.mobileNotify, uu.state) 
+    FROM UuaUser uu LEFT JOIN UuaUserExtsysRef uuer on uu.id = uuer.id. userId LEFT JOIN UuaExtsy ue on ue.id = uuer.id.extsysId LEFT JOIN UuaNotifyConfig unc ON unc.tenantId = ue.tenantId where unc.isAuto = 1 and (uu.state = 0 or uu.state is null) and (uu .mailNotify = 0 or uu.mailNotify is null) and (uu.mobileNotify = 0 or uu.mobileNotify is null) ")
+    List<UuaUserNotifyTemp> findNotifyUserTemp();
+    */
+    
     private static final long serialVersionUID = 1L;
 
     /**
@@ -60,6 +72,7 @@ public class Post implements Serializable {
     private Integer postId;
 
     @NotNull
+    @Column(unique = true)
     private String title;
 
     /**
@@ -86,15 +99,13 @@ public class Post implements Serializable {
     /**
      * Image field contains the relative path to the image
      */
-    @Column(name = "image_path")
-    @Null
+    @Column(name = "image_path", nullable = true)
     private String image;
 
     /**
      * Video field contains the relative path to the video
      */
-    @Column(name = "video_path")
-    @Null
+    @Column(name = "video_path", nullable = true)
     private String video;
 
     /**
@@ -110,6 +121,16 @@ public class Post implements Serializable {
      */
     public Post() {
         super();
+    }
+
+    public Post(Integer postId, String title, String content, Date publicationDate, String image, String video) {
+        this.postId = postId;
+        this.title = title;
+        this.content = content;
+        this.publicationDate = publicationDate;
+        this.image = image;
+        this.video = video;
+        this.course = new Course();
     }
 
     /**
