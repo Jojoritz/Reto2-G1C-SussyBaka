@@ -94,8 +94,8 @@ public class UserEJB implements UserEJBLocal {
     @Override
     public User signIn(String login, String password) throws ReadException{
         try {
-            String hashedPassword = hashUserPassword(password);
-            User user = (User) em.createNamedQuery("getUserLogin").setParameter("login", login).setParameter("password", hashedPassword).getSingleResult();
+           // String hashedPassword = hashUserPassword(password);
+            User user = (User) em.createNamedQuery("getUserLogin").setParameter("login", login).setParameter("password", password).getSingleResult();
             return user;
         } catch (Exception e) {
             throw new ReadException(e.getMessage());
