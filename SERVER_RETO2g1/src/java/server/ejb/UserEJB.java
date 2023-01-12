@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import server.entities.enumerations.UserStatus;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
 
@@ -94,8 +95,9 @@ public class UserEJB implements UserEJBLocal {
     @Override
     public User signIn(String login, String password) throws ReadException{
         try {
-           // String hashedPassword = hashUserPassword(password);
-            User user = (User) em.createNamedQuery("getUserLogin").setParameter("login", login).setParameter("password", password).getSingleResult();
+            String hashedPassword = hashUserPassword(password);
+            Integer userId = (Integer) em.createNamedQuery("getUserLogin").setParameter("login", login).setParameter("password", hashedPassword).getSingleResult();
+            User user = (User)em.createNamedQuery("findUserById").setParameter("userId", userId).getSingleResult();
             return user;
         } catch (Exception e) {
             throw new ReadException(e.getMessage());
@@ -150,18 +152,22 @@ public class UserEJB implements UserEJBLocal {
             em.merge(user);
             em.flush();
         } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
             throw new UpdateException(e.getMessage());
         }
     }
 
     @Override
-    public void remove(User user) throws DeleteException {
+    public void remove(Integer user_id) throws DeleteException {
          try {
+            User user = (User)em.createNamedQuery("findUserById").setParameter("userId", user_id).getSingleResult();
             user = em.merge(user);
             em.remove(user);
         } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
             throw new DeleteException(e.getMessage());
         }
     }
+
     
 }

@@ -48,7 +48,8 @@ public interface UserEJBLocal{
      * @param user the data of the entity to remove
      * @throws DeleteException If the creation method threw an exception
      */
-    public void remove(User user) throws DeleteException;
+    public void remove(Integer user_id) throws DeleteException;
+    
 
     /**
      * Finds the entity value using the primary key object passed by parameter
