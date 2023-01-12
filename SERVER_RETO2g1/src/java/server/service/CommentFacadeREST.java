@@ -36,7 +36,7 @@ public class CommentFacadeREST {
     private static final Logger LOG
             = Logger.getLogger(CommentFacadeREST.class.getName());
 
-    @EJB
+    @EJB(beanName = "CommentEJB")
     private CommentEJBLocal ejb;
 
     @POST

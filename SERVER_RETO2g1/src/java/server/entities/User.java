@@ -37,7 +37,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @NamedQueries(
         @NamedQuery(
-                name = "getUserLogin", query = "SELECT u FROM User u WHERE u.login = :login AND u.password = :password"
+                name = "getUserLogin", query = "SELECT new server.entities.User(u.id, u.login, U.email, u.fullName, u.password, u.lastPasswordChange, u.status, u.privilege) "
+                        + "FROM User u"
+                        + " WHERE u.login = :login AND u.password = :password"
         )
 )
 
@@ -124,6 +126,19 @@ public class User implements Serializable {
     //Constructor
     public User() {
         super();
+    }
+    
+    public User(Integer id, String login, String email, String fullName, 
+            String password, Date lastPasswordChange, UserStatus status, UserPrivilege privilege){
+        
+        this.id = id;
+        this.login = login;
+        this.email = email;
+        this.fullName = fullName;
+        this.password = password;
+        this.lastPasswordChange = lastPasswordChange;
+        this.status = status;
+        this.privilege = privilege;
     }
 
     //Getters and setters

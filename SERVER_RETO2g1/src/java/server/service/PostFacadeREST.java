@@ -5,6 +5,8 @@
  */
 package server.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import server.entities.Course;
 import server.entities.Post;
 import server.exception.CreateException;
@@ -40,10 +42,13 @@ public class PostFacadeREST {
     @EJB(beanName = "PostEJB")
     private PostEJBLocal ejb;
 
+    private final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Post entity) {
         try {
+            
             LOG.log(Level.INFO, "PostRESTful service POST: create {0}",
                     entity.getClass().getName());
             ejb.create(entity);
@@ -56,9 +61,9 @@ public class PostFacadeREST {
     }
 
     @PUT
-    @Path("{id}")
+    @Path("{post}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Integer id, Post entity) {
+    public void edit(@PathParam("post") Post entity) {
         try {
             LOG.log(Level.INFO, "PostRESTful service PUT: edit {0}",
                     entity.getClass().getName());
@@ -103,45 +108,48 @@ public class PostFacadeREST {
     }
 
     @GET
-    @Path("{course}/date/{date}")
+    @Path("{courseId}/date/{date}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Post> findByDate(@PathParam("course") Course course, @PathParam("id") Date date) {
+    public List<Post> findByDate(@PathParam("courseId") Integer courseId, @PathParam("date") String dateString) {
         try {
             List<Post> posts;
             LOG.log(Level.INFO,
-                    "PostRESTful service GET: get post with id: {0}", date);
-            posts = ejb.getPostByDate(course, date);
+                    "PostRESTful service GET: get post with id: {0}", dateString);
+            Date date = FORMAT.parse(dateString);
+            posts = ejb.getPostByDate(courseId, date);
             return posts;
-        } catch (ReadException e) {
+        } catch (ReadException | ParseException e) {
             throw new InternalServerErrorException(e.getMessage());
         }
     }
 
     @GET
-    @Path("{course}/date/{from}/{to}")
+    @Path("{courseId}/date/{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Post> findByDateRange(@PathParam("course") Course course, @PathParam("from") Date from, @PathParam("to") Date to) {
+    public List<Post> findByDateRange(@PathParam("courseId") Integer courseId, @PathParam("from") String dateFromString, @PathParam("to") String dateToString) {
         try {
             List<Post> posts;
-            LOG.log(Level.INFO, String.format("PostRESTful service GET: get posts from post with between %s and %s from course %s",
-                    from, to, course.getName()));
-            posts = ejb.getPostByDateRange(course, from, to);
+            LOG.log(Level.INFO, String.format("PostRESTful service GET: get posts from post with between %s and %s from courseId %d",
+                    dateFromString, dateToString, courseId));
+            Date dateFrom = FORMAT.parse(dateFromString);
+            Date dateTo = FORMAT.parse(dateToString);
+            posts = ejb.getPostByDateRange(courseId, dateFrom, dateTo);
             return posts;
-        } catch (ReadException e) {
+        } catch (ReadException | ParseException e) {
             throw new InternalServerErrorException(e.getMessage());
         }
 
     }
 
     @GET
-    @Path("{course}/title/{title}")
+    @Path("{courseId}/title/{title}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Post> findByTitle(@PathParam("course") Course course, @PathParam("title") String title) {
+    public List<Post> findByTitle(@PathParam("courseId") Integer courseId, @PathParam("title") String title) {
         try {
             List<Post> posts;
             LOG.log(Level.INFO, String.format("PostRESTful service GET: get posts with title %s from course %s",
-                    title, course.getName()));
-            posts = ejb.getPostByTitle(course, title);
+                    title, courseId));
+            posts = ejb.getPostByTitle(courseId, title);
             return posts;
         } catch (ReadException e) {
             throw new InternalServerErrorException(e.getMessage());
