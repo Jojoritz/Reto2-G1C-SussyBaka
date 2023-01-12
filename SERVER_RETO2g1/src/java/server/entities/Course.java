@@ -32,9 +32,13 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @NamedQueries({
         @NamedQuery(
-                name="findCourse", query="SELECT c FROM Course c WHERE c.courseId =:courseId"
+                name="findCourse", query="SELECT new server.entities.Course(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate) FROM Course c WHERE c.courseId = :courseId"
         ),
         
+        @NamedQuery(
+                name="findAllCourses", query="SELECT new server.entities.Course(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate) FROM Course c"
+        ),
+    
         @NamedQuery(
                 name="findCourseByName", query="SELECT c FROM Course c WHERE c.name LIKE :name"
         ),
@@ -110,11 +114,19 @@ public class Course implements Serializable {
     @ManyToOne
     private Subject subjects;
 
-    //Constructor
+    //Constructors
     public Course() {
         super();
     }
 
+    public Course(Integer courseId, String name, Date startDate, Boolean isVisible, Boolean isPrivate) {
+        this.courseId = courseId;
+        this.name = name;
+        this.startDate = startDate;
+        this.isVisible = isVisible;
+        this.isPrivate = isPrivate;
+    }
+    
     //Getters & Setters
     /**
      * Gets the course ID
