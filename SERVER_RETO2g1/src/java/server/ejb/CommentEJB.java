@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import server.ejb.interfaces.AbstractEJB;
 import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
@@ -30,9 +29,9 @@ public class CommentEJB implements CommentEJBLocal {
      * Logger for the class.
      */
     protected static final Logger LOG
-            = Logger.getLogger(AbstractEJB.class.getName());
+            = Logger.getLogger(CommentEJB.class.getName());
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "JavaFX-WebApplicationUD5ExamplePU")
     protected EntityManager em;
 
     @Override

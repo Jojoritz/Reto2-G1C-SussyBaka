@@ -31,9 +31,9 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 
 @NamedQueries({
-        @NamedQuery(
+        /*@NamedQuery(
                 name="findCourse", query="SELECT new server.entities.dto.CourseDTO(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate, t.fullName, s.name) FROM Course c, Teacher t, Subject s WHERE c.courseId = :courseId AND c.id = t.id AND c.subjectId = s.subjectId"
-        ),
+        ),*/
         
         @NamedQuery(
                 name="findAllCourses", query="SELECT new server.entities.Course(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate) FROM Course c"
