@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import server.entities.Post;
+import server.entities.Student;
 import server.entities.dto.CommentDTO;
 import server.exception.CreateException;
 import server.exception.DeleteException;
@@ -31,10 +33,10 @@ public class CommentEJB implements CommentEJBLocal {
      */
     protected static final Logger LOG
             = Logger.getLogger(CommentEJB.class.getName());
-    
+
     @PersistenceContext
     protected EntityManager em;
-    
+
     @Override
     public List<Comment> getComments(Integer id) throws ReadException {
         try {
@@ -47,9 +49,9 @@ public class CommentEJB implements CommentEJBLocal {
             LOG.log(Level.SEVERE, e.getMessage());
             throw new ReadException(e.getMessage());
         }
-        
+
     }
-    
+
     @Override
     public void create(Comment entity) throws CreateException {
         try {
@@ -62,11 +64,13 @@ public class CommentEJB implements CommentEJBLocal {
             throw new CreateException(e.getMessage());
         }
     }
-    
+
     @Override
     public void edit(Comment entity) throws UpdateException {
         try {
             LOG.info(String.format("CommentEJB: Editing %s", Comment.class.getName()));
+            entity.setPost(em.merge(em.find(Post.class, entity.getPost().getPostId())));
+            entity.setStudent(em.merge(em.find(Student.class, entity.getStudent().getId())));
             em.merge(entity);
             em.flush();
             LOG.info(String.format("CommentEJB: %s edited successfully", Comment.class.getName()));
@@ -75,16 +79,14 @@ public class CommentEJB implements CommentEJBLocal {
                     entity.getClass().getName()), e.getMessage());
             throw new UpdateException(e.getMessage());
         }
-        
+
     }
-    
+
     @Override
     public void remove(Integer id) throws DeleteException {
         try {
             LOG.info(String.format("CommentEJB: Deleting %s", Comment.class.getName()));
-            //Comment comment = find(id);
             Comment comment = em.find(Comment.class, id);
-
             comment = em.merge(comment);
             em.remove(comment);
             LOG.info(String.format("CommentEJB: %s deleted successfully", Comment.class.getName()));
@@ -94,7 +96,7 @@ public class CommentEJB implements CommentEJBLocal {
             throw new DeleteException(e.getMessage());
         }
     }
-    
+
     @Override
     public Comment find(Integer obj) throws ReadException {
         Comment entity;
@@ -109,5 +111,5 @@ public class CommentEJB implements CommentEJBLocal {
             throw new ReadException(e.getMessage());
         }
     }
-    
+
 }

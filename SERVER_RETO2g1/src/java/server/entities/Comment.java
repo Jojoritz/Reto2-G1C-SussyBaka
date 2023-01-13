@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -55,12 +56,14 @@ public class Comment implements Serializable {
      * Relational object to {@link Student}
      */
     @ManyToOne
+    @JoinColumn(name = "id")
     private Student student;
 
     /**
      * Relation object to {@link Post}
      */
     @ManyToOne
+    @JoinColumn(name = "postId")
     private Post post;
 
     /**
@@ -88,7 +91,8 @@ public class Comment implements Serializable {
     }
 
     /**
-     * Class constructor without both {@link Post} and {@link Student} relational objects
+     * Class constructor without both {@link Post} and {@link Student}
+     * relational objects
      *
      * @param commentID The id of the comment
      * @param dateComment Date of creation of the comment

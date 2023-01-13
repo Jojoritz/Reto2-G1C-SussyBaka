@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import server.entities.dto.CourseDTO;
 import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
@@ -69,8 +70,8 @@ public class CourseEJB implements CourseEJBLocal {
         Course entity;
         try {
             LOG.info("aaa");
-            entity =  em.createNamedQuery("findCourse", Course.class).
-                    setParameter("courseId", id).getSingleResult();
+            entity = CourseDTO.convertDTOCourse(em.createNamedQuery("findCourse", CourseDTO.class).
+                    setParameter("courseId", id).getSingleResult());
             LOG.info(entity.toString());
             return entity;
         } catch (Exception e) {
