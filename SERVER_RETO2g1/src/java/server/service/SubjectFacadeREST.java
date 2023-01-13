@@ -37,7 +37,7 @@ public class SubjectFacadeREST {
     /**
      * The EJB with the bussines logic of the subject
      */
-    @EJB(beanName = "SubjectEJB")
+    @EJB
     private SubjectEJBLocal ejb;
 
     /**

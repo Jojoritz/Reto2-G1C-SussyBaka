@@ -48,7 +48,8 @@ public interface UserEJBLocal{
      * @param user the data of the entity to remove
      * @throws DeleteException If the creation method threw an exception
      */
-    public void remove(User user) throws DeleteException;
+    public void remove(Integer user_id) throws DeleteException;
+    
 
     /**
      * Finds the entity value using the primary key object passed by parameter
@@ -57,5 +58,5 @@ public interface UserEJBLocal{
      * @return Returns the entity found by using the primary key, can be NULL
      * @throws ReadException If the read
      */
-    public User signIn(String login, String password) throws ReadException;
+    public User signIn(String login) throws ReadException;
 }

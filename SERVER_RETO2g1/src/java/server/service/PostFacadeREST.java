@@ -38,7 +38,7 @@ public class PostFacadeREST {
 
     private static final Logger LOG = Logger.getLogger("PostFacadeREST");
 
-    @EJB(beanName = "PostEJB")
+    @EJB
     private PostEJBLocal ejb;
 
     private final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");

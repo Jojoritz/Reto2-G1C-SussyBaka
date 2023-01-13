@@ -35,7 +35,7 @@ public class UserFacadeREST{
      * EJB object with the busines logic
      */
     
-    @EJB(beanName = "UserEJB")
+    @EJB
     private UserEJBLocal ejb;
     /**
      * The logger of this class
@@ -72,16 +72,18 @@ public class UserFacadeREST{
             throw new InternalServerErrorException(e.getMessage());
         }
     }
+    
+     
     /**
      * DELETE method to remove the user
-     * @param user the data of user to remove
+     * @param userId the data of user to remove
      */
     @DELETE
-    @Path("{user}")
-    public void removeUser(@PathParam("user")User user) {
+    @Path("user/{userId}")
+    public void removeUser(@PathParam("userId")Integer userId) {
         try {
             LOGGER.info("Deleting the user");
-            ejb.remove(user);
+            ejb.remove(userId);
         } catch (DeleteException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
@@ -93,13 +95,13 @@ public class UserFacadeREST{
      * @return the user finded
      */
     @GET
-    @Path("user/login/{login}/{password}")
+    @Path("user/login/{login}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User signIn(@PathParam("login")String login, @PathParam("password")String password){
+    public User signIn(@PathParam("login")String login){
         User user = null;
         try {
             LOGGER.info("Searching the user");
-            user = ejb.signIn(login, password);
+            user = ejb.signIn(login);
             
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
