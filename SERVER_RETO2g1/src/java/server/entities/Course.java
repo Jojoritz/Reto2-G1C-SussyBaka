@@ -25,28 +25,34 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Joritz 
- * 
+ * @author Joritz
+ *
  * This is the Course entity class
  */
-
 @NamedQueries({
-        /*@NamedQuery(
-                name="findCourse", query="SELECT new server.entities.dto.CourseDTO(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate, t.fullName, s.name) FROM Course c, Teacher t, Subject s WHERE c.courseId = :courseId AND c.id = t.id AND c.subjectId = s.subjectId"
-        ),*/
+    @NamedQuery(
+            name = "findCourse",
+            query = "SELECT new server.entities.dto.CourseDTO(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate, t.fullName, s.name) "
+            + "FROM Course c, Teacher t, Subject s WHERE c.courseId = :courseId AND c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId"
+    )
+    ,
         
         @NamedQuery(
-                name="findAllCourses", query="SELECT new server.entities.Course(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate) FROM Course c"
-        ),
+            name = "findAllCourses",
+            query = "SELECT new server.entities.dto.CourseDTO(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate, t.fullName, s.name) "
+            + "FROM Course c, Teacher t, Subject s WHERE c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId"
+    )
+    ,
     
         @NamedQuery(
-                name="findCourseByName", query="SELECT c FROM Course c WHERE c.name LIKE :name"
-        ),
+            name = "findCourseByName", query = "SELECT c FROM Course c WHERE c.name LIKE :name"
+    )
+    ,
         
         @NamedQuery(
-                name="findCourseByDate", query="SELECT c FROM Course c WHERE CAST(c.startDate as date) =:startdate"
-        )
-    })
+            name = "findCourseByDate", query = "SELECT c FROM Course c WHERE CAST(c.startDate as date) =:startdate"
+    )
+})
 
 @Entity
 @Table(name = "course", schema = "reto2_g1c_sussybaka")
@@ -119,6 +125,15 @@ public class Course implements Serializable {
         super();
     }
 
+    /**
+     * Class constructor without relational objects
+     *
+     * @param courseId
+     * @param name
+     * @param startDate
+     * @param isVisible
+     * @param isPrivate
+     */
     public Course(Integer courseId, String name, Date startDate, Boolean isVisible, Boolean isPrivate) {
         this.courseId = courseId;
         this.name = name;
@@ -126,7 +141,29 @@ public class Course implements Serializable {
         this.isVisible = isVisible;
         this.isPrivate = isPrivate;
     }
-    
+
+    /**
+     * Class constructor with all attributes and only {@link Teacher} and
+     * {@link Subject} relational objects
+     *
+     * @param courseId
+     * @param name
+     * @param startDate
+     * @param isVisible
+     * @param isPrivate
+     * @param teacher
+     * @param subjects
+     */
+    public Course(Integer courseId, String name, Date startDate, Boolean isVisible, Boolean isPrivate, Teacher teacher, Subject subjects) {
+        this.courseId = courseId;
+        this.name = name;
+        this.startDate = startDate;
+        this.isVisible = isVisible;
+        this.isPrivate = isPrivate;
+        this.teacher = teacher;
+        this.subjects = subjects;
+    }
+
     //Getters & Setters
     /**
      * Gets the course ID

@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import javax.persistence.Column;    
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
             name = "findPostById",
-            query = "SELECT new server.entities.Post(p.postId, p.title, p.content, p.publicationDate, p.image, p.video) FROM Post p where p.postId = :postId")
+            query = "SELECT new server.entities.Post(p.postId, p.title, p.content, p.publicationDate, p.image, p.video) FROM Post p WHERE p.postId = :postId")
     ,
     @NamedQuery(
             name = "findPostByDate",
@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlTransient;
     ,
     @NamedQuery(
             name = "findPostByTitle",
-            query = "SELECT new server.entities.Post(p.postId, p.title, p.content, p.publicationDate, p.image, p.video) FROM Post p WHERE p.title = :title AND p.course.courseId = :courseId")
+            query = "SELECT new server.entities.Post(p.postId, p.title, p.content, p.publicationDate, p.image, p.video) FROM Post p WHERE p.title LIKE :title AND p.course.courseId = :courseId")
 })
 @Entity
 @Table(name = "post", schema = "reto2_g1c_sussybaka")
@@ -93,7 +93,6 @@ public class Post implements Serializable {
      * Link {@link Course} of the post
      */
     @ManyToOne
-    @NotNull
     private Course course;
 
     /**
@@ -130,7 +129,6 @@ public class Post implements Serializable {
         this.publicationDate = publicationDate;
         this.image = image;
         this.video = video;
-        this.course = new Course();
     }
 
     /**
@@ -210,6 +208,7 @@ public class Post implements Serializable {
      *
      * @return course Course
      */
+    @XmlTransient
     public Course getCourse() {
         return course;
     }

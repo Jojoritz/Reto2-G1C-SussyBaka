@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import server.entities.dto.CourseDTO;
 import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
@@ -69,7 +70,8 @@ public class CourseEJB implements CourseEJBLocal {
         Course entity;
         try {
             LOG.info("aaa");
-            entity =  em.createNamedQuery("findCourse", Course.class).setParameter("courseId", id).getSingleResult();
+            entity = CourseDTO.convertDTOCourse(em.createNamedQuery("findCourse", CourseDTO.class).
+                    setParameter("courseId", id).getSingleResult());
             LOG.info(entity.toString());
             return entity;
         } catch (Exception e) {
@@ -83,7 +85,7 @@ public class CourseEJB implements CourseEJBLocal {
         LOG.info("CourseEJB: Getting all Courses...");
         //Getting the collection with Courses
         try {
-            courses = (List<Course>) em.createNamedQuery("findAllCourses").getResultList();
+            courses = em.createNamedQuery("findAllCourses").getResultList();
         } catch (Exception e) {
             LOG.severe(e.getMessage());
             throw new ReadException(e.getMessage());
@@ -97,7 +99,8 @@ public class CourseEJB implements CourseEJBLocal {
         LOG.info("CourseEJB: Getting Courses by name...");
         //Getting the Collection of Courses by Name
         try {
-            courses = (List<Course>) em.createNamedQuery("findCourseByName").setParameter("name", name);
+            courses = em.createNamedQuery("findCourseByName").setParameter("name", name).getResultList();
+            
         } catch (Exception e) {
             LOG.severe(e.getMessage());
             throw new ReadException();
@@ -111,7 +114,7 @@ public class CourseEJB implements CourseEJBLocal {
         LOG.info("CourseEJB: Getting all Courses from a specific date...");
         //Getting the Collection of Courses by Date
         try {
-            courses = (List<Course>) em.createNamedQuery("findCourseByDate").setParameter("startDate", startDate);
+            courses =  em.createNamedQuery("findCourseByDate").setParameter("startDate", startDate).getResultList();
         } catch (Exception e) {
             LOG.severe(e.getMessage());
             throw new ReadException();

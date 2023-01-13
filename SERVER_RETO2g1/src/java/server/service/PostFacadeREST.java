@@ -7,7 +7,6 @@ package server.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import server.entities.Course;
 import server.entities.Post;
 import server.exception.CreateException;
 import server.exception.DeleteException;
@@ -61,9 +60,8 @@ public class PostFacadeREST {
     }
 
     @PUT
-    @Path("{post}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("post") Post entity) {
+    public void edit(Post entity) {
         try {
             LOG.log(Level.INFO, "PostRESTful service PUT: edit {0}",
                     entity.getClass().getName());
