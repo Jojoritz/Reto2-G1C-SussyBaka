@@ -5,6 +5,7 @@
  */
 package server.ejb.interfaces;
 
+import java.util.Date;
 import server.entities.Comment;
 import server.entities.Post;
 import server.exception.ReadException;
@@ -35,11 +36,10 @@ public interface CommentEJBLocal {
      */
     public abstract List<Comment> getComments(Integer id) throws ReadException;
 
-    
     /**
      * Creates/inserts the data of the entity passed
      *
-     * @param entity
+     * @param entity The entity class with the data to persist
      * @throws CreateException If the creation method threw an exception
      */
     public void create(Comment entity) throws CreateException;
@@ -47,18 +47,18 @@ public interface CommentEJBLocal {
     /**
      * Edits/Modify the data of the entity passed
      *
-     * @param entity
+     * @param comment
      * @throws UpdateException If the creation method threw an exception
      */
-    public void edit(Comment entity) throws UpdateException;
+    public void edit(Comment comment) throws UpdateException;
 
     /**
      * Deletes/Removes all the data from the entity passed
      *
-     * @param entity
+     * @param id The id of the entity to remove
      * @throws DeleteException If the creation method threw an exception
      */
-    public void remove(Comment entity) throws DeleteException;
+    public void remove(Integer id) throws DeleteException;
 
     /**
      * Finds the entity value using the primary key object passed by parameter

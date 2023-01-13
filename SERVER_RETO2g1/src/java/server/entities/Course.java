@@ -32,7 +32,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @NamedQueries({
         @NamedQuery(
-                name="findCourse", query="SELECT new server.entities.dto.CourseDTO(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate, t.fullName, s.name) FROM Course c, Teacher t, Subject s WHERE c.courseId = :courseId AND c.id = t.id AND c.subjectId = s.subjectId"
+                name="findCourse", 
+                query="SELECT new server.entities.dto.CourseDTO(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate, t.fullName, s.name) "
+                        + "FROM Course c, Teacher t, Subject s WHERE c.courseId = :courseId AND c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId"
         ),
         
         @NamedQuery(
@@ -46,7 +48,7 @@ import javax.xml.bind.annotation.XmlTransient;
         @NamedQuery(
                 name="findCourseByDate", query="SELECT c FROM Course c WHERE CAST(c.startDate as date) =:startdate"
         )
-    })
+})
 
 @Entity
 @Table(name = "course", schema = "reto2_g1c_sussybaka")

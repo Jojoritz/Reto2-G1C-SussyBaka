@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import server.ejb.interfaces.AbstractEJB;
+import server.entities.dto.CommentDTO;
 import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
@@ -30,92 +30,84 @@ public class CommentEJB implements CommentEJBLocal {
      * Logger for the class.
      */
     protected static final Logger LOG
-            = Logger.getLogger(AbstractEJB.class.getName());
-
+            = Logger.getLogger(CommentEJB.class.getName());
+    
     @PersistenceContext
     protected EntityManager em;
-
+    
     @Override
     public List<Comment> getComments(Integer id) throws ReadException {
         try {
             List<Comment> comments;
             LOG.info("CommentEJB: Getting all comments...");
-            comments = em.createNamedQuery("getCommentsByPostID").
-                    setParameter("idPost", id).getResultList();
+            comments = CommentDTO.convertDTOsComment(em.createNamedQuery("getCommentsByPostID", CommentDTO.class).
+                    setParameter("postId", id).getResultList());
             return comments;
         } catch (Exception e) {
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ReadException(e.getMessage());
         }
-
+        
     }
-
-    /**
-     * Creates/inserts the data of the entity passed
-     *
-     * @param entity
-     * @throws CreateException If the creation method threw an exception
-     */
+    
+    @Override
     public void create(Comment entity) throws CreateException {
         try {
-            LOG.info(String.format("EJB: Creating %s", entity.getClass().getName()));
+            LOG.info(String.format("CommentEJB: Creating %s", Comment.class.getName()));
             em.persist(entity);
-            LOG.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
+            LOG.info(String.format("CommentEJB: %s created successfully", Comment.class.getName()));
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("EJB: Exception on creating %s, {0}",
                     entity.getClass().getName()), e.getMessage());
             throw new CreateException(e.getMessage());
         }
     }
-
-    /**
-     * Edits/Modify the data of the entity passed
-     *
-     * @param entity
-     * @throws UpdateException If the creation method threw an exception
-     */
+    
+    @Override
     public void edit(Comment entity) throws UpdateException {
         try {
+            LOG.info(String.format("CommentEJB: Editing %s", Comment.class.getName()));
             em.merge(entity);
             em.flush();
+            LOG.info(String.format("CommentEJB: %s edited successfully", Comment.class.getName()));
         } catch (Exception e) {
+            LOG.log(Level.SEVERE, String.format("EJB: Exception on updating %s, {0}",
+                    entity.getClass().getName()), e.getMessage());
             throw new UpdateException(e.getMessage());
         }
-
+        
     }
-
-    /**
-     * Deletes/Removes all the data from the entity passed
-     *
-     * @param entity
-     * @throws DeleteException If the creation method threw an exception
-     */
-    public void remove(Comment entity) throws DeleteException {
+    
+    @Override
+    public void remove(Integer id) throws DeleteException {
         try {
-            entity = em.merge(entity);
-            em.remove(entity);
+            LOG.info(String.format("CommentEJB: Deleting %s", Comment.class.getName()));
+            //Comment comment = find(id);
+            Comment comment = em.find(Comment.class, id);
+
+            comment = em.merge(comment);
+            em.remove(comment);
+            LOG.info(String.format("CommentEJB: %s deleted successfully", Comment.class.getName()));
         } catch (Exception e) {
+            LOG.log(Level.SEVERE, String.format("EJB: Exception on deleting %s, {0}",
+                    Comment.class.getName()), e.getMessage());
             throw new DeleteException(e.getMessage());
         }
     }
-
-    /**
-     * Finds the entity value using the primary key object passed by parameter
-     *
-     * @param obj Primary key of the entity
-     * @return Returns the entity found by using the primary key, can be NULL
-     * @throws ReadException If the read
-     */
+    
     @Override
     public Comment find(Integer obj) throws ReadException {
         Comment entity;
         try {
-            entity = em.find(Comment.class, obj);
+            LOG.info(String.format("CommentEJB: Searching %s with id %d", Comment.class.getName(), obj));
+            entity = em.createNamedQuery("getCommentsByID", Comment.class).
+                    setParameter("commentId", obj).getSingleResult();
             return entity;
         } catch (Exception e) {
+            LOG.log(Level.SEVERE, String.format("EJB: Exception on reading %s, {0}",
+                    Comment.class.getName()), e.getMessage());
             throw new ReadException(e.getMessage());
         }
     }
-
     
-
 }

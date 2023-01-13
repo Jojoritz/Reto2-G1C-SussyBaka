@@ -69,7 +69,8 @@ public class CourseEJB implements CourseEJBLocal {
         Course entity;
         try {
             LOG.info("aaa");
-            entity =  em.createNamedQuery("findCourse", Course.class).setParameter("courseId", id).getSingleResult();
+            entity =  em.createNamedQuery("findCourse", Course.class).
+                    setParameter("courseId", id).getSingleResult();
             LOG.info(entity.toString());
             return entity;
         } catch (Exception e) {

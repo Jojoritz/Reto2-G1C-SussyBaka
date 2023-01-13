@@ -32,7 +32,7 @@ public class PostEJB implements PostEJBLocal {
     protected static final Logger LOG
             = Logger.getLogger(PostEJB.class.getName());
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "JavaFX-WebApplicationUD5ExamplePU")
     protected EntityManager em;
 
     @Override
@@ -73,6 +73,7 @@ public class PostEJB implements PostEJBLocal {
         try {
             List<Post> posts;
             LOG.info(String.format("PostEJB: Get post by title: %s on course with ID: %d", title, courseId));
+            title = "%" + title + "%";
             posts = em.createNamedQuery("findPostByTitle").
                     setParameter("title", title).
                     setParameter("courseId", courseId).getResultList();

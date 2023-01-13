@@ -25,11 +25,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Henrique Yeguo
  */
-@NamedQueries(
-        @NamedQuery(
-                name = "getCommentsByPostID",
-                query = "FROM Comment c WHERE c.post.postId = :idPost")
-)
+@NamedQueries({
+    @NamedQuery(
+            name = "getCommentsByPostID",
+            query = "SELECT new server.entities.dto.CommentDTO(c.commentID, s.fullName, c.dateComment, c.commentText, s.email, s.id, p.postId) "
+            + "FROM Comment c JOIN c.student s JOIN c.post p Where c.post.postId = :postId")
+    ,
+     @NamedQuery(
+            name = "getCommentsByID",
+            query = "SELECT new server.entities.Comment(c.commentID, c.dateComment, c.commentText) "
+            + "FROM Comment c Where c.commentID = :commentId")
+})
 @Entity
 @Table(name = "student_post_comment", schema = "reto2_g1c_sussybaka")
 @XmlRootElement
@@ -37,14 +43,23 @@ public class Comment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * ID of the comment
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "comment_id")
     private Integer commentID;
 
+    /**
+     * Relational object to {@link Student}
+     */
     @ManyToOne
     private Student student;
 
+    /**
+     * Relation object to {@link Post}
+     */
     @ManyToOne
     private Post post;
 
@@ -62,6 +77,7 @@ public class Comment implements Serializable {
      *
      */
     @NotNull
+    @Column(columnDefinition = "TEXT")
     private String commentText;
 
     /**
@@ -72,11 +88,110 @@ public class Comment implements Serializable {
     }
 
     /**
+     * Class constructor without both {@link Post} and {@link Student} relational objects
+     *
+     * @param commentID The id of the comment
+     * @param dateComment Date of creation of the comment
+     * @param commentText Text of the comment
+     */
+    public Comment(Integer commentID, Date dateComment, String commentText) {
+        this.commentID = commentID;
+        this.dateComment = dateComment;
+        this.commentText = commentText;
+    }
+
+    /**
+     * Class constructor without {@link Post} relational object
+     *
+     * @param commentID The id of the comment
+     * @param student The relational object to student
+     * @param dateComment Date of creation of the comment
+     * @param commentText Text of the comment
+     */
+    public Comment(Integer commentID, Student student, Date dateComment, String commentText) {
+        this.commentID = commentID;
+        this.student = student;
+        this.dateComment = dateComment;
+        this.commentText = commentText;
+    }
+
+    /**
+     * Class constructor with all attributes and relational objects
+     *
+     * @param commentID The id of the comment
+     * @param student The relational object to student
+     * @param dateComment Date of creation of the comment
+     * @param commentText Text of the comment
+     * @param post The relational object to the Post
+     */
+    public Comment(Integer commentID, Student student, Date dateComment, String commentText, Post post) {
+        this.commentID = commentID;
+        this.student = student;
+        this.dateComment = dateComment;
+        this.commentText = commentText;
+        this.post = post;
+    }
+
+    /**
+     * Gets the comment Id
+     *
+     * @return Returns the Id of the comment
+     */
+    public Integer getCommentID() {
+        return commentID;
+    }
+
+    /**
+     * Sets the comment ID
+     *
+     * @param commentID The ID of the comment
+     */
+    public void setCommentID(Integer commentID) {
+        this.commentID = commentID;
+    }
+
+    /**
+     * Gets the student who wrote the comment
+     *
+     * @return Returns the student object
+     */
+    public Student getStudent() {
+        return student;
+    }
+
+    /**
+     * Sets the student who wrote the comment
+     *
+     * @param student Passes the student who wrote the comment
+     */
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    /**
+     * Gets the post of the comment
+     *
+     * @return Returns the post where the comment is posted
+     */
+    public Post getPost() {
+        return post;
+    }
+
+    /**
+     * Sets the post where the comment is posted
+     *
+     * @param post Sets the post where the comment is posted
+     */
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    /**
      * Gets the creation date of the {@link Comment}
      *
      * @return {@link Timestamp} with the date when the comment was created
      */
-    public Date dateComment() {
+    public Date getDateComment() {
         return dateComment;
     }
 
@@ -85,7 +200,7 @@ public class Comment implements Serializable {
      *
      * @param dateComment Passes the timestamp with the creation date
      */
-    public void setDate(Date dateComment) {
+    public void setDateComment(Date dateComment) {
         this.dateComment = dateComment;
     }
 
@@ -113,12 +228,12 @@ public class Comment implements Serializable {
      */
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.commentID);
-        hash = 79 * hash + Objects.hashCode(this.student);
-        hash = 79 * hash + Objects.hashCode(this.post);
-        hash = 79 * hash + Objects.hashCode(this.dateComment);
-        hash = 79 * hash + Objects.hashCode(this.commentText);
+        int hash = 3;
+        hash = 59 * hash + Objects.hashCode(this.commentID);
+        hash = 59 * hash + Objects.hashCode(this.student);
+        hash = 59 * hash + Objects.hashCode(this.post);
+        hash = 59 * hash + Objects.hashCode(this.dateComment);
+        hash = 59 * hash + Objects.hashCode(this.commentText);
         return hash;
     }
 
@@ -161,7 +276,7 @@ public class Comment implements Serializable {
     }
 
     /**
-     * Gets a concatenated string with the values of all atributes
+     * Gets a concatenated string with the values of all attributes
      *
      * @return Concatenated string with all attributes
      */

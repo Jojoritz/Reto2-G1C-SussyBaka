@@ -12,11 +12,12 @@ import java.util.Date;
  * @author Joritz
  */
 public class CourseDTO {
+
     public Integer courseId;
     public String courseName;
     public Date startDate;
-    public boolean isVisible;
-    public boolean isPrivate;
+    public Boolean isVisible;
+    public Boolean isPrivate;
     public String teachName;
     public String subName;
 
@@ -29,5 +30,5 @@ public class CourseDTO {
         this.teachName = teachName;
         this.subName = subName;
     }
-    
+
 }

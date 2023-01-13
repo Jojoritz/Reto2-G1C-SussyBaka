@@ -55,9 +55,8 @@ public class CommentFacadeREST {
     }
 
     @PUT
-    @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Integer id, Comment entity) {
+    public void edit(Comment entity) {
         try {
             LOG.log(Level.INFO, "CommentRESTful service PUT: edit {0}",
                     entity.getClass().getName());
@@ -76,8 +75,8 @@ public class CommentFacadeREST {
         try {
             LOG.log(Level.INFO,
                     "CommentRESTful service DELETE: deleting comment with id: {0}", id);
-            ejb.remove(ejb.find(id));
-        } catch (ReadException | DeleteException e) {
+            ejb.remove(id);
+        } catch (DeleteException e) {
             LOG.log(Level.SEVERE,
                     "CommentRESTful service DELETE: Exception on delete {0}",
                     e.getMessage());
