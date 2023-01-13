@@ -68,7 +68,9 @@ public class CourseEJB implements CourseEJBLocal {
     public Course find(Integer id) throws ReadException {
         Course entity;
         try {
-            entity = em.find(Course.class, id);
+            LOG.info("aaa");
+            entity =  em.createNamedQuery("findCourse", Course.class).setParameter("courseId", id).getSingleResult();
+            LOG.info(entity.toString());
             return entity;
         } catch (Exception e) {
             throw new ReadException(e.getMessage());

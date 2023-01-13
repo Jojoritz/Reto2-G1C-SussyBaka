@@ -72,16 +72,18 @@ public class UserFacadeREST{
             throw new InternalServerErrorException(e.getMessage());
         }
     }
+    
+     
     /**
      * DELETE method to remove the user
-     * @param user the data of user to remove
+     * @param userId the data of user to remove
      */
     @DELETE
-    @Path("{user}")
-    public void removeUser(@PathParam("user")User user) {
+    @Path("user/{userId}")
+    public void removeUser(@PathParam("userId")Integer userId) {
         try {
             LOGGER.info("Deleting the user");
-            ejb.remove(user);
+            ejb.remove(userId);
         } catch (DeleteException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());

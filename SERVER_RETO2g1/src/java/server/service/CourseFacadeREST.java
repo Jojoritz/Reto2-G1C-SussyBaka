@@ -33,8 +33,7 @@ import server.exception.UpdateException;
 @Path("entities.course")
 public class CourseFacadeREST {
 
-
-    @EJB
+    @EJB(beanName = "CourseEJB")
     private CourseEJBLocal ejb;
 
     @POST
