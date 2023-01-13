@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import server.entities.enumerations.UserStatus;
 import server.exception.DeleteException;
@@ -34,9 +35,9 @@ import server.exception.UpdateException;
 public class UserEJB implements UserEJBLocal {
 
     private static final Logger LOGGER = Logger.getLogger(UserEJB.class.getName());
-    @PersistenceContext
+    @PersistenceContext(unitName = "JavaFX-WebApplicationUD5ExamplePU")
     private EntityManager em;
-    
+
     @Override
     public User getUserRelationshipsData(Integer id) throws ReadException {
         User user;
@@ -48,19 +49,19 @@ public class UserEJB implements UserEJBLocal {
             if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
                 LOGGER.info("Getting the student relationships of the student");
                 //Obtaining the studying courses of the student and saving in a collection to latter set in the user studying courses collection
-                List<Course> studyingCourses =  em.createNamedQuery("getStudentCourseData")
+                List<Course> studyingCourses = em.createNamedQuery("getStudentCourseData")
                         .setParameter("id", id).getResultList();
-                
+
                 ((Student) user).setStudyingCourses(studyingCourses.stream().collect(Collectors.toSet()));
             } else if (user.getPrivilege().equals(UserPrivilege.TEACHER)) {
                 LOGGER.info("Starting getting the relationships of the teacher");
                 //Obtaining the teaching courses of the teacher and saving in a collection
-                List<Course> teachingCourses =  em.createNamedQuery("getTeacherCourseData")
+                List<Course> teachingCourses = em.createNamedQuery("getTeacherCourseData")
                         .setParameter("id", id).getResultList();
                 //Obtaining the specialized subject of the teacher and saving in a collection
-                List<Subject> teacherSpecializedSubjects =  em.createNamedQuery("getTeacherSubjectData")
+                List<Subject> teacherSpecializedSubjects = em.createNamedQuery("getTeacherSubjectData")
                         .setParameter("id", id).getResultList();
-                
+
                 //Setting the obtained data to the teacher
                 ((Teacher) user).setTeachingCourses(teachingCourses.stream().collect(Collectors.toSet()));
                 ((Teacher) user).setSpecializedSubjects(teacherSpecializedSubjects.stream().collect(Collectors.toSet()));
@@ -73,76 +74,88 @@ public class UserEJB implements UserEJBLocal {
 
         return user;
     }
+
     @Override
-    public void create(User entity) throws CreateException{
-        
+    public void create(User entity) throws CreateException {
+        Integer idExist = null;
         try {
             LOGGER.info("Searching if the user exist");
             entity.setPassword(hashUserPassword(entity.getPassword()));
-            
-            User findedUser = em.find(User.class, entity.getId());
-            if (findedUser != null) {
+
+            try {
+                idExist = (Integer) em.createNamedQuery("getUserId").setParameter("login", entity.getLogin()).getSingleResult();
                 throw new Exception("The user all ready exist");
+            } catch (NoResultException e) {
+                LOGGER.severe("Llega a despues de la comprobacion, creando usuario");
+                LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName()));
+                em.persist(entity);
+                LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
+                
             }
-            LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName())); 
-            em.persist(entity);
-            LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
+
+            
+
+            
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
             throw new CreateException(e.getMessage());
         }
     }
+
     @Override
-    public User signIn(String login, String password) throws ReadException{
+    public User signIn(String login) throws ReadException {
         try {
-            String hashedPassword = hashUserPassword(password);
-            Integer userId = (Integer) em.createNamedQuery("getUserLogin").setParameter("login", login).setParameter("password", hashedPassword).getSingleResult();
-            User user = (User)em.createNamedQuery("findUserById").setParameter("userId", userId).getSingleResult();
+
+            Integer userId = (Integer) em.createNamedQuery("getUserId").setParameter("login", login).getSingleResult();
+            User user = (User) em.createNamedQuery("findUserById").setParameter("userId", userId).getSingleResult();
             return user;
         } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
             throw new ReadException(e.getMessage());
         }
     }
 
     /**
      * The method to hash the password of the user
+     *
      * @param user The password without hashed
      * @return the hashed password
      * @throws Exception if any error ocurred when hashing the password
      */
-    private String hashUserPassword(String password) throws Exception{
+    private String hashUserPassword(String password) throws Exception {
         MessageDigest messageDigest = null;
         //Contraseña a hashear
         String hashedPassword = null;
         try {
             LOGGER.info("Hashing the password");
             messageDigest = MessageDigest.getInstance("MD5");
-            
+
             byte dataBytes[] = password.getBytes();
             messageDigest.update(dataBytes);
-            
+
             byte resume[] = messageDigest.digest();
             hashedPassword = toHexString(resume);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.severe("An error ocurred while hashing the password");
             throw new Exception("An error ocurred while hashing the password");
         }
-       
-        
+
         return hashedPassword;
     }
+
     /**
      * A method to convert the resume in bytes to hexadecimal string
+     *
      * @param resume the resume in byte
      * @return the resume in string in hexadecimal
      */
-    private String toHexString(byte[] resume){
+    private String toHexString(byte[] resume) {
         StringBuffer hashedPassword = new StringBuffer();
-        
+
         for (byte b : resume) {
             hashedPassword.append(b);
         }
-        
+
         return hashedPassword.toString();
     }
 
@@ -159,8 +172,8 @@ public class UserEJB implements UserEJBLocal {
 
     @Override
     public void remove(Integer user_id) throws DeleteException {
-         try {
-            User user = (User)em.createNamedQuery("findUserById").setParameter("userId", user_id).getSingleResult();
+        try {
+            User user = (User) em.createNamedQuery("findUserById").setParameter("userId", user_id).getSingleResult();
             user = em.merge(user);
             em.remove(user);
         } catch (Exception e) {
@@ -169,5 +182,4 @@ public class UserEJB implements UserEJBLocal {
         }
     }
 
-    
 }

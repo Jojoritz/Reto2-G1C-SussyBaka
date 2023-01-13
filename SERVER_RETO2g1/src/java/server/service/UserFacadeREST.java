@@ -95,13 +95,13 @@ public class UserFacadeREST{
      * @return the user finded
      */
     @GET
-    @Path("user/login/{login}/{password}")
+    @Path("user/login/{login}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User signIn(@PathParam("login")String login, @PathParam("password")String password){
+    public User signIn(@PathParam("login")String login){
         User user = null;
         try {
             LOGGER.info("Searching the user");
-            user = ejb.signIn(login, password);
+            user = ejb.signIn(login);
             
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());

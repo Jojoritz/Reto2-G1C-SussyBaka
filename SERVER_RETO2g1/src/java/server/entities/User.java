@@ -37,11 +37,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @NamedQueries({
         @NamedQuery(
-                name = "getUserLogin", query = "SELECT u.id FROM User u WHERE u.login = :login AND u.password = :password"
+                name = "getUserId", query = "SELECT u.id FROM User u WHERE u.login = :login"
                         
         ),
         @NamedQuery(
-                name="findUserById", query="SELECT u FROM User u WHERE u.id = :userId"
+                name="findUserById", query="SELECT new server.entities.User(u.id, u.login, u.email, u.fullName, u.password, u.lastPasswordChange, u.status, u.privilege) FROM User u WHERE u.id = :userId"
         )
 })
 

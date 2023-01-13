@@ -58,5 +58,5 @@ public interface UserEJBLocal{
      * @return Returns the entity found by using the primary key, can be NULL
      * @throws ReadException If the read
      */
-    public User signIn(String login, String password) throws ReadException;
+    public User signIn(String login) throws ReadException;
 }

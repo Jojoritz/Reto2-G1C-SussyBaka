@@ -30,7 +30,7 @@ import javax.persistence.PersistenceContext;
 public class SubjectEJB implements SubjectEJBLocal {
 
     private static final Logger LOGGER = Logger.getLogger(SubjectEJB.class.getName());
-    @PersistenceContext
+    @PersistenceContext(unitName="JavaFX-WebApplicationUD5ExamplePU")
     private EntityManager em;
 
     @Override
