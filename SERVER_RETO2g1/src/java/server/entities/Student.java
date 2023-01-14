@@ -42,6 +42,7 @@ public class Student extends User {
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<Course> studyingCourses;
 
+    
     //Constructor
     public Student() {
         super();
