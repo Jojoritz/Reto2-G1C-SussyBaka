@@ -93,6 +93,7 @@ public class Subject implements Serializable {
      * @associates <{entities.Course}>
      * The collection of courses that contains this subject
      */
+    @XmlTransient
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subjects")
     private Set<Course> courseWithSubject;
 
@@ -100,6 +101,7 @@ public class Subject implements Serializable {
      * @associates <{entities.Teacher}>
      * The collection of teacher that are specialized in this subject
      */
+    @XmlTransient
     @ManyToMany(mappedBy = "specializedSubjects")
     private Set<Teacher> teachersSpecializedInSubject;
 

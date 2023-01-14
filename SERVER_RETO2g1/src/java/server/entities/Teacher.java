@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -38,6 +39,7 @@ public class Teacher extends User {
      * @associates <{entities.Course}>
      * A collection of the actually teaching courses of the teacher
      */
+    @XmlTransient
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacher")
     private Set<Course> teachingCourses;
 
@@ -45,7 +47,7 @@ public class Teacher extends User {
      * @associates <{entities.Subject}>
      * A collection with the specialized subject of this teacher
      */
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "specialized_subjects", schema = "reto2_g1c_sussybaka",
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id"))
