@@ -37,13 +37,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author ioritz
  */
 @NamedQueries({
+    @NamedQuery(
+            name = "getUserId", query = "SELECT u.id FROM User u WHERE u.login = :login"
+    )
+    ,
         @NamedQuery(
-                name = "getUserId", query = "SELECT u.id FROM User u WHERE u.login = :login"
-                        
-        ),
-        @NamedQuery(
-                name="findAllUsers", query="SELECT u FROM User u"
-        )
+            name = "findAllUsers", query = "SELECT u FROM User u"
+    )
 })
 
 @Entity
@@ -88,7 +88,7 @@ public class User implements Serializable {
     /**
      * The password of the account
      */
-    @Column(name="user_password")
+    @Column(name = "user_password")
     @NotNull
     private String password;
 
@@ -121,7 +121,7 @@ public class User implements Serializable {
      */
     @ElementCollection(targetClass = Date.class, fetch = FetchType.EAGER)
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @JsonSerialize(as=Date.class)
+    @JsonSerialize(as = Date.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @CollectionTable(name = "user_signInHistory", schema = "reto2_g1c_sussybaka")
     private List<Date> signInHistory;
@@ -129,19 +129,6 @@ public class User implements Serializable {
     //Constructor
     public User() {
         super();
-    }
-    
-    public User(Integer id, String login, String email, String fullName, 
-            String password, Date lastPasswordChange, UserStatus status, UserPrivilege privilege){
-        
-        this.id = id;
-        this.login = login;
-        this.email = email;
-        this.fullName = fullName;
-        this.password = password;
-        this.lastPasswordChange = lastPasswordChange;
-        this.status = status;
-        this.privilege = privilege;
     }
 
     //Getters and setters

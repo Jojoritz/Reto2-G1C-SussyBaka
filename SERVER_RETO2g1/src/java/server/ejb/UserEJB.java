@@ -19,8 +19,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import server.entities.Course;
-import server.entities.Subject;
 import server.entities.enumerations.UserPrivilege;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
@@ -167,45 +165,6 @@ public class UserEJB implements UserEJBLocal {
             LOGGER.severe("An error happened when searching all the users");
             throw new ReadException("An error happened when searching all the users");
         }
-    }
-
-    @Override
-    public List<Course> findStudentCourses(Integer id) throws ReadException {
-        List<Course> courses = null;
-        try {
-            LOGGER.info("Searching the student with the id");
-            courses = em.createNamedQuery("findCoursesOfStudent").setParameter("userId", id).getResultList();
-        } catch (Exception e) {
-            LOGGER.severe("An error happened when searching the student");
-            throw new ReadException("An error happened when searching the student");
-        }
-        return courses;
-    }
-
-    @Override
-    public List<Subject> findTeacherSubjects(Integer id) throws ReadException {
-         List<Subject> subjects = null;
-        try {
-            LOGGER.info("Searching the subjects");
-            subjects = em.createNamedQuery("getTeacherSpecializedSubject").setParameter("userId", id).getResultList();
-        } catch (Exception e) {
-            LOGGER.severe("An error happened when searching the teacher");
-            throw new ReadException("An error happened when searching the teacher");
-        }
-        return subjects;
-    }
-
-    @Override
-    public List<Course> findTeacherCourses(Integer id) throws ReadException {
-        List<Course> courses = null;
-        try {
-            LOGGER.info("Searching the subjects");
-            courses = em.createNamedQuery("findTeacherCourses").setParameter("userId", id).getResultList();
-        } catch (Exception e) {
-            LOGGER.severe("An error happened when searching the teacher");
-            throw new ReadException("An error happened when searching the teacher");
-        }
-        return courses;
     }
 
 }

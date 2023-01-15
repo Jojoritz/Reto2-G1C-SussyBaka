@@ -66,29 +66,4 @@ public interface UserEJBLocal {
      */
     public List<User> findAll() throws ReadException;
 
-    /**
-     * A method to obtain the relationship of the student and course
-     *
-     * @param id the id of the student
-     * @return the student with the relationships
-     * @throws ReadException if any error happends when searching the student
-     */
-    public List<Course> findStudentCourses(Integer id) throws ReadException;
-
-    /**
-     * A method to obtain the relationship of the teacher with subjects
-     *
-     * @param id the id of the teacher
-     * @return a list of subjects
-     * @throws ReadException if any error happends when searching the teacher
-     */
-    public List<Subject> findTeacherSubjects(Integer id) throws ReadException;
-    /**
-     * A method to obtain the relationship of the teacher with courses
-     *
-     * @param id the id of the teacher
-     * @return a list of courses
-     * @throws ReadException if any error happends when searching the teacher
-     */
-    public List<Course> findTeacherCourses(Integer id) throws ReadException;
 }

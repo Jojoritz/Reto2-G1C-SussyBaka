@@ -51,13 +51,15 @@ import javax.xml.bind.annotation.XmlTransient;
         
         @NamedQuery(
             name = "findCourseByDate", query = "SELECT c FROM Course c, Teacher t, Subject s WHERE c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId AND CAST(c.startDate as date) =:startdate"
-    ),
+    )
+    ,
         @NamedQuery(
-            name="findCoursesOfStudent", query="SELECT c FROM Course c JOIN Student s WHERE s.id = :userId"
-        ),
+            name = "findCoursesOfStudent", query = "SELECT c FROM Course c JOIN c.courseStudents s WHERE s.id = :userId"
+    )
+    ,
        @NamedQuery(
-            name="findTeacherCourses", query="SELECT c FROM Course c JOIN Teacher t WHERE t.id = :userId"
-       )
+            name = "findTeacherCourses", query = "SELECT c FROM Course c JOIN c. teacher t WHERE t.id = :userId"
+    )
 })
 
 @Entity
@@ -299,17 +301,7 @@ public class Course implements Serializable {
     //hascode, equals & toString
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 83 * hash + Objects.hashCode(this.courseId);
-        hash = 83 * hash + Objects.hashCode(this.name);
-        hash = 83 * hash + Objects.hashCode(this.startDate);
-        hash = 83 * hash + Objects.hashCode(this.isVisible);
-        hash = 83 * hash + Objects.hashCode(this.isPrivate);
-        hash = 83 * hash + Objects.hashCode(this.courseStudents);
-        hash = 83 * hash + Objects.hashCode(this.teacher);
-        hash = 83 * hash + Objects.hashCode(this.coursePosts);
-        hash = 83 * hash + Objects.hashCode(this.subjects);
-        return hash;
+        return Objects.hash(courseId);
     }
 
     @Override
@@ -323,35 +315,8 @@ public class Course implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Course other = (Course) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.courseId, other.courseId)) {
-            return false;
-        }
-        if (!Objects.equals(this.startDate, other.startDate)) {
-            return false;
-        }
-        if (!Objects.equals(this.isVisible, other.isVisible)) {
-            return false;
-        }
-        if (!Objects.equals(this.isPrivate, other.isPrivate)) {
-            return false;
-        }
-        if (!Objects.equals(this.courseStudents, other.courseStudents)) {
-            return false;
-        }
-        if (!Objects.equals(this.teacher, other.teacher)) {
-            return false;
-        }
-        if (!Objects.equals(this.coursePosts, other.coursePosts)) {
-            return false;
-        }
-        if (!Objects.equals(this.subjects, other.subjects)) {
-            return false;
-        }
-        return true;
+        Course other = (Course) obj;
+        return Objects.equals(courseId, other.courseId);
     }
 
     @Override

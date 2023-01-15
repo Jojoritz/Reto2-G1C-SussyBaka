@@ -1,23 +1,20 @@
 package server.entities;
 
-import java.util.Objects;
-import java.util.Set;
-import javax.persistence.CascadeType;
+import java.util.List;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  *
  * @author ioritz This is the student entity class
  */
-
 @Entity
 @DiscriminatorValue("student")
 @XmlRootElement
@@ -29,13 +26,13 @@ public class Student extends User {
      * @associates <{entities.Course}>
      * This is a collection with the acctualy studying courses of the student
      */
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "studying_courses", schema = "reto2_g1c_sussybaka",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private Set<Course> studyingCourses;
+    @Fetch(value = FetchMode.SELECT)
+    private List<Course> studyingCourses;
 
-    
     //Constructor
     public Student() {
         super();
@@ -47,7 +44,7 @@ public class Student extends User {
      *
      * @return Courses
      */
-    public Set<Course> getStudyingCourses() {
+    public List<Course> getStudyingCourses() {
         return studyingCourses;
     }
 
@@ -56,34 +53,8 @@ public class Student extends User {
      *
      * @param studyingCourses
      */
-    public void setStudyingCourses(Set<Course> studyingCourses) {
+    public void setStudyingCourses(List<Course> studyingCourses) {
         this.studyingCourses = studyingCourses;
-    }
-
-    //hashCode, equals and toString
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 41 * hash + Objects.hashCode(this.studyingCourses);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Student other = (Student) obj;
-        if (!Objects.equals(this.studyingCourses, other.studyingCourses)) {
-            return false;
-        }
-        return true;
     }
 
     @Override

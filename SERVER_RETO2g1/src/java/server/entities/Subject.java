@@ -24,25 +24,28 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author ioritz
  */
-
 @NamedQueries(
-    {
-        @NamedQuery(
-                name="findAllSubjects", query="SELECT s FROM Subject s"
-        ),
+        {
+            @NamedQuery(
+                    name = "findAllSubjects", query = "SELECT s FROM Subject s"
+            )
+            ,
        @NamedQuery(
-               name="getSubjectByName", query="SELECT s FROM Subject s WHERE s.name LIKE :name"
-       ),
+                    name = "getSubjectByName", query = "SELECT s FROM Subject s WHERE s.name LIKE :name"
+            )
+            ,
         @NamedQuery(
-                name="getSubjectsByType", query="SELECT s FROM Subject s WHERE s.type LIKE :type"
-        ),
+                    name = "getSubjectsByType", query = "SELECT s FROM Subject s WHERE s.type LIKE :type"
+            )
+            ,
         @NamedQuery(
-                name="getSubjectsByLevel", query="SELECT s FROM Subject s WHERE s.level LIKE :level"
-        ),
+                    name = "getSubjectsByLevel", query = "SELECT s FROM Subject s WHERE s.level LIKE :level"
+            )
+            ,
          @NamedQuery(
-            name="findSubjectsOfTeacher", query="SELECT su FROM Subject su JOIN Teacher t WHERE t.id = :userId"
-        )
-    }
+                    name = "findSubjectsOfTeacher", query = "SELECT su FROM Subject su JOIN su.teachersSpecializedInSubject t WHERE t.id = :userId"
+            )
+        }
 )
 
 @Entity
@@ -88,7 +91,6 @@ public class Subject implements Serializable {
      * @associates <{entities.Course}>
      * The collection of courses that contains this subject
      */
-    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subjects")
     private Set<Course> courseWithSubject;
     /**

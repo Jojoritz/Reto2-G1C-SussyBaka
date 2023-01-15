@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author ioritz This is the teacher entity class
  */
-
 @Entity
 @DiscriminatorValue("teacher")
 @XmlRootElement
@@ -87,36 +86,6 @@ public class Teacher extends User {
      */
     public void setSpecializedSubjects(Set<Subject> specializedSubjects) {
         this.specializedSubjects = specializedSubjects;
-    }
-
-    //Equals, hashCode and toString
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + Objects.hashCode(this.teachingCourses);
-        hash = 97 * hash + Objects.hashCode(this.specializedSubjects);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Teacher other = (Teacher) obj;
-        if (!Objects.equals(this.teachingCourses, other.teachingCourses)) {
-            return false;
-        }
-        if (!Objects.equals(this.specializedSubjects, other.specializedSubjects)) {
-            return false;
-        }
-        return true;
     }
 
     @Override
