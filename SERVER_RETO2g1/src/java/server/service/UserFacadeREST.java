@@ -25,7 +25,9 @@ import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import server.entities.Course;
 import server.entities.Student;
+import server.entities.Subject;
 import server.entities.Teacher;
 
 /**
@@ -141,34 +143,54 @@ public class UserFacadeREST{
     @GET
     @Path("student/id/{login}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-   public Student getStudentRelationships(@PathParam("id")Integer id){
-       Student student = null; 
+   public List<Course> getStudentRelationships(@PathParam("id")Integer id){
+       List<Course> courses = null; 
        try {
             LOGGER.info("Searching the student with the id");
-            student = ejb.findStudentRelations(id);
+            courses = ejb.findStudentCourses(id);
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());
         }
-       return student;
+       return courses;
    }
    /**
-    * A GET method to search a teacher and their relationships with the id
+    * A GET method to search a teacher and their relationships of subjects with the id
     * @param id the id of the teacher
     * @return the teacher with the relationships
     */
     @GET
-    @Path("teacher/id/{login}")
+    @Path("teacher/id/subjects/{login}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-   public Teacher getTeacherRelationships(@PathParam("id")Integer id){
-       Teacher teacher = null; 
+   public List<Subject> getTeacherSubjectRelationships(@PathParam("id")Integer id){
+       List<Subject> subjects = null; 
        try {
             LOGGER.info("Searching the teacher with the id");
-            teacher = ejb.findTeachertRelations(id);
+            subjects = ejb.findTeacherSubjects(id);
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());
         }
-       return teacher;
+       return subjects;
+   }
+   
+   /**
+    * A GET method to search a teacher and their relationships of courses with the id
+    * @param id the id of the teacher
+    * @return the teacher with the relationships
+    */
+    @GET
+    @Path("teacher/id/courses/{login}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+   public List<Course> getTeacherCourseRelationships(@PathParam("id")Integer id){
+       List<Course> courses = null; 
+       try {
+            LOGGER.info("Searching the teacher with the id");
+            courses = ejb.findTeacherCourses(id);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            throw new NotFoundException(e.getMessage());
+        }
+       return courses;
    }
 }

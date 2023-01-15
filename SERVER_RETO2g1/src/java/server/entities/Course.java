@@ -51,7 +51,13 @@ import javax.xml.bind.annotation.XmlTransient;
         
         @NamedQuery(
             name = "findCourseByDate", query = "SELECT c FROM Course c, Teacher t, Subject s WHERE c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId AND CAST(c.startDate as date) =:startdate"
-    )
+    ),
+        @NamedQuery(
+            name="findCoursesOfStudent", query="SELECT c FROM Course c JOIN Student s WHERE s.id = :userId"
+        ),
+       @NamedQuery(
+            name="findTeacherCourses", query="SELECT c FROM Course c JOIN Teacher t WHERE t.id = :userId"
+       )
 })
 
 

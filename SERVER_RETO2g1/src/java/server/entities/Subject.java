@@ -39,6 +39,9 @@ import javax.xml.bind.annotation.XmlTransient;
         @NamedQuery(
                 name="getSubjectsByLevel", query="SELECT s FROM Subject s WHERE s.level LIKE :level"
         ),
+         @NamedQuery(
+            name="findSubjectsOfTeacher", query="SELECT su FROM Subject su JOIN Teacher t WHERE t.id = :userId"
+        )
     }
 )
 
