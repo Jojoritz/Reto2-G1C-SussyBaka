@@ -9,6 +9,8 @@ import java.util.List;
 import server.entities.User;
 import server.exception.ReadException;
 import javax.ejb.Local;
+import server.entities.Student;
+import server.entities.Teacher;
 import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
@@ -60,4 +62,18 @@ public interface UserEJBLocal{
      * @throws ReadException if any error happends when searchin the users
      */
     public List<User> findAll() throws ReadException;
+    /**
+     * A method to obtain the relationship of the student and course
+     * @param id the id of the student
+     * @return the student with the relationships
+     * @throws ReadException if any error happends when searching the student
+     */
+    public Student findStudentRelations(Integer id) throws ReadException;
+    /**
+     * A method to obtain the relationship of the teacher
+     * @param id the id of the teacher
+     * @return the teacher with the relationships
+     * @throws ReadException if any error happends when searching the teacher
+     */
+    public Teacher findTeachertRelations(Integer id) throws ReadException;
 }

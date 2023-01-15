@@ -34,7 +34,6 @@ public class UserEJB implements UserEJBLocal {
     @PersistenceContext(unitName = "JavaFX-WebApplicationUD5ExamplePU")
     private EntityManager em;
 
-
     @Override
     public void create(User entity) throws CreateException {
         Integer idExist = null;
@@ -49,30 +48,25 @@ public class UserEJB implements UserEJBLocal {
             } catch (NoResultException e) {
                 LOGGER.severe("Llega a despues de la comprobacion, creando usuario");
                 LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName()));
-                if (entity.getPrivilege().equals(UserPrivilege.TEACHER) && ((Teacher)entity).getSpecializedSubjects() != null) {
-                    ((Teacher)entity).setSpecializedSubjects(
+                if (entity.getPrivilege().equals(UserPrivilege.TEACHER) && ((Teacher) entity).getSpecializedSubjects() != null) {
+                    ((Teacher) entity).setSpecializedSubjects(
                             em.merge(
-                                    ((Teacher)entity).getSpecializedSubjects()
+                                    ((Teacher) entity).getSpecializedSubjects()
                             )
-                            
                     );
                 }
-                if (entity.getPrivilege().equals(UserPrivilege.STUDENT) && ((Student)entity).getStudyingCourses()!= null) {
-                    ((Student)entity).setStudyingCourses(
+                if (entity.getPrivilege().equals(UserPrivilege.STUDENT) && ((Student) entity).getStudyingCourses() != null) {
+                    ((Student) entity).setStudyingCourses(
                             em.merge(
-                                    ((Student)entity).getStudyingCourses()
+                                    ((Student) entity).getStudyingCourses()
                             )
-                            
                     );
                 }
                 em.persist(entity);
                 LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
-                
+
             }
 
-            
-
-            
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
             throw new CreateException(e.getMessage());
@@ -172,7 +166,31 @@ public class UserEJB implements UserEJBLocal {
             throw new ReadException("An error happened when searching all the users");
         }
     }
-    
-   
+
+    @Override
+    public Student findStudentRelations(Integer id) throws ReadException {
+        Student student = null;
+        try {
+            LOGGER.info("Searching the student with the id");
+            student = em.find(Student.class, id);
+        } catch (Exception e) {
+            LOGGER.severe("An error happened when searching the student");
+            throw new ReadException("An error happened when searching the student");
+        }
+        return student;
+    }
+
+    @Override
+    public Teacher findTeachertRelations(Integer id) throws ReadException {
+         Teacher teacher = null;
+        try {
+            LOGGER.info("Searching the student with the id");
+            teacher = em.find(Teacher.class, id);
+        } catch (Exception e) {
+            LOGGER.severe("An error happened when searching the teacher");
+            throw new ReadException("An error happened when searching the teacher");
+        }
+        return teacher;
+    }
 
 }

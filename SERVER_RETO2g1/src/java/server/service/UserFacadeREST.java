@@ -25,6 +25,8 @@ import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import server.entities.Student;
+import server.entities.Teacher;
 
 /**
  *
@@ -130,5 +132,43 @@ public class UserFacadeREST{
         }
         return users;
     }
-   
+    
+    /**
+     * A GET method to search a student and their relationships with the id
+     * @param id the id of the student
+     * @return the student with the relationships
+     */
+    @GET
+    @Path("student/id/{login}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+   public Student getStudentRelationships(@PathParam("id")Integer id){
+       Student student = null; 
+       try {
+            LOGGER.info("Searching the student with the id");
+            student = ejb.findStudentRelations(id);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            throw new NotFoundException(e.getMessage());
+        }
+       return student;
+   }
+   /**
+    * A GET method to search a teacher and their relationships with the id
+    * @param id the id of the teacher
+    * @return the teacher with the relationships
+    */
+    @GET
+    @Path("teacher/id/{login}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+   public Teacher getTeacherRelationships(@PathParam("id")Integer id){
+       Teacher teacher = null; 
+       try {
+            LOGGER.info("Searching the teacher with the id");
+            teacher = ejb.findTeachertRelations(id);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            throw new NotFoundException(e.getMessage());
+        }
+       return teacher;
+   }
 }
