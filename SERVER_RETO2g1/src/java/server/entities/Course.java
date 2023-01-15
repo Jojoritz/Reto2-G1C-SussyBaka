@@ -1,5 +1,6 @@
 package server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,27 +34,26 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(
             name = "findCourse",
-            query = "SELECT new server.entities.dto.CourseDTO(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate, t.fullName, s.name) "
-            + "FROM Course c, Teacher t, Subject s WHERE c.courseId = :courseId AND c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId"
+            query = "SELECT c FROM Course c, Teacher t, Subject s WHERE c.courseId = :courseId AND c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId"
     )
     ,
         
         @NamedQuery(
             name = "findAllCourses",
-            query = "SELECT new server.entities.dto.CourseDTO(c.courseId, c.name, c.startDate, c.isVisible, c.isPrivate, t.fullName, s.name) "
-            + "FROM Course c, Teacher t, Subject s WHERE c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId"
+            query = "SELECT c FROM Course c, Teacher t, Subject s WHERE c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId"
     )
     ,
     
         @NamedQuery(
-            name = "findCourseByName", query = "SELECT c FROM Course c WHERE c.name LIKE :name"
+            name = "findCourseByName", query = "SELECT c FROM Course c, Teacher t, Subject s WHERE c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId AND c.name LIKE :name"
     )
     ,
         
         @NamedQuery(
-            name = "findCourseByDate", query = "SELECT c FROM Course c WHERE CAST(c.startDate as date) =:startdate"
+            name = "findCourseByDate", query = "SELECT c FROM Course c, Teacher t, Subject s WHERE c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId AND CAST(c.startDate as date) =:startdate"
     )
 })
+
 
 @Entity
 @Table(name = "course", schema = "reto2_g1c_sussybaka")
@@ -94,31 +95,33 @@ public class Course implements Serializable {
     @Column
     private Boolean isPrivate;
 
-    /**
-     * @associates <{Student}>
-     * This is a collection with the actual students of the course
-     */
+   @JsonIgnore
+    @XmlTransient
     @ManyToMany(mappedBy = "studyingCourses")
     private Set<Student> courseStudents;
 
     /**
      * This is the actual Teacher of the course
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Teacher teacher;
 
     /**
      * @associates <{Post}>
      * This is a collection with the actual post of the course
      */
+    @JsonIgnore
+    @XmlTransient
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Collection<Post> coursePosts;
 
     /**
      * This is the actual Subject of the course
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Subject subjects;
+
+
 
     //Constructors
     public Course() {
