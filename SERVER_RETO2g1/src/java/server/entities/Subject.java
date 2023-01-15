@@ -1,5 +1,6 @@
 package server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 
 import java.util.Objects;
@@ -27,9 +28,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries(
     {
         @NamedQuery(
-                name="findById", query="SELECT new server.entities.Subject(s.subjectId, s.name, s.type, s.century, s.level) FROM Subject s WHERE s.subjectId = :subjectId"
-        ),
-        @NamedQuery(
                 name="findAllSubjects", query="SELECT s FROM Subject s"
         ),
        @NamedQuery(
@@ -40,12 +38,6 @@ import javax.xml.bind.annotation.XmlTransient;
         ),
         @NamedQuery(
                 name="getSubjectsByLevel", query="SELECT s FROM Subject s WHERE s.level LIKE :level"
-        ),
-        @NamedQuery(
-                name="getSubjectCourseRelationship", query="SELECT cs FROM Subject s, IN(s.courseWithSubject) cs WHERE s.subjectId = :subjectId"
-        ),
-        @NamedQuery(
-                name="getSubjectTeacherRelationship", query="SELECT ts FROM Subject s, IN(s.teachersSpecializedInSubject) ts WHERE s.subjectId = :subjectId"
         ),
     }
 )
@@ -93,30 +85,19 @@ public class Subject implements Serializable {
      * @associates <{entities.Course}>
      * The collection of courses that contains this subject
      */
-    @XmlTransient
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subjects")
     private Set<Course> courseWithSubject;
-
     /**
      * @associates <{entities.Teacher}>
      * The collection of teacher that are specialized in this subject
      */
-    @XmlTransient
     @ManyToMany(mappedBy = "specializedSubjects")
     private Set<Teacher> teachersSpecializedInSubject;
 
     //Constructor
     public Subject() {
         super();
-    }
-    
-    public Subject(Integer subjectId, String name, String type, String century, String level){
-        this.subjectId = subjectId;
-        this.name = name;
-        this.type = type;
-        this.century = century;
-        this.level = level;
-        
     }
 
     //Getters and setters
@@ -216,6 +197,7 @@ public class Subject implements Serializable {
      * @return Course
      */
     @XmlTransient
+    @JsonIgnore
     public Set<Course> getCourseWithSubject() {
         return courseWithSubject;
     }
@@ -235,6 +217,7 @@ public class Subject implements Serializable {
      * @return
      */
     @XmlTransient
+    @JsonIgnore
     public Set<Teacher> getTeachersSpecializedInSubject() {
         return teachersSpecializedInSubject;
     }

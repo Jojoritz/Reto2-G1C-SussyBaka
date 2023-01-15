@@ -5,6 +5,7 @@
  */
 package server.service;
 
+import java.util.List;
 import server.ejb.interfaces.UserEJBLocal;
 import server.entities.User;
 import server.exception.CreateException;
@@ -97,7 +98,7 @@ public class UserFacadeREST{
     @GET
     @Path("user/login/{login}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User signIn(@PathParam("login")String login){
+    public User signIn(@PathParam("login")String login, @PathParam("password") String password){
         User user = null;
         try {
             LOGGER.info("Searching the user");
@@ -111,23 +112,20 @@ public class UserFacadeREST{
         return user;
         
     }
-    /**
-     * GET method to search a user relationships with other entityes
-     * @param user the data of the user to search the relationships
-     * @return the user with the data
-     */
+    
     @GET
-    @Path("user/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User findUserRelationships(@PathParam("id") Integer id){
-       User searchedUser = null;
+    public List<User> findAll(){
+        List<User> users = null;
         try {
-            LOGGER.info("searching the relationships of the user");
-            searchedUser = ejb.getUserRelationshipsData(id);
+            LOGGER.info("Searching the users");
+            users = ejb.findAll();
+            
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());
         }
-        return searchedUser;
+        return users;
     }
+   
 }

@@ -1,5 +1,6 @@
 package server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -9,8 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -19,15 +18,7 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author ioritz This is the teacher entity class
  */
-@NamedQueries({
-        @NamedQuery(
-                name="getTeacherCourseData", query="SELECT tc FROM Teacher t, IN(t.teachingCourses) tc WHERE t.id = :id"
-        ),
-        @NamedQuery(
-                name="getTeacherSubjectData", query="SELECT ts FROM Teacher t, IN(t.specializedSubjects) ts WHERE t.id = :id"
-        )
-}
-)
+
 @Entity
 @DiscriminatorValue("teacher")
 @XmlRootElement
@@ -39,7 +30,6 @@ public class Teacher extends User {
      * @associates <{entities.Course}>
      * A collection of the actually teaching courses of the teacher
      */
-    @XmlTransient
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacher")
     private Set<Course> teachingCourses;
 
@@ -65,6 +55,7 @@ public class Teacher extends User {
      * @return Course
      */
     @XmlTransient
+    @JsonIgnore
     public Set<Course> getTeachingCourses() {
         return teachingCourses;
     }
@@ -83,7 +74,6 @@ public class Teacher extends User {
      *
      * @return Subject
      */
-    @XmlTransient
     public Set<Subject> getSpecializedSubjects() {
         return specializedSubjects;
     }

@@ -81,32 +81,7 @@ public class SubjectEJB implements SubjectEJBLocal {
         return subjects;
     }
 
-    @Override
-    public Subject getSubjectRelationshipsData(Integer id) throws ReadException {
-        Subject subject;
-        try {
-            subject = find(id);
-            
-            LOGGER.info("Searching the data of the relationships of the subject with other entityes");
-            //Getting the course with subject relation
-            LOGGER.info("Searching the data of the course and subject relationship");
-            List<Course> coursesWithSubject =  em.createNamedQuery("getSubjectCourseRelationship")
-                    .setParameter("subjectId", id).getResultList();
-            LOGGER.info("Searching the data of the subject and teachers relationship");
-            List<Teacher> teachersSpecialized =  em.createNamedQuery("getSubjectTeacherRelationship")
-                    .setParameter("subjectId", id).getResultList();
-
-            LOGGER.info("Saving in the subject");
-            //Setting the relations in the entity
-            subject.setCourseWithSubject(coursesWithSubject.stream().collect(Collectors.toSet()));
-            subject.setTeachersSpecializedInSubject(teachersSpecialized.stream().collect(Collectors.toSet()));
-            
-        } catch (Exception e) {
-            LOGGER.severe("An error ocurred when searching the data of the subject");
-            throw new ReadException("An error ocurred when searching the data of the subject");
-        }
-        return subject;
-    }
+    
 
     @Override
     public List<Subject> findAll() throws ReadException {
@@ -126,6 +101,10 @@ public class SubjectEJB implements SubjectEJBLocal {
     public void create(Subject subject) throws CreateException {
         try {
             LOGGER.info(String.format("EJB: Creating %s", subject.getClass().getName()));
+            if (!em.contains(subject.getTeachersSpecializedInSubject()) && subject.getTeachersSpecializedInSubject() != null) {
+                 subject.setTeachersSpecializedInSubject(em.merge(subject.getTeachersSpecializedInSubject()));
+            }
+            
             em.persist(subject);
             LOGGER.info(String.format("EJB: %s created successfully", subject.getClass().getName()));
         } catch (Exception e) {
@@ -138,6 +117,9 @@ public class SubjectEJB implements SubjectEJBLocal {
     @Override
     public void edit(Subject subject) throws UpdateException {
         try {
+            if (!em.contains(subject.getTeachersSpecializedInSubject()) && subject.getTeachersSpecializedInSubject() != null) {
+                 subject.setTeachersSpecializedInSubject(em.merge(subject.getTeachersSpecializedInSubject()));
+            }
             em.merge(subject);
             em.flush();
         } catch (Exception e) {
@@ -160,7 +142,7 @@ public class SubjectEJB implements SubjectEJBLocal {
     public Subject find(Integer id) throws ReadException {
         Subject subject;
         try {
-            subject = em.createNamedQuery("findById", Subject.class).setParameter("subjectId", id).getSingleResult();
+            subject = em.find(Subject.class, id);
             return subject;
         } catch (Exception e) {
             throw new ReadException(e.getMessage());

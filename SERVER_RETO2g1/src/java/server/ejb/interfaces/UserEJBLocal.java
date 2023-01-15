@@ -5,6 +5,7 @@
  */
 package server.ejb.interfaces;
 
+import java.util.List;
 import server.entities.User;
 import server.exception.ReadException;
 import javax.ejb.Local;
@@ -18,13 +19,7 @@ import server.exception.UpdateException;
  */
 @Local
 public interface UserEJBLocal{
-    /**
-     * A method to obtain all data from the users and the relationship of the user
-     * @param user the user we are searching for
-     * @return The user with the data, relationships included
-     * @throws ReadException if the login data is wrong or dont exist
-     */
-    public User getUserRelationshipsData(Integer id) throws ReadException;
+   
     
      /**
      * Creates/inserts the data of the entity passed
@@ -45,7 +40,7 @@ public interface UserEJBLocal{
     /**
      * Deletes/Removes all the data from the entity passed
      *
-     * @param user the data of the entity to remove
+     * @param user_id the data of the entity to remove
      * @throws DeleteException If the creation method threw an exception
      */
     public void remove(Integer user_id) throws DeleteException;
@@ -54,9 +49,15 @@ public interface UserEJBLocal{
     /**
      * Finds the entity value using the primary key object passed by parameter
      *
-     * @param user Primary key of the entity
+     * @param login The login of the user
      * @return Returns the entity found by using the primary key, can be NULL
      * @throws ReadException If the read
      */
     public User signIn(String login) throws ReadException;
+    /**
+     * Obtains a list with all the users
+     * @return A list with all the users
+     * @throws ReadException if any error happends when searchin the users
+     */
+    public List<User> findAll() throws ReadException;
 }

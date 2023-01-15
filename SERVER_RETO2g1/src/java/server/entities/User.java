@@ -17,6 +17,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,7 +42,7 @@ import javax.xml.bind.annotation.XmlRootElement;
                         
         ),
         @NamedQuery(
-                name="findUserById", query="SELECT new server.entities.User(u.id, u.login, u.email, u.fullName, u.password, u.lastPasswordChange, u.status, u.privilege) FROM User u WHERE u.id = :userId"
+                name="findAllUsers", query="SELECT u FROM User u"
         )
 })
 
@@ -118,7 +119,7 @@ public class User implements Serializable {
     /**
      * A collection with the date of the last sign in in the application
      */
-    @ElementCollection(targetClass = Date.class)
+    @ElementCollection(targetClass = Date.class, fetch = FetchType.EAGER)
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @JsonSerialize(as=Date.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")

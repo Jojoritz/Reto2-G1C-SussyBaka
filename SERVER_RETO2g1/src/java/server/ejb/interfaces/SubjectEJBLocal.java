@@ -40,14 +40,6 @@ public interface SubjectEJBLocal{
     public List<Subject> searchByLevel(String level) throws ReadException;
     
     /**
-     * The method to obtain the data of the subject relationships with other entities
-     * @param subject the subject to search
-     * @return the subject with all the data
-     * @throws ReadException if there any error happened when searching the subject data
-     */
-    public Subject getSubjectRelationshipsData(Integer id) throws ReadException;
-    
-    /**
      * The method to obtain the data of all the subjects
      * @return A set of subjects
      * @throws ReadException  if any error happend when searching the subject data

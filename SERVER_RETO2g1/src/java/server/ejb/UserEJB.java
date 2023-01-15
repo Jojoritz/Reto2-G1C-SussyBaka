@@ -6,24 +6,20 @@
 package server.ejb;
 
 import server.ejb.interfaces.UserEJBLocal;
-import server.entities.Course;
 import server.entities.Student;
-import server.entities.Subject;
 import server.entities.Teacher;
 import server.entities.User;
-import server.entities.enumerations.UserPrivilege;
 import server.exception.CreateException;
 import server.exception.ReadException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import server.entities.enumerations.UserStatus;
+import server.entities.enumerations.UserPrivilege;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
 
@@ -38,42 +34,6 @@ public class UserEJB implements UserEJBLocal {
     @PersistenceContext(unitName = "JavaFX-WebApplicationUD5ExamplePU")
     private EntityManager em;
 
-    @Override
-    public User getUserRelationshipsData(Integer id) throws ReadException {
-        User user;
-        try {
-            user = em.find(User.class, id);
-            LOGGER.info("Starting getting the relationships of the user");
-            // a condition where if the user is a teacher executes one named query
-            //and if it is a student another to obtain corresponding relationships data
-            if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
-                LOGGER.info("Getting the student relationships of the student");
-                //Obtaining the studying courses of the student and saving in a collection to latter set in the user studying courses collection
-                List<Course> studyingCourses = em.createNamedQuery("getStudentCourseData")
-                        .setParameter("id", id).getResultList();
-
-                ((Student) user).setStudyingCourses(studyingCourses.stream().collect(Collectors.toSet()));
-            } else if (user.getPrivilege().equals(UserPrivilege.TEACHER)) {
-                LOGGER.info("Starting getting the relationships of the teacher");
-                //Obtaining the teaching courses of the teacher and saving in a collection
-                List<Course> teachingCourses = em.createNamedQuery("getTeacherCourseData")
-                        .setParameter("id", id).getResultList();
-                //Obtaining the specialized subject of the teacher and saving in a collection
-                List<Subject> teacherSpecializedSubjects = em.createNamedQuery("getTeacherSubjectData")
-                        .setParameter("id", id).getResultList();
-
-                //Setting the obtained data to the teacher
-                ((Teacher) user).setTeachingCourses(teachingCourses.stream().collect(Collectors.toSet()));
-                ((Teacher) user).setSpecializedSubjects(teacherSpecializedSubjects.stream().collect(Collectors.toSet()));
-
-            }
-        } catch (Exception e) {
-            LOGGER.severe(e.getMessage());
-            throw new ReadException(e.getMessage());
-        }
-
-        return user;
-    }
 
     @Override
     public void create(User entity) throws CreateException {
@@ -83,11 +43,28 @@ public class UserEJB implements UserEJBLocal {
             entity.setPassword(hashUserPassword(entity.getPassword()));
 
             try {
-                idExist = (Integer) em.createNamedQuery("getUserId").setParameter("login", entity.getLogin()).getSingleResult();
+                idExist = (Integer) em.createNamedQuery("getUserId").setParameter("login", entity.getLogin())
+                        .setParameter("password", entity.getPassword()).getSingleResult();
                 throw new Exception("The user all ready exist");
             } catch (NoResultException e) {
                 LOGGER.severe("Llega a despues de la comprobacion, creando usuario");
                 LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName()));
+                if (entity.getPrivilege().equals(UserPrivilege.TEACHER) && ((Teacher)entity).getSpecializedSubjects() != null) {
+                    ((Teacher)entity).setSpecializedSubjects(
+                            em.merge(
+                                    ((Teacher)entity).getSpecializedSubjects()
+                            )
+                            
+                    );
+                }
+                if (entity.getPrivilege().equals(UserPrivilege.STUDENT) && ((Student)entity).getStudyingCourses()!= null) {
+                    ((Student)entity).setStudyingCourses(
+                            em.merge(
+                                    ((Student)entity).getStudyingCourses()
+                            )
+                            
+                    );
+                }
                 em.persist(entity);
                 LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
                 
@@ -105,9 +82,8 @@ public class UserEJB implements UserEJBLocal {
     @Override
     public User signIn(String login) throws ReadException {
         try {
-
             Integer userId = (Integer) em.createNamedQuery("getUserId").setParameter("login", login).getSingleResult();
-            User user = (User) em.createNamedQuery("findUserById").setParameter("userId", userId).getSingleResult();
+            User user = em.find(User.class, userId);
             return user;
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
@@ -181,5 +157,22 @@ public class UserEJB implements UserEJBLocal {
             throw new DeleteException(e.getMessage());
         }
     }
+
+    @Override
+    public List<User> findAll() throws ReadException {
+        try {
+            LOGGER.info("Searching for all the users");
+            List<User> users = em.createNamedQuery("findAllUsers").getResultList();
+            LOGGER.info("user llege aqui");
+            LOGGER.info(users.toString());
+            return users;
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.severe("An error happened when searching all the users");
+            throw new ReadException("An error happened when searching all the users");
+        }
+    }
+    
+   
 
 }
