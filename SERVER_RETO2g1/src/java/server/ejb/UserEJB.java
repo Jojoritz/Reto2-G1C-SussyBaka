@@ -149,7 +149,7 @@ public class UserEJB implements UserEJBLocal {
     @Override
     public void remove(Integer user_id) throws DeleteException {
         try {
-            User user = (User) em.createNamedQuery("findUserById").setParameter("userId", user_id).getSingleResult();
+            User user = em.find(User.class, user_id);
             user = em.merge(user);
             em.remove(user);
         } catch (Exception e) {

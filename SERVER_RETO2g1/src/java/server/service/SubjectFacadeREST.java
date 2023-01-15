@@ -82,7 +82,7 @@ public class SubjectFacadeREST {
     /**
      * A method to delete the subject
      *
-     * @param subject the data of the subject to remove
+     * @param id the data of the subject to remove
      */
     @DELETE
     @Path("subject/{id}")
@@ -99,7 +99,7 @@ public class SubjectFacadeREST {
     /**
      * A method to find the subject
      *
-     * @param subject the data to find the subject
+     * @param id the data to find the subject
      * @return the subject with the data
      */
     @GET

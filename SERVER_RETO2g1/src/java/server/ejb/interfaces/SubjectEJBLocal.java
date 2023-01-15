@@ -49,7 +49,7 @@ public interface SubjectEJBLocal{
       /**
      * Creates/inserts the data of the entity passed
      *
-     * @param entity
+     * @param subject the subject to create
      * @throws CreateException If the creation method threw an exception
      */
     public void create(Subject subject) throws CreateException;
@@ -57,7 +57,7 @@ public interface SubjectEJBLocal{
     /**
      * Edits/Modify the data of the entity passed
      *
-     * @param entity
+     * @param subject the subject to modify
      * @throws UpdateException If the creation method threw an exception
      */
     public void edit(Subject subject) throws UpdateException;
@@ -65,7 +65,7 @@ public interface SubjectEJBLocal{
     /**
      * Deletes/Removes all the data from the entity passed
      *
-     * @param entity
+     * @param id the if of the subject to remove
      * @throws DeleteException If the creation method threw an exception
      */
     public void remove(Integer id) throws DeleteException;
@@ -73,7 +73,7 @@ public interface SubjectEJBLocal{
     /**
      * Finds the entity value using the primary key object passed by parameter
      *
-     * @param obj Primary key of the entity
+     * @param id Primary key of the entity
      * @return Returns the entity found by using the primary key, can be NULL
      * @throws ReadException If the read
      */

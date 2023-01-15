@@ -80,7 +80,7 @@ public class UserFacadeREST{
      * @param userId the data of user to remove
      */
     @DELETE
-    @Path("user/{userId}")
+    @Path("user/userId/{userId}")
     public void removeUser(@PathParam("userId")Integer userId) {
         try {
             LOGGER.info("Deleting the user");
@@ -98,7 +98,7 @@ public class UserFacadeREST{
     @GET
     @Path("user/login/{login}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User signIn(@PathParam("login")String login, @PathParam("password") String password){
+    public User signIn(@PathParam("login")String login){
         User user = null;
         try {
             LOGGER.info("Searching the user");
@@ -112,7 +112,10 @@ public class UserFacadeREST{
         return user;
         
     }
-    
+    /**
+     * A get method to obtain all the users
+     * @return a list with all the users
+     */
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<User> findAll(){
