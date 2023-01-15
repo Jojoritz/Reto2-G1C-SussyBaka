@@ -7,6 +7,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * JPA for the entity {@link Comment} This class contains this attributes
@@ -29,13 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(
             name = "getCommentsByPostID",
-            query = "SELECT new server.entities.dto.CommentDTO(c.commentID, s.fullName, c.dateComment, c.commentText, s.email, s.id, p.postId) "
-            + "FROM Comment c JOIN c.student s JOIN c.post p Where c.post.postId = :postId")
-    ,
-     @NamedQuery(
-            name = "getCommentsByID",
-            query = "SELECT new server.entities.Comment(c.commentID, c.dateComment, c.commentText) "
-            + "FROM Comment c Where c.commentID = :commentId")
+            query = "SELECT c FROM Comment c JOIN c.student s JOIN c.post p Where c.post.postId = :postId")
 })
 @Entity
 @Table(name = "student_post_comment", schema = "reto2_g1c_sussybaka")
@@ -55,15 +51,15 @@ public class Comment implements Serializable {
     /**
      * Relational object to {@link Student}
      */
-    @ManyToOne
-    @JoinColumn(name = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "student_id")
     private Student student;
 
     /**
      * Relation object to {@link Post}
      */
-    @ManyToOne
-    @JoinColumn(name = "postId")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "post_id")
     private Post post;
 
     /**
@@ -88,52 +84,6 @@ public class Comment implements Serializable {
      */
     public Comment() {
         super();
-    }
-
-    /**
-     * Class constructor without both {@link Post} and {@link Student}
-     * relational objects
-     *
-     * @param commentID The id of the comment
-     * @param dateComment Date of creation of the comment
-     * @param commentText Text of the comment
-     */
-    public Comment(Integer commentID, Date dateComment, String commentText) {
-        this.commentID = commentID;
-        this.dateComment = dateComment;
-        this.commentText = commentText;
-    }
-
-    /**
-     * Class constructor without {@link Post} relational object
-     *
-     * @param commentID The id of the comment
-     * @param student The relational object to student
-     * @param dateComment Date of creation of the comment
-     * @param commentText Text of the comment
-     */
-    public Comment(Integer commentID, Student student, Date dateComment, String commentText) {
-        this.commentID = commentID;
-        this.student = student;
-        this.dateComment = dateComment;
-        this.commentText = commentText;
-    }
-
-    /**
-     * Class constructor with all attributes and relational objects
-     *
-     * @param commentID The id of the comment
-     * @param student The relational object to student
-     * @param dateComment Date of creation of the comment
-     * @param commentText Text of the comment
-     * @param post The relational object to the Post
-     */
-    public Comment(Integer commentID, Student student, Date dateComment, String commentText, Post post) {
-        this.commentID = commentID;
-        this.student = student;
-        this.dateComment = dateComment;
-        this.commentText = commentText;
-        this.post = post;
     }
 
     /**
@@ -177,6 +127,7 @@ public class Comment implements Serializable {
      *
      * @return Returns the post where the comment is posted
      */
+    @XmlTransient
     public Post getPost() {
         return post;
     }

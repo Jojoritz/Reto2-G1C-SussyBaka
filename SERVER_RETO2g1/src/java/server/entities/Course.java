@@ -60,7 +60,6 @@ import javax.xml.bind.annotation.XmlTransient;
        )
 })
 
-
 @Entity
 @Table(name = "course", schema = "reto2_g1c_sussybaka")
 @XmlRootElement
@@ -101,8 +100,6 @@ public class Course implements Serializable {
     @Column
     private Boolean isPrivate;
 
-   @JsonIgnore
-    @XmlTransient
     @ManyToMany(mappedBy = "studyingCourses")
     private Set<Student> courseStudents;
 
@@ -127,50 +124,9 @@ public class Course implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Subject subjects;
 
-
-
     //Constructors
     public Course() {
         super();
-    }
-
-    /**
-     * Class constructor without relational objects
-     *
-     * @param courseId
-     * @param name
-     * @param startDate
-     * @param isVisible
-     * @param isPrivate
-     */
-    public Course(Integer courseId, String name, Date startDate, Boolean isVisible, Boolean isPrivate) {
-        this.courseId = courseId;
-        this.name = name;
-        this.startDate = startDate;
-        this.isVisible = isVisible;
-        this.isPrivate = isPrivate;
-    }
-
-    /**
-     * Class constructor with all attributes and only {@link Teacher} and
-     * {@link Subject} relational objects
-     *
-     * @param courseId
-     * @param name
-     * @param startDate
-     * @param isVisible
-     * @param isPrivate
-     * @param teacher
-     * @param subjects
-     */
-    public Course(Integer courseId, String name, Date startDate, Boolean isVisible, Boolean isPrivate, Teacher teacher, Subject subjects) {
-        this.courseId = courseId;
-        this.name = name;
-        this.startDate = startDate;
-        this.isVisible = isVisible;
-        this.isPrivate = isPrivate;
-        this.teacher = teacher;
-        this.subjects = subjects;
     }
 
     //Getters & Setters
@@ -269,6 +225,7 @@ public class Course implements Serializable {
      *
      * @return The students in the course
      */
+    @JsonIgnore
     @XmlTransient
     public Set<Student> getCourseStudents() {
         return courseStudents;
@@ -306,6 +263,7 @@ public class Course implements Serializable {
      *
      * @return Course's posts
      */
+    @JsonIgnore
     @XmlTransient
     public Collection<Post> getCoursePosts() {
         return coursePosts;

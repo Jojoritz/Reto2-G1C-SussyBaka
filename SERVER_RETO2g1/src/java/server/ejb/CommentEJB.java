@@ -16,7 +16,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import server.entities.Post;
 import server.entities.Student;
-import server.entities.dto.CommentDTO;
 import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
@@ -42,8 +41,8 @@ public class CommentEJB implements CommentEJBLocal {
         try {
             List<Comment> comments;
             LOG.info("CommentEJB: Getting all comments...");
-            comments = CommentDTO.convertDTOsComment(em.createNamedQuery("getCommentsByPostID", CommentDTO.class).
-                    setParameter("postId", id).getResultList());
+            comments = em.createNamedQuery("getCommentsByPostID", Comment.class).
+                    setParameter("postId", id).getResultList();
             return comments;
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage());
@@ -102,8 +101,7 @@ public class CommentEJB implements CommentEJBLocal {
         Comment entity;
         try {
             LOG.info(String.format("CommentEJB: Searching %s with id %d", Comment.class.getName(), obj));
-            entity = em.createNamedQuery("getCommentsByID", Comment.class).
-                    setParameter("commentId", obj).getSingleResult();
+            entity = em.find(Comment.class, obj);
             return entity;
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("EJB: Exception on reading %s, {0}",
