@@ -157,12 +157,11 @@ public class PostEJB implements PostEJBLocal {
     public Post find(Object obj) throws ReadException {
         Post entity;
         try {
-            LOG.info(String.format("PostEJB: Finding %s by pk %s", Post.class.getName(), obj.toString()));
-            entity = em.createNamedQuery("findPostById", Post.class).
-                    setParameter("postId", obj).getSingleResult();
+            LOG.info(String.format("PostEJB: Finding %s by ID %s", Post.class.getName(), obj.toString()));
+            entity = em.find(Post.class, (Integer) obj);
             return entity;
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, String.format("PostEJB: Exception on reading %s with pk %s",
+            LOG.log(Level.SEVERE, String.format("PostEJB: Exception on reading %s with ID %s",
                     Post.class.getName(), obj.toString()), e.getMessage());
             throw new ReadException(e.getMessage());
         }

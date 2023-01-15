@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import server.entities.dto.CourseDTO;
 import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
@@ -70,8 +69,8 @@ public class CourseEJB implements CourseEJBLocal {
         Course entity;
         try {
             LOG.info("aaa");
-            entity = CourseDTO.convertDTOCourse(em.createNamedQuery("findCourse", CourseDTO.class).
-                    setParameter("courseId", id).getSingleResult());
+            entity = em.createNamedQuery("findCourse", Course.class).
+                    setParameter("courseId", id).getSingleResult();
             LOG.info(entity.toString());
             return entity;
         } catch (Exception e) {
@@ -100,7 +99,7 @@ public class CourseEJB implements CourseEJBLocal {
         //Getting the Collection of Courses by Name
         try {
             courses = em.createNamedQuery("findCourseByName").setParameter("name", name).getResultList();
-            
+
         } catch (Exception e) {
             LOG.severe(e.getMessage());
             throw new ReadException();
@@ -114,7 +113,7 @@ public class CourseEJB implements CourseEJBLocal {
         LOG.info("CourseEJB: Getting all Courses from a specific date...");
         //Getting the Collection of Courses by Date
         try {
-            courses =  em.createNamedQuery("findCourseByDate").setParameter("startDate", startDate).getResultList();
+            courses = em.createNamedQuery("findCourseByDate").setParameter("startDate", startDate).getResultList();
         } catch (Exception e) {
             LOG.severe(e.getMessage());
             throw new ReadException();
