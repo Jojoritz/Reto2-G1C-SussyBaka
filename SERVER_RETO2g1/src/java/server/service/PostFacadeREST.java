@@ -80,8 +80,8 @@ public class PostFacadeREST {
         try {
             LOG.log(Level.INFO,
                     "PostRESTful service DELETE: deleting post with id: {0}", id);
-            ejb.remove(ejb.find(id));
-        } catch (ReadException | DeleteException e) {
+            ejb.remove(id);
+        } catch (DeleteException e) {
             LOG.log(Level.SEVERE,
                     "PostRESTful service DELETE: Exception on delete {0}",
                     e.getMessage());

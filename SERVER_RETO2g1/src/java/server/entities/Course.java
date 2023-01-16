@@ -1,9 +1,10 @@
 package server.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -33,32 +34,21 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @NamedQueries({
     @NamedQuery(
-            name = "findCourse",
-            query = "SELECT c FROM Course c, Teacher t, Subject s WHERE c.courseId = :courseId AND c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId"
-    )
-    ,
-        
-        @NamedQuery(
             name = "findAllCourses",
-            query = "SELECT c FROM Course c, Teacher t, Subject s WHERE c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId"
+            query = "SELECT c FROM Course c, Teacher t, Subject s "
+            + "WHERE c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId"
     )
     ,
     
         @NamedQuery(
-            name = "findCourseByName", query = "SELECT c FROM Course c, Teacher t, Subject s WHERE c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId AND c.name LIKE :name"
+            name = "findCourseByName",
+            query = "SELECT c FROM Course c JOIN c.teacher t JOIN c.subjects s WHERE c.name LIKE concat('%',:name,'%')"
     )
     ,
         
         @NamedQuery(
-            name = "findCourseByDate", query = "SELECT c FROM Course c, Teacher t, Subject s WHERE c.teacher.id = t.id AND c.subjects.subjectId = s.subjectId AND CAST(c.startDate as date) =:startdate"
-    )
-    ,
-        @NamedQuery(
-            name = "findCoursesOfStudent", query = "SELECT c FROM Course c JOIN c.courseStudents s WHERE s.id = :userId"
-    )
-    ,
-       @NamedQuery(
-            name = "findTeacherCourses", query = "SELECT c FROM Course c JOIN c. teacher t WHERE t.id = :userId"
+            name = "findCourseByDate",
+            query = "SELECT c FROM Course c JOIN c.teacher t JOIN c.subjects s WHERE CAST(c.startDate as date) = :startdate"
     )
 })
 
@@ -75,12 +65,14 @@ public class Course implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "course_id")
+    @JsonProperty
     private Integer courseId;
 
     /**
      * String field containing the name of the Course
      */
     @Column
+    @JsonProperty
     private String name;
 
     /**
@@ -88,37 +80,40 @@ public class Course implements Serializable {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column
+    @JsonProperty
     private Date startDate;
 
     /**
      * Boolean field that contains the visibility of the Course
      */
     @Column
+    @JsonProperty
     private Boolean isVisible;
 
     /**
      * Boolean field that contains if the Course is private
      */
     @Column
+    @JsonProperty
     private Boolean isPrivate;
 
-    @ManyToMany(mappedBy = "studyingCourses")
+    @ManyToMany(mappedBy = "studyingCourses", fetch = FetchType.LAZY)
     private Set<Student> courseStudents;
 
     /**
      * This is the actual Teacher of the course
      */
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference
+    @JsonProperty
     private Teacher teacher;
 
     /**
      * @associates <{Post}>
      * This is a collection with the actual post of the course
      */
-    @JsonIgnore
-    @XmlTransient
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private Collection<Post> coursePosts;
+    private Set<Post> coursePosts;
 
     /**
      * This is the actual Subject of the course
@@ -267,7 +262,7 @@ public class Course implements Serializable {
      */
     @JsonIgnore
     @XmlTransient
-    public Collection<Post> getCoursePosts() {
+    public Set<Post> getCoursePosts() {
         return coursePosts;
     }
 
@@ -276,7 +271,7 @@ public class Course implements Serializable {
      *
      * @param coursePosts
      */
-    public void setCoursePosts(Collection<Post> coursePosts) {
+    public void setCoursePosts(Set<Post> coursePosts) {
         this.coursePosts = coursePosts;
     }
 
@@ -321,7 +316,7 @@ public class Course implements Serializable {
 
     @Override
     public String toString() {
-        return "Course{" + "courseId=" + courseId + ", name=" + name + ", startDate=" + startDate + ", isVisible=" + isVisible + ", isPrivate=" + isPrivate + ", courseStudents=" + courseStudents + ", teacher=" + teacher + ", coursePosts=" + coursePosts + ", subject=" + subjects + '}';
+        return "Course{" + "courseId=" + courseId + ", name=" + name + ", startDate=" + startDate + ", isVisible=" + isVisible + ", isPrivate=" + isPrivate + ", teacher=" + teacher + ", subjects=" + subjects + '}';
     }
 
 }

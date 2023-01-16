@@ -1,6 +1,8 @@
 package server.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 import java.util.Objects;
@@ -51,6 +53,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "SUBJECTS", schema = "reto2_g1c_sussybaka")
 @XmlRootElement
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Subject implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -67,24 +70,28 @@ public class Subject implements Serializable {
      * The name of the subject
      */
     @Column
+    @JsonProperty("name")
     private String name;
 
     /**
      * The type of the subject
      */
     @Column
+    @JsonProperty("type")
     private String type;
 
     /**
      * The century of the subject
      */
     @Column
+    @JsonProperty("century")
     private String century;
 
     /**
      * The level of the subject
      */
     @Column(name = "subject_level")
+    @JsonProperty("level")
     private String level;
 
     /**

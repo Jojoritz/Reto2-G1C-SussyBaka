@@ -1,7 +1,8 @@
 package server.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -10,8 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -21,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author ioritz This is the teacher entity class
  */
 @Entity
-@DiscriminatorValue("teacher")
+@DiscriminatorValue("TEACHER")
 @XmlRootElement
 public class Teacher extends User {
 
@@ -31,7 +30,8 @@ public class Teacher extends User {
      * @associates <{entities.Course}>
      * A collection of the actually teaching courses of the teacher
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacher", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacher", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Course> teachingCourses;
 
     /**
@@ -42,6 +42,7 @@ public class Teacher extends User {
     @JoinTable(name = "specialized_subjects", schema = "reto2_g1c_sussybaka",
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id"))
+    @JsonProperty("specializedSubjects")
     private Set<Subject> specializedSubjects;
 
     //Constructor

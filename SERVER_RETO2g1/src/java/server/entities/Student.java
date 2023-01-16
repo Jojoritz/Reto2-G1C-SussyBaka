@@ -16,7 +16,7 @@ import org.hibernate.annotations.FetchMode;
  * @author ioritz This is the student entity class
  */
 @Entity
-@DiscriminatorValue("student")
+@DiscriminatorValue("STUDENT")
 @XmlRootElement
 public class Student extends User {
 

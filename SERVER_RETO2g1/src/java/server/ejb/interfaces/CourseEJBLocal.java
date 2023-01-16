@@ -50,7 +50,7 @@ public interface CourseEJBLocal{
      * @param entity
      * @throws DeleteException If the creation method threw an exception
      */
-    public void remove(Course entity) throws DeleteException;
+    public void remove(Integer id) throws DeleteException;
     
     /**
      * Gets the Course with a specific id

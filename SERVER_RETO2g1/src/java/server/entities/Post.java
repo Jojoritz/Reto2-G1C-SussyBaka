@@ -1,6 +1,6 @@
 package server.entities;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 
 import java.util.Date;
@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlTransient;
     ,
     @NamedQuery(
             name = "findPostByTitle",
-            query = "SELECT p FROM Post p WHERE p.title LIKE :title AND p.course.courseId = :courseId")
+            query = "SELECT p FROM Post p WHERE p.title LIKE concat('%',:title,'%') AND p.course.courseId = :courseId")
 })
 @Entity
 @Table(name = "post", schema = "reto2_g1c_sussybaka")
@@ -189,6 +189,7 @@ public class Post implements Serializable {
      * @return course Course
      */
     @XmlTransient
+    @JsonIgnore
     public Course getCourse() {
         return course;
     }
@@ -244,6 +245,7 @@ public class Post implements Serializable {
      * @return postComments
      */
     @XmlTransient
+    @JsonIgnore
     public Set<Comment> getPostComments() {
         return postComments;
     }
@@ -265,19 +267,11 @@ public class Post implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 97 * hash + Objects.hashCode(this.postId);
-        hash = 97 * hash + Objects.hashCode(this.content);
-        hash = 97 * hash + Objects.hashCode(this.publicationDate);
-        hash = 97 * hash + Objects.hashCode(this.course);
-        hash = 97 * hash + Objects.hashCode(this.image);
-        hash = 97 * hash + Objects.hashCode(this.video);
-        hash = 97 * hash + Objects.hashCode(this.postComments);
         return hash;
     }
 
     /**
-     * This implementation will compare between two objects all the attributes,
-     * if all of them is {@code True} it will return that, if not returns
-     * {@code False}
+     * This implementation will compare between two ID of the entity
      *
      * @param obj Object
      * @return boolean True or False if object is equal
@@ -294,25 +288,7 @@ public class Post implements Serializable {
             return false;
         }
         final Post other = (Post) obj;
-        if (!Objects.equals(this.content, other.content)) {
-            return false;
-        }
-        if (!Objects.equals(this.image, other.image)) {
-            return false;
-        }
-        if (!Objects.equals(this.video, other.video)) {
-            return false;
-        }
         if (!Objects.equals(this.postId, other.postId)) {
-            return false;
-        }
-        if (!Objects.equals(this.publicationDate, other.publicationDate)) {
-            return false;
-        }
-        if (!Objects.equals(this.course, other.course)) {
-            return false;
-        }
-        if (!Objects.equals(this.postComments, other.postComments)) {
             return false;
         }
         return true;

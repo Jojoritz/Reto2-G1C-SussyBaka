@@ -53,10 +53,13 @@ public interface UserEJBLocal {
      * Finds the entity value using the primary key object passed by parameter
      *
      * @param login The login of the user
+     * @param password The password of the user
      * @return Returns the entity found by using the primary key, can be NULL
      * @throws ReadException If the read
      */
-    public User signIn(String login) throws ReadException;
+    public User signIn(String login, String password) throws ReadException;
+
+    public User find(Integer id) throws ReadException;
 
     /**
      * Obtains a list with all the users

@@ -30,6 +30,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * This is the user entity class
@@ -38,7 +39,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @NamedQueries({
     @NamedQuery(
-            name = "getUserId", query = "SELECT u.id FROM User u WHERE u.login = :login"
+            name = "getUserLogin", query = "SELECT u FROM User u WHERE u.login = :login AND u.password = MD5(:password)"
     )
     ,
         @NamedQuery(
@@ -49,8 +50,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "USERS", schema = "reto2_g1c_sussybaka")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue(value = "admin")
+@DiscriminatorColumn(name = "privilege", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue(value = "ADMIN")
 @XmlRootElement
 public class User implements Serializable {
 
@@ -68,28 +69,24 @@ public class User implements Serializable {
      * The user to login in the application
      */
     @Column(unique = true)
-    @NotNull
     private String login;
 
     /**
      * The user email
      */
     @Column(unique = true)
-    @NotNull
     private String email;
 
     /**
      * The user full name
      */
     @Column
-    @NotNull
     private String fullName;
 
     /**
      * The password of the account
      */
     @Column(name = "user_password")
-    @NotNull
     private String password;
 
     /**
@@ -98,14 +95,12 @@ public class User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @JsonSerialize(as = Date.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
-    @NotNull
     private Date lastPasswordChange;
 
     /**
      * The status of the user
      */
     @Enumerated(EnumType.STRING)
-    @NotNull
     @Column(name = "user_status")
     private UserStatus status;
 
@@ -113,7 +108,7 @@ public class User implements Serializable {
      * The privilege of the user in the application
      */
     @Enumerated(EnumType.STRING)
-    @NotNull
+    @Column(insertable = false, updatable = false)
     private UserPrivilege privilege;
 
     /**

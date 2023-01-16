@@ -68,8 +68,12 @@ public class CommentEJB implements CommentEJBLocal {
     public void edit(Comment entity) throws UpdateException {
         try {
             LOG.info(String.format("CommentEJB: Editing %s", Comment.class.getName()));
-            entity.setPost(em.merge(em.find(Post.class, entity.getPost().getPostId())));
-            entity.setStudent(em.merge(em.find(Student.class, entity.getStudent().getId())));
+            if (!em.contains(entity.getPost())) {
+                entity.setPost(em.merge(em.find(Post.class, entity.getPost().getPostId())));
+            }
+            if (!em.contains(entity.getStudent())) {
+                entity.setStudent(em.merge(em.find(Student.class, entity.getStudent().getId())));
+            }
             em.merge(entity);
             em.flush();
             LOG.info(String.format("CommentEJB: %s edited successfully", Comment.class.getName()));
@@ -85,7 +89,7 @@ public class CommentEJB implements CommentEJBLocal {
     public void remove(Integer id) throws DeleteException {
         try {
             LOG.info(String.format("CommentEJB: Deleting %s", Comment.class.getName()));
-            Comment comment = em.find(Comment.class, id);
+            Comment comment = find(id);
             comment = em.merge(comment);
             em.remove(comment);
             LOG.info(String.format("CommentEJB: %s deleted successfully", Comment.class.getName()));

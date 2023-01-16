@@ -5,6 +5,8 @@
  */
 package server.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import server.entities.Course;
 import java.util.List;
@@ -33,8 +35,10 @@ import server.exception.UpdateException;
 @Path("entities.course")
 public class CourseFacadeREST {
 
-    @EJB(beanName = "CourseEJB")
+    @EJB
     private CourseEJBLocal ejb;
+
+    private final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -47,9 +51,8 @@ public class CourseFacadeREST {
     }
 
     @PUT
-    @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Integer id, Course entity) {
+    public void edit(Course entity) {
         try {
             ejb.edit(entity);
         } catch (UpdateException ex) {
@@ -61,8 +64,8 @@ public class CourseFacadeREST {
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
         try {
-            ejb.remove(ejb.find(id));
-        } catch (ReadException | DeleteException ex) {
+            ejb.remove(id);
+        } catch (DeleteException ex) {
             Logger.getLogger(CourseFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -95,7 +98,7 @@ public class CourseFacadeREST {
     @GET
     @Path("course/{name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Course> findByName(@PathParam("name") String name){
+    public List<Course> findByName(@PathParam("name") String name) {
         List<Course> courses = null;
         try {
             courses = ejb.findByName(name);
@@ -104,15 +107,16 @@ public class CourseFacadeREST {
         }
         return courses;
     }
-    
+
     @GET
     @Path("course/date/{startDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Course> findByDate(@PathParam("startDate") Date startDate){
+    public List<Course> findByDate(@PathParam("startDate") String startDate) {
         List<Course> courses = null;
         try {
-            courses = ejb.findByDate(startDate);
-        } catch (ReadException ex) {
+            Date date = FORMAT.parse(startDate);
+            courses = ejb.findByDate(date);
+        } catch (ReadException | ParseException ex) {
             Logger.getLogger(CourseFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
         return courses;

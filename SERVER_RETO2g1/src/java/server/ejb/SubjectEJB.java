@@ -6,9 +6,7 @@
 package server.ejb;
 
 import server.ejb.interfaces.SubjectEJBLocal;
-import server.entities.Course;
 import server.entities.Subject;
-import server.entities.Teacher;
 import javax.ejb.Stateless;
 import server.exception.CreateException;
 import server.exception.DeleteException;
@@ -17,7 +15,6 @@ import server.exception.UpdateException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -30,6 +27,7 @@ import javax.persistence.PersistenceContext;
 public class SubjectEJB implements SubjectEJBLocal {
 
     private static final Logger LOGGER = Logger.getLogger(SubjectEJB.class.getName());
+    
     @PersistenceContext(unitName="JavaFX-WebApplicationUD5ExamplePU")
     private EntityManager em;
 

@@ -133,15 +133,16 @@ public class PostEJB implements PostEJBLocal {
      * @throws DeleteException If the creation method threw an exception
      */
     @Override
-    public void remove(Post entity) throws DeleteException {
+    public void remove(Integer id) throws DeleteException {
         try {
             LOG.info(String.format("PostEJB: Deleting %s", Post.class.getName()));
-            entity = em.merge(entity);
-            em.remove(entity);
+            Post post = find(id);
+            post = em.merge(post);
+            em.remove(post);
             LOG.info(String.format("PostEJB: %s deleted successfully", Post.class.getName()));
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("PostEJB: Exception on deleting %s",
-                    entity.getClass().getName()), e.getMessage());
+                    Post.class.getName()), e.getMessage());
             throw new DeleteException(e.getMessage());
         }
     }

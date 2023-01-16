@@ -5,9 +5,8 @@
  */
 package server.ejb;
 
+import java.math.BigInteger;
 import server.ejb.interfaces.UserEJBLocal;
-import server.entities.Student;
-import server.entities.Teacher;
 import server.entities.User;
 import server.exception.CreateException;
 import server.exception.ReadException;
@@ -19,7 +18,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import server.entities.enumerations.UserPrivilege;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
 
@@ -31,39 +29,55 @@ import server.exception.UpdateException;
 public class UserEJB implements UserEJBLocal {
 
     private static final Logger LOGGER = Logger.getLogger(UserEJB.class.getName());
+
     @PersistenceContext(unitName = "JavaFX-WebApplicationUD5ExamplePU")
     private EntityManager em;
 
     @Override
     public void create(User entity) throws CreateException {
-        Integer idExist = null;
+
         try {
             LOGGER.info("Searching if the user exist");
-            entity.setPassword(hashUserPassword(entity.getPassword()));
+            entity.setPassword(this.getHashMD5(entity.getPassword()));
 
             try {
-                idExist = (Integer) em.createNamedQuery("getUserId").setParameter("login", entity.getLogin())
+                User userExists = em.createNamedQuery("getUserLogin", User.class).setParameter("login", entity.getLogin())
                         .setParameter("password", entity.getPassword()).getSingleResult();
-                throw new Exception("The user all ready exist");
+                if (userExists != null) {
+                    throw new Exception("The user already exist");
+                }
             } catch (NoResultException e) {
-                LOGGER.severe("Llega a despues de la comprobacion, creando usuario");
+                LOGGER.info("Llega a despues de la comprobacion, creando usuario");
                 LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName()));
-                if (entity.getPrivilege().equals(UserPrivilege.TEACHER) && ((Teacher) entity).getSpecializedSubjects() != null) {
-                    ((Teacher) entity).setSpecializedSubjects(
-                            em.merge(
-                                    ((Teacher) entity).getSpecializedSubjects()
-                            )
-                    );
+                if (!em.contains(entity)) {
+                    /*
+                    if (entity instanceof Teacher) {
+                        ((Teacher) entity).setTeachingCourses(new HashSet<>());
+                        ((Teacher) entity).setSpecializedSubjects(new HashSet<>());
+                    } else if (entity instanceof Student) {
+                        ((Student) entity).setStudyingCourses(new ArrayList<>());
+                    }
+                     */
+
+ /*
+                    if (entity.getPrivilege().equals(UserPrivilege.TEACHER) && ((Teacher) entity).getSpecializedSubjects() != null) {
+                        ((Teacher) entity).setSpecializedSubjects(
+                                em.merge(
+                                        ((Teacher) entity).getSpecializedSubjects()
+                                )
+                        );
+                    }
+                    if (entity.getPrivilege().equals(UserPrivilege.STUDENT) && ((Student) entity).getStudyingCourses() != null) {
+                        ((Student) entity).setStudyingCourses(
+                                em.merge(
+                                        ((Student) entity).getStudyingCourses()
+                                )
+                        );
+                    }
+                     */
+                    em.persist(entity);
+                    LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
                 }
-                if (entity.getPrivilege().equals(UserPrivilege.STUDENT) && ((Student) entity).getStudyingCourses() != null) {
-                    ((Student) entity).setStudyingCourses(
-                            em.merge(
-                                    ((Student) entity).getStudyingCourses()
-                            )
-                    );
-                }
-                em.persist(entity);
-                LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
 
             }
 
@@ -74,10 +88,13 @@ public class UserEJB implements UserEJBLocal {
     }
 
     @Override
-    public User signIn(String login) throws ReadException {
+    public User signIn(String login, String password) throws ReadException {
         try {
-            Integer userId = (Integer) em.createNamedQuery("getUserId").setParameter("login", login).getSingleResult();
-            User user = em.find(User.class, userId);
+            User user = em.createNamedQuery("getUserLogin", User.class).
+                    setParameter("login", login).
+                    setParameter("password", password)
+                    .getSingleResult();
+            LOGGER.info(getHashMD5(password));
             return user;
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
@@ -86,53 +103,37 @@ public class UserEJB implements UserEJBLocal {
     }
 
     /**
-     * The method to hash the password of the user
+     * The method to hash a text, this is used to hash the password
      *
      * @param user The password without hashed
      * @return the hashed password
-     * @throws Exception if any error ocurred when hashing the password
+     * @throws Exception if any error when hashing the password
      */
-    private String hashUserPassword(String password) throws Exception {
-        MessageDigest messageDigest = null;
-        //Contraseña a hashear
-        String hashedPassword = null;
+    private String getHashMD5(String textToHash) throws Exception {
         try {
-            LOGGER.info("Hashing the password");
-            messageDigest = MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance("MD5");
 
-            byte dataBytes[] = password.getBytes();
-            messageDigest.update(dataBytes);
+            byte[] messageDigest = md.digest(textToHash.getBytes());
 
-            byte resume[] = messageDigest.digest();
-            hashedPassword = toHexString(resume);
+            BigInteger no = new BigInteger(1, messageDigest);
+
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.severe("An error ocurred while hashing the password");
-            throw new Exception("An error ocurred while hashing the password");
+            throw new Exception(e);
         }
 
-        return hashedPassword;
-    }
-
-    /**
-     * A method to convert the resume in bytes to hexadecimal string
-     *
-     * @param resume the resume in byte
-     * @return the resume in string in hexadecimal
-     */
-    private String toHexString(byte[] resume) {
-        StringBuffer hashedPassword = new StringBuffer();
-
-        for (byte b : resume) {
-            hashedPassword.append(b);
-        }
-
-        return hashedPassword.toString();
     }
 
     @Override
     public void edit(User user) throws UpdateException {
         try {
-            em.merge(user);
+            if (!em.contains(user)) {
+                em.merge(user);
+            }
             em.flush();
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
@@ -143,7 +144,7 @@ public class UserEJB implements UserEJBLocal {
     @Override
     public void remove(Integer user_id) throws DeleteException {
         try {
-            User user = em.find(User.class, user_id);
+            User user = find(user_id);
             user = em.merge(user);
             em.remove(user);
         } catch (Exception e) {
@@ -153,15 +154,24 @@ public class UserEJB implements UserEJBLocal {
     }
 
     @Override
+    public User find(Integer id) throws ReadException {
+        try {
+            LOGGER.info("Searching for all the users");
+            return em.find(User.class, id);
+        } catch (Exception e) {
+            LOGGER.severe("An error happened when searching all the users");
+            throw new ReadException("An error happened when searching all the users");
+        }
+    }
+
+    @Override
     public List<User> findAll() throws ReadException {
         try {
             LOGGER.info("Searching for all the users");
             List<User> users = em.createNamedQuery("findAllUsers").getResultList();
             LOGGER.info("user llege aqui");
-            LOGGER.info(users.toString());
             return users;
         } catch (Exception e) {
-            e.printStackTrace();
             LOGGER.severe("An error happened when searching all the users");
             throw new ReadException("An error happened when searching all the users");
         }

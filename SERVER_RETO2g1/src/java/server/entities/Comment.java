@@ -1,5 +1,7 @@
 package server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -46,6 +48,7 @@ public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "comment_id")
+    @JsonProperty
     private Integer commentID;
 
     /**
@@ -53,12 +56,13 @@ public class Comment implements Serializable {
      */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student_id")
+    @JsonProperty
     private Student student;
 
     /**
      * Relation object to {@link Post}
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -69,6 +73,7 @@ public class Comment implements Serializable {
      */
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @NotNull
+    @JsonProperty
     private Date dateComment;
 
     /**
@@ -76,6 +81,7 @@ public class Comment implements Serializable {
      *
      */
     @NotNull
+    @JsonProperty
     @Column(columnDefinition = "TEXT")
     private String commentText;
 
@@ -127,7 +133,6 @@ public class Comment implements Serializable {
      *
      * @return Returns the post where the comment is posted
      */
-    @XmlTransient
     public Post getPost() {
         return post;
     }
@@ -184,18 +189,12 @@ public class Comment implements Serializable {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 59 * hash + Objects.hashCode(this.commentID);
-        hash = 59 * hash + Objects.hashCode(this.student);
-        hash = 59 * hash + Objects.hashCode(this.post);
-        hash = 59 * hash + Objects.hashCode(this.dateComment);
-        hash = 59 * hash + Objects.hashCode(this.commentText);
+        hash = 59 * hash + Objects.hash(commentID);
         return hash;
     }
 
     /**
-     * This implementation will compare between two objects all the attributes,
-     * if all of them is {@code True} it will return that, if not returns
-     * {@code False}
+     * Because this entity has an unique ID we can use it to compare to objects
      *
      * @param obj Object
      * @return boolean True or False if object is equal
@@ -211,23 +210,8 @@ public class Comment implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Comment other = (Comment) obj;
-        if (!Objects.equals(this.commentText, other.commentText)) {
-            return false;
-        }
-        if (!Objects.equals(this.commentID, other.commentID)) {
-            return false;
-        }
-        if (!Objects.equals(this.student, other.student)) {
-            return false;
-        }
-        if (!Objects.equals(this.post, other.post)) {
-            return false;
-        }
-        if (!Objects.equals(this.dateComment, other.dateComment)) {
-            return false;
-        }
-        return true;
+        Comment other = (Comment) obj;
+        return Objects.equals(commentID, other.commentID);
     }
 
     /**

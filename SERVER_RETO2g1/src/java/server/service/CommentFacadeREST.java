@@ -58,8 +58,8 @@ public class CommentFacadeREST {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(Comment entity) {
         try {
-            LOG.log(Level.INFO, "CommentRESTful service PUT: edit {0}",
-                    entity.getClass().getName());
+            LOG.log(Level.INFO, String.format("CommentRESTful service PUT: edit %s",
+                    entity.getClass().getName()));
             ejb.edit(entity);
         } catch (UpdateException e) {
             LOG.log(Level.SEVERE,

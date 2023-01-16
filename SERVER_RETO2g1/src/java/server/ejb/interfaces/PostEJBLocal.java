@@ -60,7 +60,6 @@ public interface PostEJBLocal {
      */
     public List<Post> getPostByTitle(Integer courseId, String title) throws ReadException;
 
-    
     /**
      * Creates/inserts the data of the entity passed
      *
@@ -80,10 +79,10 @@ public interface PostEJBLocal {
     /**
      * Deletes/Removes all the data from the entity passed
      *
-     * @param entity
+     * @param id
      * @throws DeleteException If the creation method threw an exception
      */
-    public void remove(Post entity) throws DeleteException;
+    public void remove(Integer id) throws DeleteException;
 
     /**
      * Finds the entity value using the primary key object passed by parameter
