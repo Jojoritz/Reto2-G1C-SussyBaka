@@ -12,12 +12,18 @@ import server.exception.CreateException;
 import server.exception.ReadException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import server.entities.Course;
+import server.entities.Student;
+import server.entities.Subject;
+import server.entities.Teacher;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
 
@@ -131,12 +137,32 @@ public class UserEJB implements UserEJBLocal {
     @Override
     public void edit(User user) throws UpdateException {
         try {
-            
             if (!em.contains(user)) {
-                LOGGER.severe(user.toString());
-                user.setPassword(getHashMD5(user.getPassword()));
-                em.merge(user);
+                User userFind = em.find(User.class, user.getId());
+                if (!userFind.getPassword().equals(user.getPassword())) {
+                    user.setPassword(getHashMD5(user.getPassword()));
+                }
+
+                if (user instanceof Teacher) {
+                    for (Subject subject : ((Teacher) user).getSpecializedSubjects()) {
+                        if (!em.contains(subject)) {
+                            em.merge(subject);
+                            ((Teacher) userFind).getSpecializedSubjects().add(subject);
+                        }
+                    }
+
+                    ((Teacher) user).setSpecializedSubjects(((Teacher) userFind).getSpecializedSubjects());
+                } else if (user instanceof Student) {
+                    for (Course course : ((Student) user).getStudyingCourses()) {
+                        if (!em.contains(course)) {
+                            em.merge(course);
+                            ((Student) userFind).getStudyingCourses().add(course);
+                        }
+                    }
+                    ((Student) user).setStudyingCourses(((Student) userFind).getStudyingCourses());
+                }
             }
+            em.merge(user);
             em.flush();
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
