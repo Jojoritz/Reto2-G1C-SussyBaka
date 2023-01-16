@@ -12,6 +12,7 @@ import server.exception.CreateException;
 import server.exception.ReadException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +45,6 @@ public class UserEJB implements UserEJBLocal {
 
         try {
             LOGGER.info("Searching if the user exist");
-            entity.setPassword(this.getHashMD5(entity.getPassword()));
 
             try {
                 User userExists = em.createNamedQuery("getUserLogin", User.class).setParameter("login", entity.getLogin())
@@ -53,34 +53,53 @@ public class UserEJB implements UserEJBLocal {
                     throw new Exception("The user already exist");
                 }
             } catch (NoResultException e) {
-                LOGGER.info("Llega a despues de la comprobacion, creando usuario");
                 LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName()));
                 if (!em.contains(entity)) {
-                    /*
-                    if (entity instanceof Teacher) {
-                        ((Teacher) entity).setTeachingCourses(new HashSet<>());
-                        ((Teacher) entity).setSpecializedSubjects(new HashSet<>());
-                    } else if (entity instanceof Student) {
-                        ((Student) entity).setStudyingCourses(new ArrayList<>());
-                    }
-                     */
+                    entity.setPassword(this.getHashMD5(entity.getPassword()));
 
- /*
-                    if (entity.getPrivilege().equals(UserPrivilege.TEACHER) && ((Teacher) entity).getSpecializedSubjects() != null) {
-                        ((Teacher) entity).setSpecializedSubjects(
-                                em.merge(
-                                        ((Teacher) entity).getSpecializedSubjects()
-                                )
-                        );
+                    if (entity instanceof Teacher) {
+                        Teacher teacher = (Teacher) entity;
+                        Set<Subject> subjects = new HashSet<>();
+                        Set<Course> courses = new HashSet<>();
+
+                        for (Subject subject : teacher.getSpecializedSubjects()) {
+                            if (subject.getSubjectId() != null) {
+                                subjects.add(em.find(Subject.class, subject.getSubjectId()));
+                            } else if (!em.contains(subject)) {
+                                subjects.add(em.merge(subject));
+                            }
+                        }
+                        if (!subjects.isEmpty()) {
+                            teacher.setSpecializedSubjects(subjects);
+                        }
+
+                        for (Course course : teacher.getTeachingCourses()) {
+                            if (course.getCourseId() != null) {
+                                courses.add(em.find(Course.class, course.getCourseId()));
+                            } else if (!em.contains(course)) {
+                                courses.add(em.merge(course));
+                            }
+                        }
+                        if (!courses.isEmpty()) {
+                            teacher.setTeachingCourses(courses);
+                        }
+
+                    } else if (entity instanceof Student) {
+                        Student student = (Student) entity;
+                        List<Course> courses = new ArrayList<>();
+
+                        for (Course course : student.getStudyingCourses()) {
+                            if (course.getCourseId() != null) {
+                                courses.add(em.find(Course.class, course.getCourseId()));
+                            } else if (!em.contains(course)) {
+                                courses.add(em.merge(course));
+                            }
+                        }
+                        if (!courses.isEmpty()) {
+                            student.setStudyingCourses(courses);
+                        }
                     }
-                    if (entity.getPrivilege().equals(UserPrivilege.STUDENT) && ((Student) entity).getStudyingCourses() != null) {
-                        ((Student) entity).setStudyingCourses(
-                                em.merge(
-                                        ((Student) entity).getStudyingCourses()
-                                )
-                        );
-                    }
-                     */
+
                     em.persist(entity);
                     LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
                 }
