@@ -115,6 +115,42 @@ public class UserFacadeREST {
             throw new InternalServerErrorException(e.getMessage());
         }
     }
+    
+    /**
+     * PUT method to update user
+     *
+     * @param user the data to update
+     */
+    @PUT
+    @Path("user/student")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void modifyStudent(Student user) {
+        try {
+            LOGGER.info("Modifying a user");
+            ejb.edit(user);
+        } catch (UpdateException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
+    }
+    
+    /**
+     * PUT method to update user
+     *
+     * @param user the data to update
+     */
+    @PUT
+    @Path("user/teacher")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void modifyTeacher(Teacher user) {
+        try {
+            LOGGER.info("Modifying a user");
+            ejb.edit(user);
+        } catch (UpdateException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
+    }
 
     /**
      * DELETE method to remove the user

@@ -131,7 +131,10 @@ public class UserEJB implements UserEJBLocal {
     @Override
     public void edit(User user) throws UpdateException {
         try {
+            
             if (!em.contains(user)) {
+                LOGGER.severe(user.toString());
+                user.setPassword(getHashMD5(user.getPassword()));
                 em.merge(user);
             }
             em.flush();
