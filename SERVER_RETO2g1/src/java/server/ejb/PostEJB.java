@@ -36,6 +36,21 @@ public class PostEJB implements PostEJBLocal {
     protected EntityManager em;
 
     @Override
+    public List<Post> getCoursePosts(Integer courseId) throws ReadException {
+        try {
+            List<Post> posts;
+            LOG.info(String.format("PostEJB: Get all post from course with ID %d", courseId));
+            posts = em.createNamedQuery("getCoursePosts").
+                    setParameter("courseId", courseId).getResultList();
+            return posts;
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, String.format("PostEJB: Exception on reading %s on courseId: %d",
+                    Post.class.getName(), courseId), e.getMessage());
+            throw new ReadException(e.getMessage());
+        }
+    }
+
+    @Override
     public List<Post> getPostByDate(Integer courseId, Date date) throws ReadException {
         try {
             List<Post> posts;
@@ -44,9 +59,11 @@ public class PostEJB implements PostEJBLocal {
                     setParameter("date", date).
                     setParameter("courseId", courseId).getResultList();
             return posts;
+
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("PostEJB: Exception on reading %s on courseId: %d and date: %s",
-                    Post.class.getName(), courseId, date.toString()), e.getMessage());
+                    Post.class
+                            .getName(), courseId, date.toString()), e.getMessage());
             throw new ReadException(e.getMessage());
         }
     }
@@ -61,9 +78,11 @@ public class PostEJB implements PostEJBLocal {
                     .setParameter("endDate", endDate).
                     setParameter("courseId", courseId).getResultList();
             return posts;
+
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("PostEJB: Exception on reading %s on courseId: %d, starting date: %s with ending date: %s",
-                    Post.class.getName(), courseId, startDate.toString(), endDate.toString()), e.getMessage());
+                    Post.class
+                            .getName(), courseId, startDate.toString(), endDate.toString()), e.getMessage());
             throw new ReadException(e.getMessage());
         }
     }
@@ -78,9 +97,11 @@ public class PostEJB implements PostEJBLocal {
                     setParameter("title", title).
                     setParameter("courseId", courseId).getResultList();
             return posts;
+
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("PostEJB: Exception on reading %s on courseId: %d with title: %s",
-                    Post.class.getName(), courseId, title), e.getMessage());
+                    Post.class
+                            .getName(), courseId, title), e.getMessage());
             throw new ReadException(e.getMessage());
         }
     }
@@ -95,9 +116,13 @@ public class PostEJB implements PostEJBLocal {
     public void create(Post entity) throws CreateException {
         try {
             LOG.info(entity.toString());
-            LOG.info(String.format("PostEJB: Creating %s", Post.class.getName()));
+            LOG
+                    .info(String.format("PostEJB: Creating %s", Post.class
+                            .getName()));
             em.persist(entity);
-            LOG.info(String.format("PostEJB: %s created successfully", Post.class.getName()));
+            LOG
+                    .info(String.format("PostEJB: %s created successfully", Post.class
+                            .getName()));
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("PostEJB: Exception on creating %s",
                     entity.getClass().getName()), e.getMessage());
@@ -114,10 +139,13 @@ public class PostEJB implements PostEJBLocal {
     @Override
     public void edit(Post entity) throws UpdateException {
         try {
-            LOG.info(String.format("PostEJB: editing %s", Post.class.getName()));
+            LOG.info(String.format("PostEJB: editing %s", Post.class
+                    .getName()));
             em.merge(entity);
             em.flush();
-            LOG.info(String.format("PostEJB: %s edited successfully", Post.class.getName()));
+            LOG
+                    .info(String.format("PostEJB: %s edited successfully", Post.class
+                            .getName()));
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("PostEJB: Exception on editing %s",
                     entity.getClass().getName()), e.getMessage());
@@ -135,14 +163,19 @@ public class PostEJB implements PostEJBLocal {
     @Override
     public void remove(Integer id) throws DeleteException {
         try {
-            LOG.info(String.format("PostEJB: Deleting %s", Post.class.getName()));
+            LOG.info(String.format("PostEJB: Deleting %s", Post.class
+                    .getName()));
             Post post = find(id);
             post = em.merge(post);
             em.remove(post);
-            LOG.info(String.format("PostEJB: %s deleted successfully", Post.class.getName()));
+            LOG
+                    .info(String.format("PostEJB: %s deleted successfully", Post.class
+                            .getName()));
+
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("PostEJB: Exception on deleting %s",
-                    Post.class.getName()), e.getMessage());
+                    Post.class
+                            .getName()), e.getMessage());
             throw new DeleteException(e.getMessage());
         }
     }
@@ -157,13 +190,19 @@ public class PostEJB implements PostEJBLocal {
     @Override
     public Post find(Object obj) throws ReadException {
         Post entity;
+
         try {
-            LOG.info(String.format("PostEJB: Finding %s by ID %s", Post.class.getName(), obj.toString()));
-            entity = em.find(Post.class, (Integer) obj);
+            LOG.info(String.format("PostEJB: Finding %s by ID %s", Post.class
+                    .getName(), obj.toString()));
+            entity
+                    = em.find(Post.class,
+                             (Integer) obj);
             return entity;
+
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("PostEJB: Exception on reading %s with ID %s",
-                    Post.class.getName(), obj.toString()), e.getMessage());
+                    Post.class
+                            .getName(), obj.toString()), e.getMessage());
             throw new ReadException(e.getMessage());
         }
     }

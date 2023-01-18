@@ -30,6 +30,16 @@ public interface PostEJBLocal {
      * Gets all the post from a specific date
      *
      * @param courseId The id of the course on where to get the post
+     * @return Returns a SET with all the post founded by a specific date
+     * @throws ReadException Throws exception if there was any error when
+     * getting the posts by date
+     */
+    public List<Post> getCoursePosts(Integer courseId) throws ReadException;
+
+    /**
+     * Gets all the post from a specific date
+     *
+     * @param courseId The id of the course on where to get the post
      * @param date Date to filter by
      * @return Returns a SET with all the post founded by a specific date
      * @throws ReadException Throws exception if there was any error when

@@ -44,6 +44,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(
             name = "findPostByTitle",
             query = "SELECT p FROM Post p WHERE p.title LIKE concat('%',:title,'%') AND p.course.courseId = :courseId")
+    ,
+    @NamedQuery(
+            name = "getCoursePosts",
+            query = "SELECT p FROM Post p WHERE p.course.courseId = :courseId")
 })
 @Entity
 @Table(name = "post", schema = "reto2_g1c_sussybaka")

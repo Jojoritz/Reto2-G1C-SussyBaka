@@ -47,7 +47,7 @@ public class PostFacadeREST {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Post entity) {
         try {
-            
+
             LOG.log(Level.INFO, "PostRESTful service POST: create {0}",
                     entity.getClass().getName());
             ejb.create(entity);
@@ -148,6 +148,21 @@ public class PostFacadeREST {
             LOG.log(Level.INFO, String.format("PostRESTful service GET: get posts with title %s from course %s",
                     title, courseId));
             posts = ejb.getPostByTitle(courseId, title);
+            return posts;
+        } catch (ReadException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
+
+    }
+
+    @GET
+    @Path("{courseId}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Post> getCoursePosts(@PathParam("courseId") Integer courseId) {
+        try {
+            List<Post> posts;
+            LOG.log(Level.INFO, String.format("PostRESTful service GET: get posts from course %s", courseId));
+            posts = ejb.getCoursePosts(courseId);
             return posts;
         } catch (ReadException e) {
             throw new InternalServerErrorException(e.getMessage());
