@@ -7,9 +7,7 @@ package server.service.mail;
 
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.inject.Inject;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -45,35 +43,35 @@ public class MailSender {
     private static Multipart multipart;
     private static MimeBodyPart mimeBodyPart;
     private static final Logger LOGGER = Logger.getLogger(MailSender.class.getName());
-    
+
     public static String sendMail(String email) throws Exception {
-        LOGGER.info("Preparing to send email, loading the data from the properties file");
-        mailProperties = getPropertiesInfo();
-
-        LOGGER.info("Preparing a session to send email");
-        session = Session.getInstance(mailProperties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(user, password);
-            }
-        });
-
-        message = new MimeMessage(session);
         try {
+            LOGGER.info("Preparing to send email, loading the data from the properties file");
+            mailProperties = getPropertiesInfo();
+
+            LOGGER.info("Preparing a session to send email");
+            session = Session.getInstance(mailProperties, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(user, password);
+                }
+            });
+
+            message = new MimeMessage(session);
             message.setFrom(new InternetAddress(user));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
             message.setSubject(subject);
-            
+
             multipart = new MimeMultipart();
             randomPassword = randomPasswordGenerator();
             content = "Usted ha solicitado restaurar la contraseña, la nueva contraseña es " + randomPassword;
-            
+
             mimeBodyPart = new MimeBodyPart();
             mimeBodyPart.setContent(content, "text/html");
             multipart.addBodyPart(mimeBodyPart);
-            
+
             message.setContent(multipart);
-            
+
             Transport.send(message);
         } catch (MessagingException e) {
             LOGGER.severe(e.getMessage());
@@ -92,24 +90,24 @@ public class MailSender {
      * @throws Exception if any exception sucedded
      */
     private static String randomPasswordGenerator() throws Exception {
-        String randomPassword = null;     
-        
+        String randomPassword = null;
+
         try {
             LOGGER.info("Generating a random password");
             PasswordGenerator gen = new PasswordGenerator();
-            
+
             CharacterData lowerCaseChars = EnglishCharacterData.LowerCase;
             CharacterRule lowerCaseRule = new CharacterRule(lowerCaseChars);
             lowerCaseRule.setNumberOfCharacters(4);
-            
+
             CharacterData upperCaseChars = EnglishCharacterData.UpperCase;
             CharacterRule upperCaseRule = new CharacterRule(upperCaseChars);
             upperCaseRule.setNumberOfCharacters(1);
-            
+
             CharacterData digitChars = EnglishCharacterData.Digit;
             CharacterRule digitRule = new CharacterRule(digitChars);
             digitRule.setNumberOfCharacters(3);
-            
+
             CharacterData specialChars = new CharacterData() {
                 @Override
                 public String getErrorCode() {
@@ -120,36 +118,42 @@ public class MailSender {
                 public String getCharacters() {
                     return "!@#\\$%^&\\*\\?";
                 }
-            };   
+            };
             System.out.println(specialChars.getCharacters());
             CharacterRule specialCharRule = new CharacterRule(specialChars);
             specialCharRule.setNumberOfCharacters(1);
-            
+
             randomPassword = gen.generatePassword(10, upperCaseRule, lowerCaseRule, digitRule, specialCharRule);
-            
-            
+
         } catch (Exception e) {
             LOGGER.info("An error happened when generating a random password");
             throw new Exception("Ane error happened when generating a random password");
         }
         return randomPassword;
     }
-    
-    private static Properties getPropertiesInfo() {
-        Properties mailProperties = new Properties();
-        ResourceBundle rb = ResourceBundle.getBundle("server.service.mail.mailConfigFile");
 
-        mailProperties.put("mail.smtp.auth", Boolean.parseBoolean(rb.getString("mail.smtp.auth")));
-        mailProperties.put("mail.smtp.starttls.enable", rb.getString("mail.smtp.starttls.enable"));
-        mailProperties.put("mail.smtp.host", rb.getString("smtp_host"));
-        mailProperties.put("mail.smtp.port", rb.getString("smtp_port"));
-        mailProperties.put("mail.smtp.ssl.trust", rb.getString("smtp_host"));
-        mailProperties.put("mail.imap.partialfetch", Boolean.parseBoolean(rb.getString("mail.imap.partialfetch")));
+    private static synchronized Properties getPropertiesInfo() throws Exception {
+        try {
+            if (mailProperties != null) {
+                return mailProperties;
+            }
+            ResourceBundle rb = ResourceBundle.getBundle("server.service.mail.mailConfigFile");
+            mailProperties = new Properties();
+            mailProperties.put("mail.smtp.auth", Boolean.parseBoolean(rb.getString("mail.smtp.auth")));
+            mailProperties.put("mail.smtp.starttls.enable", rb.getString("mail.smtp.starttls.enable"));
+            mailProperties.put("mail.smtp.host", rb.getString("smtp_host"));
+            mailProperties.put("mail.smtp.port", rb.getString("smtp_port"));
+            mailProperties.put("mail.smtp.ssl.trust", rb.getString("smtp_host"));
+            mailProperties.put("mail.imap.partialfetch", Boolean.parseBoolean(rb.getString("mail.imap.partialfetch")));
 
-        user = rb.getString("user");
-        password = rb.getString("password");
-        subject = rb.getString("subject");
+            user = rb.getString("user");
+            password = rb.getString("password");
+            subject = rb.getString("subject");
 
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            throw new Exception(e.getMessage());
+        }
         return mailProperties;
     }
 }

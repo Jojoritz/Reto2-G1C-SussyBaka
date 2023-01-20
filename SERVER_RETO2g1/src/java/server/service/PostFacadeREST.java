@@ -33,7 +33,7 @@ import server.ejb.interfaces.PostEJBLocal;
  *
  * @author ioritz
  */
-@Path("entities,post")
+@Path("entities.post")
 public class PostFacadeREST {
 
     private static final Logger LOG = Logger.getLogger("PostFacadeREST");
