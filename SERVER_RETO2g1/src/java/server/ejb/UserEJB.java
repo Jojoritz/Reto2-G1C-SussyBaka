@@ -229,6 +229,7 @@ public class UserEJB implements UserEJBLocal {
 
     @Override
     public void resetPassword(String email) throws UpdateException {
+        User user = null;
         try {
             
             LOGGER.info("Starting to reset the password");
@@ -236,7 +237,14 @@ public class UserEJB implements UserEJBLocal {
             
             List<User> users = findAll();
             
-            //TODO find the corresponding user and update
+            for (int i = 0; i < users.size() && user == null; i++) {
+                if (users.get(i).getEmail().equals(email)) {
+                    user = users.get(i);
+                }
+            }
+            user.setPassword(getHashMD5(randomPassword));
+            edit(user);
+            
         } catch (Exception e) {
             LOGGER.severe("An error happened when reseting the password");
             throw new InternalServerErrorException("An error happened when reseting the password");
