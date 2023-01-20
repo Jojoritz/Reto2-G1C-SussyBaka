@@ -9,7 +9,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="610.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clientProject.view.signIn.SignInViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
+	prefHeight="610.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.signIn.SignInViewController"
+	stylesheets="@../css/style.css">
     <children>
         <TextField fx:id="txtUser" layoutX="570.0" layoutY="206.0" prefHeight="37.0" prefWidth="322.0" promptText="Introduzca el usuario">
             <font>
@@ -56,5 +58,10 @@
                 <Font size="24.0" />
             </font>
         </Label>
+      <Button fx:id="btnPasswordReset" layoutX="656.0" layoutY="496.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="160.0" text="Recuperar Contraseña">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
     </children>
 </Pane>

@@ -5,12 +5,9 @@
  */
 package client.view.signIn;
 
-import clientProject.view.signUp.SignUpViewController;
-import clientProject.logic.ClientSocket;
-import enumerations.Operation;
-import exceptions.IncorrectLoginException;
-import exceptions.ServerErrorException;
-import exceptions.ServerFullException;
+import client.beans.User;
+import client.logic.exception.BusinessLogicException;
+import client.view.signUp.SignUpViewController;
 import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -30,8 +27,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import model.Message;
-import model.User;
 
 /**
  * FXML Controller class This class is the controller of the Sign In view
@@ -44,7 +39,7 @@ public class SignInViewController {
     /**
      * This is the logger of the class
      */
-    private static final Logger LOG = Logger.getLogger("vista.SignIn.SignInViewController");
+    private static final Logger LOG = Logger.getLogger(SignInViewController.class.getName());
     /**
      * This is the pattern that is going to be used to validate some fields
      */
@@ -79,14 +74,6 @@ public class SignInViewController {
      * The primary stage
      */
     private Stage primaryStage;
-    /**
-     * The client socket
-     */
-    private ClientSocket clientSocket;
-    /**
-     * The css file reference
-     */
-    private String css = null;
 
     /**
      * The user name text field
@@ -118,21 +105,17 @@ public class SignInViewController {
      * This method initialize the stage (@code SignInView)
      *
      * @param root the principal stage where this window will be showed
-     * @param clientSocket The client socket to connect to the server
      * @param css The css file reference
      */
-    public void initStage(Parent root, ClientSocket clientSocket, String css) {
+    public void initStage(Parent root) {
         LOG.info("Initiating Sign In View stage");
-        this.css = css;
 
         //Set the scene, add the css and setting the client socket and the primary stage
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(css);
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("Iniciar Sesion");
         this.primaryStage = stage;
-        this.clientSocket = clientSocket;
 
         LOG.info("Setting validator for the username field");
         txtUser.textProperty().addListener((Observable) -> {
@@ -228,13 +211,14 @@ public class SignInViewController {
         });
         //When the Sign in button is clicked
         btnSignIn.setOnAction(this::signIn);
+
         //When the sign up buttton is clicked
         btnSignUpView.setOnAction((Event) -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/clientProject/view/signUp/SignUpView.fxml"));
                 Parent rootSignUp = (Parent) loader.load();
                 SignUpViewController signUp = ((SignUpViewController) loader.getController());
-                signUp.initStage(rootSignUp, stage, this.clientSocket, css);
+                signUp.initStage(rootSignUp, stage);
             } catch (IOException ex) {
                 LOG.info("No se puede abrir la ventana " + ex.getLocalizedMessage());
             }
@@ -257,11 +241,6 @@ public class SignInViewController {
             user.setLogin(txtUser.getText());
             user.setPassword(txtPassword.getText());
 
-            //Setting the message with de user data and the operation
-            Message message = new Message();
-            message.setUserData(user);
-            message.setOperation(Operation.SING_IN);
-
             String error = "Login incorrecto, compruebe el usuario y/o la contraseña";
 
             //Validating that the username is valid
@@ -272,9 +251,8 @@ public class SignInViewController {
             //If is not valid
             if (!matcher.matches()) {
                 LOG.info(error);
-                throw new IncorrectLoginException(error);
             }
-            
+
             //validate password
             String PASSWORD_PATTERN
                     = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!¡@#$%&¿?]).{8,100}$";
@@ -284,36 +262,23 @@ public class SignInViewController {
             //If the password is not valid
             if (!matcher.matches()) {
                 LOG.info("La contraseña no es válida, debe tener al menos una mayuscula, una minuscula, un número y un caracter especial");
-                throw new IncorrectLoginException(error);
-            }
-            
-            //connect to server, send the message and obtain the returned message
-            message = clientSocket.connectToServer(message);
-
-            switch (message.getOperation()) {
-                //If the obtained message says that login error has happend 
-                case LOGIN_ERROR:
-                    throw new IncorrectLoginException("Login Incorrecto, compruebe el usuario y/o la contraseña");
-                //If the obtained message says that everything is ok
-                case OK:
-                    //Open the logged window and set the fields empty
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/clientProject/view/logged/LoggedView.fxml"));
-                    Parent root = (Parent) loader.load();
-                    LoggedViewController controller = ((LoggedViewController) loader.getController());
-                    controller.initStage(root, message.getUserData(), primaryStage, this.css);
-                    txtUser.setText("");
-                    txtPassword.setText("");
             }
 
-        } catch (ServerErrorException | ServerFullException ex) {
+            //TODO
+            /*
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/clientProject/view/logged/LoggedView.fxml"));
+            Parent root = (Parent) loader.load();
+            LoggedViewController controller = ((LoggedViewController) loader.getController());
+            controller.initStage(root, message.getUserData(), primaryStage, this.css);
+            txtUser.setText("");
+            txtPassword.setText("");
+             */
+            throw new BusinessLogicException("hola");
+        } catch (BusinessLogicException ex) {
             LOG.severe(ex.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK);
             alert.showAndWait();
-        } catch (IncorrectLoginException ex) {
-            LOG.warning(ex.getMessage());
-            Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK);
-            alert.showAndWait();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, "Ha ocurrido un error al iniciar la ventana de inicio de sesión", ButtonType.OK);
             alert.showAndWait();

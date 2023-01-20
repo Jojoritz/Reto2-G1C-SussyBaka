@@ -3,13 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clientProject.view.signUp;
+package client.view.signUp;
 
-import clientProject.logic.ClientSocket;
-import enumerations.Operation;
-import exceptions.ServerErrorException;
-import exceptions.ServerFullException;
-import exceptions.UserAlreadyExistsException;
+import client.beans.User;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,8 +23,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import model.Message;
-import model.User;
 
 /**
  * FXML Controller class This is the SignUpView scene controller
@@ -140,11 +134,8 @@ public class SignUpViewController {
     /**
      * The logger of this class
      */
-    private static final Logger LOG = Logger.getLogger("clientProject.view.signUp.SignUpViewController.class");
-    /**
-     * The socket to connect to the server
-     */
-    private ClientSocket clientSocket;
+    private static final Logger LOG = Logger.getLogger(SignUpViewController.class.getName());
+
     private Stage primaryStage = null;
 
     /**
@@ -152,19 +143,15 @@ public class SignUpViewController {
      *
      * @param root The scene that is going to be loaded in the stage
      * @param primaryStage Primary stage
-     * @param clientSocket Passes the client socket 
-     * @param css Adds CSS to stages
      */
-    public void initStage(Parent root, Stage primaryStage, ClientSocket clientSocket, String css) {
+    public void initStage(Parent root, Stage primaryStage) {
         LOG.info("Starting the window and setting the components on the screen");
         //Setting the scene, the css and the client socket
         myScene = new Scene(root);
-        myScene.getStylesheets().add(css);
         myStage = new Stage();
         primaryStage.hide();
-        this.clientSocket = clientSocket;
         this.primaryStage = primaryStage;
-        
+
         myStage.setOnShowing((event) -> {
             //When the screen launch the onShowing event
 
@@ -317,7 +304,7 @@ public class SignUpViewController {
 
             try {
                 txtPasswordConfirmError.setVisible(false);
-                
+
                 // If the password confirmation don't match with the password
                 if (!txtConfirmPassword.getText().equals(txtPassword.getText())) {
                     throw new Exception("La contraseña no coincide");
@@ -341,10 +328,10 @@ public class SignUpViewController {
         );
 
         btnBack.setOnAction((ActionEvent) -> {
-                    LOG.info("Closing the window");
-                    myStage.close();
-                    primaryStage.show();
-                }
+            LOG.info("Closing the window");
+            myStage.close();
+            primaryStage.show();
+        }
         );
 
         btnSignUp.setOnAction(this::signUp);
@@ -419,7 +406,6 @@ public class SignUpViewController {
      */
     private void signUp(ActionEvent event) {
         LOG.info("Starting the sign up and setting up all equired objects");
-        Message message;
         User user;
 
         //Setting the user data and the message data
@@ -429,10 +415,7 @@ public class SignUpViewController {
         user.setPassword(txtPassword.getText());
         user.setLogin(txtUsername.getText().trim());
 
-        message = new Message();
-        message.setUserData(user);
-        message.setOperation(Operation.SING_UP);
-
+        /*
         try {
             message = clientSocket.connectToServer(message);
 
@@ -463,5 +446,6 @@ public class SignUpViewController {
             alert = new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK);
             alert.showAndWait();
         }
+         */
     }
 }
