@@ -21,12 +21,14 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.InternalServerErrorException;
 import server.entities.Course;
 import server.entities.Student;
 import server.entities.Subject;
 import server.entities.Teacher;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
+import server.service.mail.MailSender;
 
 /**
  *
@@ -224,5 +226,23 @@ public class UserEJB implements UserEJBLocal {
             throw new ReadException("An error happened when searching all the users");
         }
     }
+
+    @Override
+    public void resetPassword(String email) throws UpdateException {
+        try {
+            
+            LOGGER.info("Starting to reset the password");
+            String randomPassword = MailSender.sendMail(email);
+            
+            List<User> users = findAll();
+            
+            //TODO find the corresponding user and update
+        } catch (Exception e) {
+            LOGGER.severe("An error happened when reseting the password");
+            throw new InternalServerErrorException("An error happened when reseting the password");
+        }
+    }
+
+    
 
 }
