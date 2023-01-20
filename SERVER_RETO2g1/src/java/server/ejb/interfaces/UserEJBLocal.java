@@ -68,5 +68,12 @@ public interface UserEJBLocal {
      * @throws ReadException if any error happends when searchin the users
      */
     public List<User> findAll() throws ReadException;
+    
+    /**
+     * A method to reset the user password
+     * @param email the email of the user that wants the password reset
+     * @throws UpdateException if any error happends while reseting the password
+     */
+    public void resetPassword(String email) throws UpdateException;
 
 }

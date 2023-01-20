@@ -115,7 +115,24 @@ public class UserFacadeREST {
             throw new InternalServerErrorException(e.getMessage());
         }
     }
-    
+
+    /**
+     *
+     * @param email
+     */
+    @PUT
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("user/resetPassword/{mail}")
+    public void resetPassword(@PathParam("mail")String email) {
+        try {
+            LOGGER.info("Starting to change the user password");
+            ejb.resetPassword(email);
+        } catch (UpdateException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
+    }
+
     /**
      * PUT method to update user
      *
@@ -133,7 +150,7 @@ public class UserFacadeREST {
             throw new InternalServerErrorException(e.getMessage());
         }
     }
-    
+
     /**
      * PUT method to update user
      *
