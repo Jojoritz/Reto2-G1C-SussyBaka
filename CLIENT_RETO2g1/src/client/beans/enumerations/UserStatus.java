@@ -1,4 +1,4 @@
-package client.beans;
+package client.beans.enumerations;
 
 /**
  * This is the user status enumeration

@@ -1,5 +1,7 @@
 package client.beans;
 
+import client.beans.enumerations.UserStatus;
+import client.beans.enumerations.UserPrivilege;
 import java.io.Serializable;
 import java.util.List;
 

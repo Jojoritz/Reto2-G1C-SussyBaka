@@ -1,4 +1,4 @@
-package client.beans;
+package client.beans.enumerations;
 /**
  * The enumeration for the user privilege
  * @author ioritz
