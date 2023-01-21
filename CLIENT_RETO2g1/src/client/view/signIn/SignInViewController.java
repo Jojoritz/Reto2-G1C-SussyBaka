@@ -215,7 +215,7 @@ public class SignInViewController {
         //When the sign up buttton is clicked
         btnSignUpView.setOnAction((Event) -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/clientProject/view/signUp/SignUpView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/signUp/SignUpView.fxml"));
                 Parent rootSignUp = (Parent) loader.load();
                 SignUpViewController signUp = ((SignUpViewController) loader.getController());
                 signUp.initStage(rootSignUp, stage);

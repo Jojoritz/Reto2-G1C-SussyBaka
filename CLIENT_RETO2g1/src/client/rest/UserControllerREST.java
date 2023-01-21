@@ -33,12 +33,12 @@ public class UserControllerREST {
         webTarget = client.target(BASE_URI).path("entities.user");
     }
 
-    public void resetPassword_XML(Object requestEntity, String mail) throws ClientErrorException {
-        webTarget.path(java.text.MessageFormat.format("user/resetPassword/{0}", new Object[]{mail})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+    public void resetPassword_XML(Object requestEntity) throws ClientErrorException {
+        webTarget.path("user/reset/password/mail").request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public void resetPassword_JSON(Object requestEntity, String mail) throws ClientErrorException {
-        webTarget.path(java.text.MessageFormat.format("user/resetPassword/{0}", new Object[]{mail})).request(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON));
+    public void resetPassword_JSON(Object requestEntity) throws ClientErrorException {
+        webTarget.path("user/reset/password/mail").request(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON));
     }
 
     public <T> T getUser_XML(Class<T> responseType, String id) throws ClientErrorException {

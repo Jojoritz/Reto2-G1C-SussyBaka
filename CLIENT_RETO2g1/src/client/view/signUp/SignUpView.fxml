@@ -119,12 +119,8 @@
                 <Image url="@SignUpImage.png" />
             </image>
         </ImageView>
-      <ComboBox fx:id="cmbxUserType" layoutX="750.0" layoutY="663.0" prefHeight="25.0" prefWidth="388.0" />
-      <Label layoutX="754.0" layoutY="629.0" prefHeight="25.0" prefWidth="119.0" text="Tipo de usuario:">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
+      <ComboBox fx:id="cmbxUserType" layoutX="750.0" layoutY="663.0" prefHeight="25.0" prefWidth="388.0" promptText="Tipo de usuario" visibleRowCount="2" />
+      <ComboBox prefWidth="150.0" />
 
       
 
