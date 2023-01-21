@@ -100,6 +100,24 @@ public class UserFacadeREST {
     }
 
     /**
+     * POST method to reset the users password
+     *
+     * @param email
+     */
+    @POST
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("user/reset/password/mail")
+    public void resetPassword(String email) {
+        try {
+            LOGGER.info("Starting to change the user password");
+            ejb.resetPassword(email);
+        } catch (UpdateException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
+    }
+
+    /**
      * PUT method to update user
      *
      * @param user the data to update
@@ -110,23 +128,6 @@ public class UserFacadeREST {
         try {
             LOGGER.info("Modifying a user");
             ejb.edit(user);
-        } catch (UpdateException e) {
-            LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
-        }
-    }
-
-    /**
-     *
-     * @param email
-     */
-    @PUT
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("user/resetPassword/{mail}")
-    public void resetPassword(@PathParam("mail")String email) {
-        try {
-            LOGGER.info("Starting to change the user password");
-            ejb.resetPassword(email);
         } catch (UpdateException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
@@ -188,6 +189,7 @@ public class UserFacadeREST {
 
     @GET
     @Path("user/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public User getUser(@PathParam("id") Integer userId) {
         try {
             LOGGER.info("Find  the user");
@@ -201,7 +203,6 @@ public class UserFacadeREST {
     /**
      * GET method to signIn a user
      *
-     * @param xtUser the data of the user to signIn
      * @return the user finded
      */
     @GET
@@ -223,6 +224,10 @@ public class UserFacadeREST {
     }
 
     /**
+     * Get the teacher data
+     *
+     * @param id ID of the user that is a teacher
+     * @return Returns the Teacher object with all the relations
      */
     @GET
     @Path("user/teacher/{id}")
@@ -243,6 +248,10 @@ public class UserFacadeREST {
     }
 
     /**
+     * Get the student data
+     *
+     * @param id ID of the user that is a student
+     * @return Returns the Teacher object with all the relations
      */
     @GET
     @Path("user/student/{id}")
