@@ -27,6 +27,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import server.entities.Student;
 import server.entities.Teacher;
+import server.exception.EncriptionException;
+import server.service.cipher.EncryptDecrypt;
 
 /**
  *
@@ -36,7 +38,7 @@ import server.entities.Teacher;
 public class UserFacadeREST {
 
     /**
-     * EJB object with the busines logic
+     * EJB object with the bussiness logic
      */
     @EJB
     private UserEJBLocal ejb;
@@ -56,8 +58,9 @@ public class UserFacadeREST {
     public void createUser(User user) {
         try {
             LOGGER.info("Creating a user");
+            user.setPassword(EncryptDecrypt.descifrarTextoAsimetrico(user.getPassword()));
             ejb.create(user);
-        } catch (CreateException e) {
+        } catch (CreateException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
         }
@@ -74,8 +77,9 @@ public class UserFacadeREST {
     public void createTeacher(Teacher user) {
         try {
             LOGGER.info("Creating a Teacher");
+            user.setPassword(EncryptDecrypt.descifrarTextoAsimetrico(user.getPassword()));
             ejb.create(user);
-        } catch (CreateException e) {
+        } catch (CreateException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
         }
@@ -92,8 +96,9 @@ public class UserFacadeREST {
     public void createStudent(Student user) {
         try {
             LOGGER.info("Creating a Student");
+            user.setPassword(EncryptDecrypt.descifrarTextoAsimetrico(user.getPassword()));
             ejb.create(user);
-        } catch (CreateException e) {
+        } catch (CreateException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
         }
@@ -127,8 +132,9 @@ public class UserFacadeREST {
     public void modifyUser(User user) {
         try {
             LOGGER.info("Modifying a user");
+            user.setPassword(EncryptDecrypt.descifrarTextoAsimetrico(user.getPassword()));
             ejb.edit(user);
-        } catch (UpdateException e) {
+        } catch (UpdateException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
         }
@@ -145,8 +151,9 @@ public class UserFacadeREST {
     public void modifyStudent(Student user) {
         try {
             LOGGER.info("Modifying a user");
+            user.setPassword(EncryptDecrypt.descifrarTextoAsimetrico(user.getPassword()));
             ejb.edit(user);
-        } catch (UpdateException e) {
+        } catch (UpdateException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
         }
@@ -163,8 +170,9 @@ public class UserFacadeREST {
     public void modifyTeacher(Teacher user) {
         try {
             LOGGER.info("Modifying a user");
+            user.setPassword(EncryptDecrypt.descifrarTextoAsimetrico(user.getPassword()));
             ejb.edit(user);
-        } catch (UpdateException e) {
+        } catch (UpdateException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
         }
@@ -193,8 +201,10 @@ public class UserFacadeREST {
     public User getUser(@PathParam("id") Integer userId) {
         try {
             LOGGER.info("Find  the user");
-            return ejb.find(userId);
-        } catch (ReadException e) {
+            User user = ejb.find(userId);
+            user.setPassword(EncryptDecrypt.cifrarTextoAsimetrico(user.getPassword()));
+            return user;
+        } catch (ReadException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
         }
@@ -203,7 +213,9 @@ public class UserFacadeREST {
     /**
      * GET method to signIn a user
      *
-     * @return the user finded
+     * @param login Login user
+     * @param password Password of the user
+     * @return the user found
      */
     @GET
     @Path("user/login/{login}/{password}")
@@ -212,9 +224,9 @@ public class UserFacadeREST {
         User user = null;
         try {
             LOGGER.info("Searching the user");
-            user = ejb.signIn(login, password);
+            user = ejb.signIn(login, EncryptDecrypt.descifrarTextoAsimetrico(password));
 
-        } catch (ReadException e) {
+        } catch (ReadException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());
         }
@@ -233,17 +245,17 @@ public class UserFacadeREST {
     @Path("user/teacher/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Teacher getTeacher(@PathParam("id") Integer id) {
-        Teacher user = null;
+        Teacher user;
         try {
             LOGGER.info("Searching the user");
             user = (Teacher) ejb.find(id);
+            user.setPassword(EncryptDecrypt.cifrarTextoAsimetrico(user.getPassword()));
+            return user;
 
-        } catch (ReadException e) {
+        } catch (ReadException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());
         }
-
-        return user;
 
     }
 
@@ -257,17 +269,17 @@ public class UserFacadeREST {
     @Path("user/student/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Student getStudent(@PathParam("id") Integer id) {
-        Student user = null;
+        Student user;
         try {
             LOGGER.info("Searching the user");
             user = (Student) ejb.find(id);
+            user.setPassword(EncryptDecrypt.cifrarTextoAsimetrico(user.getPassword()));
+            return user;
 
-        } catch (ReadException e) {
+        } catch (ReadException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());
         }
-
-        return user;
 
     }
 
@@ -279,16 +291,23 @@ public class UserFacadeREST {
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<User> findAll() {
-        List<User> users = null;
+        List<User> users;
         try {
             LOGGER.info("Searching the users");
             users = ejb.findAll();
-
+            users.stream().forEach(
+                    user -> {
+                        try {
+                            user.setPassword(EncryptDecrypt.cifrarTextoAsimetrico(user.getPassword()));
+                        } catch (EncriptionException ex) {
+                            LOGGER.severe(ex.getMessage());
+                        }
+                    });
+            return users;
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
             throw new NotFoundException(e.getMessage());
         }
-        return users;
     }
 
 }

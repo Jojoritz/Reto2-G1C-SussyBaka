@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.InternalServerErrorException;
 import server.entities.Course;
@@ -48,64 +47,63 @@ public class UserEJB implements UserEJBLocal {
         try {
             LOGGER.info("Searching if the user exist");
 
-            try {
-                User userExists = em.createNamedQuery("getUserLogin", User.class).setParameter("login", entity.getLogin())
-                        .setParameter("password", entity.getPassword()).getSingleResult();
-                if (userExists != null) {
-                    throw new Exception("The user already exist");
-                }
-            } catch (NoResultException e) {
-                LOGGER.info(String.format("EJB: Creating %s", entity.getClass().getName()));
-                if (!em.contains(entity)) {
-                    entity.setPassword(this.getHashMD5(entity.getPassword()));
+            Long count = this.findAll().stream()
+                    .filter(user -> user.getLogin().equalsIgnoreCase(entity.getLogin())
+                    && user.getEmail().equalsIgnoreCase(entity.getEmail())).count();
 
-                    if (entity instanceof Teacher) {
-                        Teacher teacher = (Teacher) entity;
-                        Set<Subject> subjects = new HashSet<>();
-                        Set<Course> courses = new HashSet<>();
+            if (count > 0) {
+                throw new Exception("The user already exist");
+            }
 
-                        for (Subject subject : teacher.getSpecializedSubjects()) {
-                            if (subject.getSubjectId() != null) {
-                                subjects.add(em.find(Subject.class, subject.getSubjectId()));
-                            } else if (!em.contains(subject)) {
-                                subjects.add(em.merge(subject));
-                            }
-                        }
-                        if (!subjects.isEmpty()) {
-                            teacher.setSpecializedSubjects(subjects);
-                        }
+            LOGGER.info(String.format("User EJB: Creating %s", entity.getClass().getName()));
+            if (!em.contains(entity)) {
+                entity.setPassword(this.getHashMD5(entity.getPassword()));
 
-                        for (Course course : teacher.getTeachingCourses()) {
-                            if (course.getCourseId() != null) {
-                                courses.add(em.find(Course.class, course.getCourseId()));
-                            } else if (!em.contains(course)) {
-                                courses.add(em.merge(course));
-                            }
-                        }
-                        if (!courses.isEmpty()) {
-                            teacher.setTeachingCourses(courses);
-                        }
+                if (entity instanceof Teacher) {
+                    Teacher teacher = (Teacher) entity;
+                    Set<Subject> subjects = new HashSet<>();
+                    Set<Course> courses = new HashSet<>();
 
-                    } else if (entity instanceof Student) {
-                        Student student = (Student) entity;
-                        List<Course> courses = new ArrayList<>();
-
-                        for (Course course : student.getStudyingCourses()) {
-                            if (course.getCourseId() != null) {
-                                courses.add(em.find(Course.class, course.getCourseId()));
-                            } else if (!em.contains(course)) {
-                                courses.add(em.merge(course));
-                            }
+                    teacher.getSpecializedSubjects().forEach((subject) -> {
+                        if (subject.getSubjectId() != null) {
+                            subjects.add(em.find(Subject.class, subject.getSubjectId()));
+                        } else if (!em.contains(subject)) {
+                            subjects.add(em.merge(subject));
                         }
-                        if (!courses.isEmpty()) {
-                            student.setStudyingCourses(courses);
-                        }
+                    });
+                    if (!subjects.isEmpty()) {
+                        teacher.setSpecializedSubjects(subjects);
                     }
 
-                    em.persist(entity);
-                    LOGGER.info(String.format("EJB: %s created successfully", entity.getClass().getName()));
+                    teacher.getTeachingCourses().forEach((course) -> {
+                        if (course.getCourseId() != null) {
+                            courses.add(em.find(Course.class, course.getCourseId()));
+                        } else if (!em.contains(course)) {
+                            courses.add(em.merge(course));
+                        }
+                    });
+                    if (!courses.isEmpty()) {
+                        teacher.setTeachingCourses(courses);
+                    }
+
+                } else if (entity instanceof Student) {
+                    Student student = (Student) entity;
+                    List<Course> courses = new ArrayList<>();
+
+                    student.getStudyingCourses().forEach((course) -> {
+                        if (course.getCourseId() != null) {
+                            courses.add(em.find(Course.class, course.getCourseId()));
+                        } else if (!em.contains(course)) {
+                            courses.add(em.merge(course));
+                        }
+                    });
+                    if (!courses.isEmpty()) {
+                        student.setStudyingCourses(courses);
+                    }
                 }
 
+                em.persist(entity);
+                LOGGER.info(String.format("User EJB: %s created successfully", entity.getClass().getName()));
             }
 
         } catch (Exception e) {
@@ -117,11 +115,12 @@ public class UserEJB implements UserEJBLocal {
     @Override
     public User signIn(String login, String password) throws ReadException {
         try {
+            password = this.getHashMD5(password);
             User user = em.createNamedQuery("getUserLogin", User.class).
                     setParameter("login", login).
                     setParameter("password", password)
                     .getSingleResult();
-            LOGGER.info(getHashMD5(password));
+            LOGGER.info("User EJB: Logging correct, Getting info of the user");
             return user;
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
@@ -159,32 +158,36 @@ public class UserEJB implements UserEJBLocal {
     public void edit(User user) throws UpdateException {
         try {
             if (!em.contains(user)) {
+                LOGGER.info("User EJB: Find user and change password if its not the same (hashed)");
                 User userFind = em.find(User.class, user.getId());
                 if (!userFind.getPassword().equals(user.getPassword())) {
                     user.setPassword(getHashMD5(user.getPassword()));
                 }
 
                 if (user instanceof Teacher) {
-                    for (Subject subject : ((Teacher) user).getSpecializedSubjects()) {
-                        if (!em.contains(subject)) {
-                            em.merge(subject);
-                            ((Teacher) userFind).getSpecializedSubjects().add(subject);
-                        }
-                    }
+                    LOGGER.info("User EJB: Merge specialized subjects from the teacher");
+                    ((Teacher) user).getSpecializedSubjects().stream().filter((subject) -> (!em.contains(subject))).map((subject) -> {
+                        em.merge(subject);
+                        return subject;
+                    }).forEachOrdered((subject) -> {
+                        ((Teacher) userFind).getSpecializedSubjects().add(subject);
+                    });
 
                     ((Teacher) user).setSpecializedSubjects(((Teacher) userFind).getSpecializedSubjects());
                 } else if (user instanceof Student) {
-                    for (Course course : ((Student) user).getStudyingCourses()) {
-                        if (!em.contains(course)) {
-                            em.merge(course);
-                            ((Student) userFind).getStudyingCourses().add(course);
-                        }
-                    }
+                    LOGGER.info("User EJB: Merge studying courses from the student");
+                    ((Student) user).getStudyingCourses().stream().filter((course) -> (!em.contains(course))).map((course) -> {
+                        em.merge(course);
+                        return course;
+                    }).forEachOrdered((course) -> {
+                        ((Student) userFind).getStudyingCourses().add(course);
+                    });
                     ((Student) user).setStudyingCourses(((Student) userFind).getStudyingCourses());
                 }
             }
             em.merge(user);
             em.flush();
+            LOGGER.info("User EJB: Edit user successfully");
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
             throw new UpdateException(e.getMessage());
@@ -192,9 +195,10 @@ public class UserEJB implements UserEJBLocal {
     }
 
     @Override
-    public void remove(Integer user_id) throws DeleteException {
+    public void remove(Integer userId) throws DeleteException {
         try {
-            User user = find(user_id);
+            LOGGER.info("User EJB: Find user");
+            User user = find(userId);
             user = em.merge(user);
             em.remove(user);
         } catch (Exception e) {
@@ -206,8 +210,9 @@ public class UserEJB implements UserEJBLocal {
     @Override
     public User find(Integer id) throws ReadException {
         try {
-            LOGGER.info("Searching for all the users");
-            return em.find(User.class, id);
+            LOGGER.info(String.format("Searching for the user with id %d", id));
+            User user = em.find(User.class, id);
+            return user;
         } catch (Exception e) {
             LOGGER.severe("An error happened when searching all the users");
             throw new ReadException("An error happened when searching all the users");
@@ -219,7 +224,6 @@ public class UserEJB implements UserEJBLocal {
         try {
             LOGGER.info("Searching for all the users");
             List<User> users = em.createNamedQuery("findAllUsers").getResultList();
-            LOGGER.info("user llege aqui");
             return users;
         } catch (Exception e) {
             LOGGER.severe("An error happened when searching all the users");
@@ -229,28 +233,24 @@ public class UserEJB implements UserEJBLocal {
 
     @Override
     public void resetPassword(String email) throws UpdateException {
-        User user = null;
         try {
-            
+
             LOGGER.info("Starting to reset the password");
             String randomPassword = MailSender.sendMail(email);
-            
-            List<User> users = findAll();
-            
-            for (int i = 0; i < users.size() && user == null; i++) {
-                if (users.get(i).getEmail().equals(email)) {
-                    user = users.get(i);
-                }
+
+            User user = findAll().stream()
+                    .filter(users -> users.getEmail().equals(email)).findFirst().orElse(null);
+
+            if (user == null) {
+                throw new Exception();
             }
             user.setPassword(getHashMD5(randomPassword));
-            edit(user);
-            
+            this.edit(user);
+
         } catch (Exception e) {
             LOGGER.severe("An error happened when reseting the password");
             throw new InternalServerErrorException("An error happened when reseting the password");
         }
     }
-
-    
 
 }

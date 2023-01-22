@@ -9,10 +9,6 @@ import java.util.List;
 import server.entities.User;
 import server.exception.ReadException;
 import javax.ejb.Local;
-import server.entities.Course;
-import server.entities.Student;
-import server.entities.Subject;
-import server.entities.Teacher;
 import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
@@ -44,10 +40,10 @@ public interface UserEJBLocal {
     /**
      * Deletes/Removes all the data from the entity passed
      *
-     * @param user_id the data of the entity to remove
+     * @param userId the data of the entity to remove
      * @throws DeleteException If the creation method threw an exception
      */
-    public void remove(Integer user_id) throws DeleteException;
+    public void remove(Integer userId) throws DeleteException;
 
     /**
      * Finds the entity value using the primary key object passed by parameter
@@ -59,20 +55,28 @@ public interface UserEJBLocal {
      */
     public User signIn(String login, String password) throws ReadException;
 
+    /**
+     * Find a specific user by his id
+     * 
+     * @param id User identification number
+     * @return Returns the user found
+     * @throws ReadException Exception when reading
+    */
     public User find(Integer id) throws ReadException;
 
     /**
      * Obtains a list with all the users
      *
      * @return A list with all the users
-     * @throws ReadException if any error happends when searchin the users
+     * @throws ReadException if any error happens when searching the users
      */
     public List<User> findAll() throws ReadException;
-    
+
     /**
      * A method to reset the user password
+     *
      * @param email the email of the user that wants the password reset
-     * @throws UpdateException if any error happends while reseting the password
+     * @throws UpdateException if any error happens while reseting the password
      */
     public void resetPassword(String email) throws UpdateException;
 

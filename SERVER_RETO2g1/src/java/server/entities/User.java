@@ -28,9 +28,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * This is the user entity class
@@ -39,7 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @NamedQueries({
     @NamedQuery(
-            name = "getUserLogin", query = "SELECT u FROM User u WHERE u.login = :login AND u.password = MD5(:password)"
+            name = "getUserLogin", query = "SELECT u FROM User u WHERE u.login = :login AND u.password = :password"
     )
     ,
         @NamedQuery(
