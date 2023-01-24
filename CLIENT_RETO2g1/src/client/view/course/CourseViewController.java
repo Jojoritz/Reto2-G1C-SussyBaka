@@ -5,6 +5,14 @@
  */
 package client.view.course;
 
+import client.beans.Subject;
+import client.beans.Teacher;
+import client.beans.enumerations.FilterTypes;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -46,6 +54,14 @@ public class CourseViewController {
     private Scene scene = null;
 
     private Stage primaryStage = null;
+
+    private boolean correctDate = false;
+
+    private boolean correctName = false;
+
+    private List<Subject> subjects = null;
+
+    private List<Teacher> teachers = null;
 
     /**
      * The table of the window
@@ -93,7 +109,7 @@ public class CourseViewController {
      * The combo box to choose a filter
      */
     @FXML
-    private ComboBox<?> cmbxFilter;
+    private ComboBox<FilterTypes> cmbxFilter;
 
     /**
      * The text view of the filter text
@@ -166,7 +182,7 @@ public class CourseViewController {
      * The text field to put the Course's Subject
      */
     @FXML
-    private TextField txtSubject;
+    private ComboBox<String> cmbxSubject;
 
     /**
      * The text view of Subject
@@ -178,7 +194,7 @@ public class CourseViewController {
      * The text field to put the Course's Teacher
      */
     @FXML
-    private TextField txtTeacher;
+    private ComboBox cmbxTeacher;
 
     /**
      * The text view of Teacher
@@ -211,7 +227,7 @@ public class CourseViewController {
         LOG.info("Starting the window and setting the components on the screen");
         //Setting the Window
         scene = new Scene(root);
-        scene.getStylesheets().add(css);
+        //scene.getStylesheets().add(css);
         stage = new Stage();
         primaryStage.hide();
         this.primaryStage = primaryStage;
@@ -232,6 +248,71 @@ public class CourseViewController {
             btnPrint.setDisable(false);
             btnReturn.setDisable(false);
             btnShowSubjects.setDisable(false);
+            cmbxFilter.getItems().addAll(FilterTypes.DATE, FilterTypes.NAME);
+            cmbxFilter.getSelectionModel().select(-1);
+            Subject sub = new Subject();
+            sub.setSubjectId(1);
+            sub.setName("Mondongo");
+            sub.setLevel("Alto");
+            sub.setCentury("VII");
+            sub.setType("Difilic");
+            subjects = new ArrayList();
+            subjects.add(sub);
+            for (Subject s : subjects) {
+                cmbxSubject.getItems().add(s.getName());
+            }
+            cmbxSubject.getSelectionModel().select(-1);
+            for (Teacher t : teachers) {
+                cmbxTeacher.getItems().add(t.getFullName());
+            }
+            cmbxTeacher.getSelectionModel().select(-1);
         });
+
+        txtCourseName.textProperty().addListener((event) -> {
+            //When the text is being modified in the text field
+            try {
+                //If the course name is empty
+                if (txtCourseName.getText().length() <= 0) {
+                    throw new Exception("El nombre del curso no debe de estar vacio");
+                }
+                correctName = true;
+                btnCreate.setDisable(!(correctName && correctDate));
+            } catch (Exception e) {
+                LOG.warning(e.getMessage());
+                btnCreate.setDisable(false);
+                correctName = false;
+            }
+        });
+
+        txtCreatedDate.textProperty().addListener((event) -> {
+            //When the text is being modified in the text field
+            try {
+                boolean res = true;
+                String date = txtCreatedDate.getText();
+                res = validateDate(date);
+                if (!res && txtCreatedDate.getText().length() <= 0) {
+                    throw new Exception("El formato de fecha no es valido y/o no debe estar vacio");
+                }
+                correctDate = true;
+                btnCreate.setDisable(!(correctName && correctDate));
+            } catch (Exception e) {
+                LOG.warning(e.getMessage());
+                btnCreate.setDisable(false);
+                correctDate = false;
+            }
+        });
+        stage.showAndWait();
+    }
+
+    private boolean validateDate(String date) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy");
+            format.setLenient(false);
+            format.parse(date);
+        } catch (ParseException ex) {
+            Logger.getLogger(CourseViewController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
     }
 }

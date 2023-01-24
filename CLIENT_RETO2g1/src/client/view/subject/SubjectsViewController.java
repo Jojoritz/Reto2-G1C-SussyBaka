@@ -299,8 +299,8 @@ public class SubjectsViewController {
                 System.out.println(prueba.length());
                 System.out.println(txtCreatedCentury.getText().length());
                 System.out.println(txtCreatedCentury.getText().trim());
-                if (txtCreatedCentury.getText().length() == 0 
-                        || txtLevel.getText().trim().equals("")) {
+                if (prueba.length() == 0 
+                        || prueba.trim().equals("")) {
                     
                     throw new Exception();
                     

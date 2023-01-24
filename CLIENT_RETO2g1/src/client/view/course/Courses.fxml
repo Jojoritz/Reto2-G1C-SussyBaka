@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="596.0" prefWidth="1005.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clientProject.view.logged.LoggedViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="596.0" prefWidth="1005.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.course.CourseViewController">
    <children>
-      <fx:include fx:id="menuBarContainer" source="MenuBar.fxml" />
+      <fx:include fx:id="menuBarContainer" source="/client/view/MenuBar.fxml"/>
       <TableView fx:id="tableCourses" layoutX="172.0" layoutY="243.0" prefHeight="300.0" prefWidth="622.0">
         <columns>
           <TableColumn fx:id="colName" prefWidth="150.0" text="Nombre" />
@@ -56,13 +56,13 @@
          </font>
       </Label>
       <TextField fx:id="txtCreatedDate" layoutX="84.0" layoutY="172.0" prefHeight="25.0" prefWidth="177.0" />
-      <TextField fx:id="txtSubject" layoutX="279.0" layoutY="172.0" prefHeight="25.0" prefWidth="177.0" />
+      <ComboBox fx:id="cmbxSubject" layoutX="279.0" layoutY="172.0" prefHeight="25.0" prefWidth="177.0" />
       <Label fx:id="viewSubject" layoutX="287.0" layoutY="150.0" text="Subject">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="txtTeacher" layoutX="279.0" layoutY="122.0" prefHeight="25.0" prefWidth="177.0" />
+      <ComboBox fx:id="cmbxTeacher" layoutX="279.0" layoutY="122.0" prefHeight="25.0" prefWidth="177.0" />
       <Label fx:id="viewTeacher" layoutX="287.0" layoutY="99.0" text="Profesor">
          <font>
             <Font size="14.0" />

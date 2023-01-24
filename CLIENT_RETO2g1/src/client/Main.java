@@ -6,6 +6,8 @@
 package client;
 
 import client.view.subject.SubjectsViewController;
+import client.view.course.CourseViewController;
+import client.view.signIn.SignInViewController;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
