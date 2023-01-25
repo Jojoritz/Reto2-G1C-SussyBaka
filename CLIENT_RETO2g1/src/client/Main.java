@@ -6,6 +6,7 @@
 package client;
 
 import client.view.signIn.SignInViewController;
+import client.view.subject.SubjectsViewController;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,10 +31,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/signIn/SignInView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/subject/Subjects.fxml"));
             Parent root = (Parent) loader.load();
-            SignInViewController controller = ((SignInViewController) loader.getController());
-            controller.initStage(root);
+            SubjectsViewController controller = ((SubjectsViewController) loader.getController());
+            controller.initStage(root, primaryStage);
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

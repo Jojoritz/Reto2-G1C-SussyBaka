@@ -176,6 +176,11 @@ public class SubjectsViewController {
      */
     private static final Logger LOGGER = Logger.getLogger(SubjectsViewController.class.getName());
 
+    /**
+     * The method that initialize the window
+     * @param root The parent scene of the actual window scene
+     * @param primaryStage The parent stage of the actual window stage
+     */
     public void initStage(Parent root, Stage primaryStage) {
         LOGGER.info("Starting the window and setting the components on the screen");
 
@@ -209,6 +214,7 @@ public class SubjectsViewController {
         btnDeleteSubject.setDisable(true);
         btnModifySubject.setDisable(true);
         btnSearchSubject.setDisable(false);
+        btnSearchSubject.getStyleClass().add("buttonSearch");
         btnSubjectPrint.setDisable(false);
         btnSubjectReturn.setDisable(false);
         
@@ -231,9 +237,10 @@ public class SubjectsViewController {
                  t.setLogin("login" + i);
                  testingTeachersData.add(t);
              }
+            
              testingTeachersData.forEach(teacher -> {
                  cmbxTeacher.getItems().add(teacher.getFullName());
-             }); 
+             });
              
              //Charging the data of the table
              
