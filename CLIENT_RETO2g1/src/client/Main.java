@@ -8,7 +8,6 @@ package client;
 import client.view.subject.SubjectsViewController;
 import client.view.course.CourseViewController;
 import client.view.signIn.SignInViewController;
-import client.view.subject.SubjectsViewController;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,10 +32,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/subject/Subjects.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/course/Courses.fxml"));
             Parent root = (Parent) loader.load();
-            SubjectsViewController controller = ((SubjectsViewController) loader.getController());
-            controller.initStage(root, primaryStage);
+            CourseViewController controller = ((CourseViewController) loader.getController());
+            controller.initStage(root, primaryStage, null);
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
