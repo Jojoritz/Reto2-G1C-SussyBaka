@@ -9,14 +9,21 @@ import client.rest.CourseControllerREST;
 import client.rest.SubjectControllerREST;
 
 /**
- *
- * @author iorit
+ *This is the controller interfaces implementation factory
+ * @author ioritz
  */
 public class ControllerFactory {
+    /**
+     * Instanciates an subject controller interface implementation
+     * @return An subject controller interface implementation
+     */
     public static SubjectController getSubjectController(){
         return new SubjectControllerREST();
     }
-    
+    /**
+     * Instanciates an CourseController interface implementation
+     * @return An course controller interface implementation
+     */
     public static CourseController getCourseController(){
         return new CourseControllerREST();
     }

@@ -410,7 +410,9 @@ public class SubjectsViewController {
 
         myStage.showAndWait();
     }
-
+    /**
+     * A method for clearing the fields and checkboxes
+     */
     private void clearFields() {
         txtCreatedCentury.setText("");
         txtFilter.setText("");
