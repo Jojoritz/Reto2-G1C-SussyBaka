@@ -5,15 +5,22 @@
  */
 package client.view.course;
 
+import client.beans.Course;
 import client.beans.Subject;
 import client.beans.Teacher;
 import client.beans.enumerations.FilterTypes;
+import client.logic.ControllerFactory;
+import client.logic.CourseController;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -26,6 +33,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.ws.rs.core.GenericType;
 
 /**
  * FXML Controller class
@@ -63,11 +71,23 @@ public class CourseViewController {
 
     private List<Teacher> teachers = null;
 
+    List<Teacher> testingTeachersData;
+
+    ObservableList<Subject> testingSubjetsData;
+
+    private Teacher comboSelectedTeacher;
+    
+    private Subject comboSelectedSubject;
+    
+    private ObservableList<Course> coursesData;
+    
+    private CourseController courseController;
+
     /**
      * The table of the window
      */
     @FXML
-    private TableView<?> tableCourses;
+    private TableView<Course> tableCourses;
 
     /**
      * The column "Name" of the table
@@ -248,8 +268,12 @@ public class CourseViewController {
             btnPrint.setDisable(false);
             btnReturn.setDisable(false);
             btnShowSubjects.setDisable(false);
+
+            tableCourses.setVisible(true);
+
             cmbxFilter.getItems().addAll(FilterTypes.FECHA, FilterTypes.NOMBRE);
             cmbxFilter.getSelectionModel().select(-1);
+
             Subject sub = new Subject();
             sub.setSubjectId(1);
             sub.setName("Mondongo");
@@ -262,21 +286,36 @@ public class CourseViewController {
                 cmbxSubject.getItems().add(s.getName());
             }
             cmbxSubject.getSelectionModel().select(-1);
+
+            Teacher tea = new Teacher();
+            tea.setId(1);
+            tea.setFullName("Mogambo");
+            tea.setLogin("Ermeregildo");
+            tea.setPassword("abcd*1234");
+            tea.setEmail("HermesRegildo@gmail.com");
+            teachers = new ArrayList();
+            teachers.add(tea);
             for (Teacher t : teachers) {
                 cmbxTeacher.getItems().add(t.getFullName());
             }
             cmbxTeacher.getSelectionModel().select(-1);
+            
+            courseController = (CourseController) ControllerFactory.getCourseController();
+            coursesData = FXCollections.observableArrayList(courseController.findAll_XML(new GenericType<Collection<Course>>(){}));
+            tableCourses.setItems(coursesData);
         });
 
         txtCourseName.textProperty().addListener((event) -> {
             //When the text is being modified in the text field
             try {
                 //If the course name is empty
-                if (txtCourseName.getText().length() <= 0) {
+                if (txtCourseName.getText().length() == 0 || txtCourseName.getText().trim().equals("")) {
+                    correctName = false;
                     throw new Exception("El nombre del curso no debe de estar vacio");
+                } else {
+                    correctName = true;
                 }
-                correctName = true;
-                btnCreate.setDisable(!(correctName && correctDate));
+                btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
             } catch (Exception e) {
                 LOG.warning(e.getMessage());
                 btnCreate.setDisable(false);
@@ -287,26 +326,71 @@ public class CourseViewController {
         txtCreatedDate.textProperty().addListener((event) -> {
             //When the text is being modified in the text field
             try {
-                boolean res = true;
+                boolean res = false;
                 String date = txtCreatedDate.getText();
-                res = validateDate(date);
-                if (!res && txtCreatedDate.getText().length() <= 0) {
-                    throw new Exception("El formato de fecha no es valido y/o no debe estar vacio");
+                if (date.length() == 10) {
+                    res = validateDate(date);
+                    if (!res && date.length() == 0 || date.trim().equals("")) {
+                        throw new Exception("El formato de fecha no es valido y/o no debe estar vacio");
+                    }
+                    correctDate = true;
+                } else {
+                    correctDate = false;
                 }
-                correctDate = true;
-                btnCreate.setDisable(!(correctName && correctDate));
+                btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
             } catch (Exception e) {
                 LOG.warning(e.getMessage());
                 btnCreate.setDisable(false);
                 correctDate = false;
             }
         });
+
+        cmbxTeacher.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                testingTeachersData.stream().forEach(t -> {
+                    if (t.getFullName().equals(newValue)) {
+                        comboSelectedTeacher = t;
+                    }
+                });
+                if (comboSelectedTeacher == null) {
+                    throw new Exception();
+                }
+                btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
+            } catch (Exception e) {
+                btnCreate.setDisable(true);
+                comboSelectedTeacher = null;
+            }
+        });
+
+        cmbxSubject.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                testingSubjetsData.stream().forEach(s -> {
+                    if (s.getName().equals(newValue)) {
+                        comboSelectedSubject = s;
+                    }
+                });
+                if (comboSelectedSubject == null) {
+                    throw new Exception();
+                }
+                btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
+            } catch (Exception e) {
+                btnCreate.setDisable(true);
+                comboSelectedSubject = null;
+            }
+        });
+
+        btnReturn.setOnAction(actionEvent ->{
+            LOG.info("Closing Window");
+            stage.close();
+            primaryStage.show();
+        });
+        
         stage.showAndWait();
     }
 
     private boolean validateDate(String date) {
         try {
-            SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy");
+            SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
             format.setLenient(false);
             format.parse(date);
         } catch (ParseException ex) {
