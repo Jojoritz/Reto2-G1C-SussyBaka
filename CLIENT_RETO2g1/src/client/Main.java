@@ -5,6 +5,8 @@
  */
 package client;
 
+import client.view.subject.SubjectsViewController;
+import client.view.course.CourseViewController;
 import client.view.signIn.SignInViewController;
 import client.view.subject.SubjectsViewController;
 import java.io.IOException;

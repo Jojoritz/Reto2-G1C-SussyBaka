@@ -8,10 +8,13 @@ package client.view.subject;
 import client.beans.Subject;
 import client.beans.Teacher;
 import client.beans.enumerations.FilterTypes;
+import client.logic.ControllerFactory;
+import client.logic.SubjectController;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -32,6 +35,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.ws.rs.core.GenericType;
 
 /**
  * FXML Controller class
@@ -168,8 +172,12 @@ public class SubjectsViewController {
      */
     private Teacher comboSelectedTeacher;
     
-    List<Teacher> testingTeachersData;
-    ObservableList<Subject> testingSubjetsData;
+    private List<Teacher> teachersData;
+    private ObservableList<Subject> subjectsData;
+    /**
+     * An object of SubjectController interface
+     */
+    private SubjectController subjectController;
 
     /**
      * This is the logger for the subjects view controller
@@ -228,24 +236,26 @@ public class SubjectsViewController {
         
          myStage.setOnShowing(event -> {
             //charging the data of the teachers combo box
-            testingTeachersData = new ArrayList<>();
+            teachersData = new ArrayList<>();
              for (int i = 1; i <= 3; i++) {
                  Teacher t = new Teacher();
                  t.setEmail("email" + i);
                  t.setId(i);
                  t.setFullName("nombre" + i);
                  t.setLogin("login" + i);
-                 testingTeachersData.add(t);
+                 teachersData.add(t);
              }
             
-             testingTeachersData.forEach(teacher -> {
+             teachersData.forEach(teacher -> {
                  cmbxTeacher.getItems().add(teacher.getFullName());
              });
              
              //Charging the data of the table
              
-             testingSubjetsData = FXCollections.observableArrayList(createSubjectTestData());
-             tableSubjects.setItems(testingSubjetsData);
+             subjectController = ControllerFactory.getSubjectController();
+             
+             subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {}));
+             tableSubjects.setItems(subjectsData);
             
         });
         
@@ -306,8 +316,8 @@ public class SubjectsViewController {
                 System.out.println(prueba.length());
                 System.out.println(txtCreatedCentury.getText().length());
                 System.out.println(txtCreatedCentury.getText().trim());
-                if (txtCreatedCentury.getText().length() == 0 
-                        || txtLevel.getText().trim().equals("")) {
+                if (prueba.length() == 0 
+                        || prueba.trim().equals("")) {
                     
                     throw new Exception();
                     
@@ -325,7 +335,7 @@ public class SubjectsViewController {
         
         cmbxTeacher.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             try {
-                testingTeachersData.stream().forEach(t -> {
+                teachersData.stream().forEach(t -> {
                     if (t.getFullName().equalsIgnoreCase(newValue)) {
                         comboSelectedTeacher = t;
                     }
@@ -374,17 +384,6 @@ public class SubjectsViewController {
         myStage.showAndWait();
     }
     
-    private Collection createSubjectTestData(){
-        List<Subject> ret = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Subject subject = new Subject();
-            subject.setName("name" + i);
-            subject.setLevel("level" + i);
-            subject.setCentury("century" + i);
-            subject.setType("type" + i);
-            ret.add(subject);
-        }
-        return ret;
-    }
+   
 
 }
