@@ -8,10 +8,13 @@ package client.view.subject;
 import client.beans.Subject;
 import client.beans.Teacher;
 import client.beans.enumerations.FilterTypes;
+import client.logic.ControllerFactory;
+import client.logic.SubjectController;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -32,6 +35,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.ws.rs.core.GenericType;
 
 /**
  * FXML Controller class
@@ -161,21 +165,30 @@ public class SubjectsViewController {
      * Indicates if level text field is empty or not
      */
     private Boolean levelEmpty;
-   
-    
+
     /**
      * An object to save the selected teacher from the combo box
      */
     private Teacher comboSelectedTeacher;
-    
-    List<Teacher> testingTeachersData;
-    ObservableList<Subject> testingSubjetsData;
+
+    private List<Teacher> teachersData;
+    private ObservableList<Subject> subjectsData;
+    /**
+     * An object of SubjectController interface
+     */
+    private SubjectController subjectController;
 
     /**
      * This is the logger for the subjects view controller
      */
     private static final Logger LOGGER = Logger.getLogger(SubjectsViewController.class.getName());
 
+    /**
+     * The method that initialize the window
+     *
+     * @param root The parent scene of the actual window scene
+     * @param primaryStage The parent stage of the actual window stage
+     */
     public void initStage(Parent root, Stage primaryStage) {
         LOGGER.info("Starting the window and setting the components on the screen");
 
@@ -190,18 +203,13 @@ public class SubjectsViewController {
 
         primaryStage.hide();
 
-        
         subjectNameEmpty = true;
         creationCenturyEmpty = true;
         levelEmpty = true;
         typeEmpty = true;
         comboSelectedTeacher = null;
-        
-        cmbxFilterOptions.getItems().addAll(
-                FilterTypes.NAME,
-                FilterTypes.LEVEL,
-                FilterTypes.TYPE
-        );
+        LOGGER.info("Charging t");
+
         cmbxFilterOptions.setEditable(false);
         cmbxTeacher.setEditable(false);
 
@@ -209,116 +217,132 @@ public class SubjectsViewController {
         btnDeleteSubject.setDisable(true);
         btnModifySubject.setDisable(true);
         btnSearchSubject.setDisable(false);
+        btnSearchSubject.getStyleClass().add("buttonSearch");
         btnSubjectPrint.setDisable(false);
         btnSubjectReturn.setDisable(false);
-        
-        
-         tableSubjects.setVisible(true);
-         
+
+        tableSubjects.setVisible(true);
+
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colLevel.setCellValueFactory(new PropertyValueFactory<>("level"));
         colCreationCentury.setCellValueFactory(new PropertyValueFactory<>("century"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        
-         myStage.setOnShowing(event -> {
+
+        myStage.setOnShowing(event -> {
+            LOGGER.info("Charging the teachers combo box data and the table data");
+
+            cmbxFilterOptions.getItems().addAll(
+                    FilterTypes.NOMBRE,
+                    FilterTypes.NIVEL,
+                    FilterTypes.TIPO
+            );
             //charging the data of the teachers combo box
-            testingTeachersData = new ArrayList<>();
-             for (int i = 1; i <= 3; i++) {
-                 Teacher t = new Teacher();
-                 t.setEmail("email" + i);
-                 t.setId(i);
-                 t.setFullName("nombre" + i);
-                 t.setLogin("login" + i);
-                 testingTeachersData.add(t);
-             }
-             testingTeachersData.forEach(teacher -> {
-                 cmbxTeacher.getItems().add(teacher.getFullName());
-             }); 
-             
-             //Charging the data of the table
-             
-             testingSubjetsData = FXCollections.observableArrayList(createSubjectTestData());
-             tableSubjects.setItems(testingSubjetsData);
-            
+            teachersData = new ArrayList<>();
+            for (int i = 1; i <= 3; i++) {
+                Teacher t = new Teacher();
+                t.setEmail("email" + i);
+                t.setId(i);
+                t.setFullName("nombre" + i);
+                t.setLogin("login" + i);
+                teachersData.add(t);
+            }
+
+            teachersData.forEach(teacher -> {
+                cmbxTeacher.getItems().add(teacher.getFullName());
+            });
+
+            //Charging the data of the table
+            subjectController = ControllerFactory.getSubjectController();
+
+            subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
+            }));
+            tableSubjects.setItems(subjectsData);
+
         });
-        
 
         txtSubjectName.textProperty().addListener(observable -> {
             try {
-                if (txtSubjectName.getText().length() == 0 
+                LOGGER.info("Validating subject name text field is not empty");
+                if (txtSubjectName.getText().length() == 0
                         || txtSubjectName.getText().trim().equals("")) {
-                    
+
                     throw new Exception();
                 }
                 subjectNameEmpty = false;
-                if (!subjectNameEmpty && !creationCenturyEmpty && !levelEmpty 
+                if (!subjectNameEmpty && !creationCenturyEmpty && !levelEmpty
                         && !typeEmpty && comboSelectedTeacher != null) {
                     btnCreateSubject.setDisable(false);
                 }
             } catch (Exception e) {
+                LOGGER.info("The subject name text field is empty");
                 btnCreateSubject.setDisable(true);
                 subjectNameEmpty = true;
             }
         });
-        
+
         txtType.textProperty().addListener(observable -> {
             try {
+                LOGGER.info("Validating the type text field is not empty");
                 if (txtType.getText().length() == 0 || txtType.getText().trim().equals("")) {
                     throw new Exception();
                 }
                 typeEmpty = false;
-                if (!subjectNameEmpty && !creationCenturyEmpty && !levelEmpty 
+                if (!subjectNameEmpty && !creationCenturyEmpty && !levelEmpty
                         && !typeEmpty && comboSelectedTeacher != null) {
                     btnCreateSubject.setDisable(false);
                 }
             } catch (Exception e) {
+                LOGGER.info("The type text field is empty");
                 btnCreateSubject.setDisable(true);
                 typeEmpty = true;
             }
         });
-        
-        txtLevel.textProperty().addListener(observable ->{
+
+        txtLevel.textProperty().addListener(observable -> {
             try {
+                LOGGER.info("Validating the level text field is not empty");
                 if (txtLevel.getText().length() == 0 || txtLevel.getText().trim().equals("")) {
                     throw new Exception();
                 }
                 levelEmpty = false;
-                if (!subjectNameEmpty && !creationCenturyEmpty && !levelEmpty 
+                if (!subjectNameEmpty && !creationCenturyEmpty && !levelEmpty
                         && !typeEmpty && comboSelectedTeacher != null) {
                     btnCreateSubject.setDisable(false);
                 }
             } catch (Exception e) {
+                LOGGER.severe("The level text field is empty");
                 btnCreateSubject.setDisable(true);
                 levelEmpty = true;
             }
         });
-        
-        txtCreatedCentury.textProperty().addListener(observable ->{
+
+        txtCreatedCentury.textProperty().addListener(observable -> {
             try {
-                String prueba = txtCreatedCentury.getText();
-                System.out.println(prueba.length());
-                System.out.println(txtCreatedCentury.getText().length());
-                System.out.println(txtCreatedCentury.getText().trim());
-                if (prueba.length() == 0 
-                        || prueba.trim().equals("")) {
-                    
+                LOGGER.info("Validating the created century is not empty");
+                String createdCentury = txtCreatedCentury.getText();
+               
+                if (createdCentury.length() == 0
+                        || createdCentury.trim().equals("")) {
+
                     throw new Exception();
-                    
+
                 }
                 creationCenturyEmpty = false;
-                if (!subjectNameEmpty && !creationCenturyEmpty && !levelEmpty 
+                if (!subjectNameEmpty && !creationCenturyEmpty && !levelEmpty
                         && !typeEmpty && comboSelectedTeacher != null) {
                     btnCreateSubject.setDisable(false);
                 }
             } catch (Exception e) {
+                LOGGER.info("The created century text field is empty");
                 btnCreateSubject.setDisable(true);
                 creationCenturyEmpty = true;
             }
         });
-        
+
         cmbxTeacher.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             try {
-                testingTeachersData.stream().forEach(t -> {
+                LOGGER.info("Seleccting and getting the selected teachers data");
+                teachersData.stream().forEach(t -> {
                     if (t.getFullName().equalsIgnoreCase(newValue)) {
                         comboSelectedTeacher = t;
                     }
@@ -326,18 +350,17 @@ public class SubjectsViewController {
                 if (comboSelectedTeacher == null) {
                     throw new Exception();
                 }
-                if (!subjectNameEmpty && !creationCenturyEmpty && !levelEmpty 
+                if (!subjectNameEmpty && !creationCenturyEmpty && !levelEmpty
                         && !typeEmpty && comboSelectedTeacher != null) {
                     btnCreateSubject.setDisable(false);
                 }
             } catch (Exception e) {
+                LOGGER.severe("An error ocurred while getting the teacher data");
                 btnCreateSubject.setDisable(true);
                 comboSelectedTeacher = null;
             }
         });
-            
-       
-        
+
         //Handle an window close request event
         myStage.setOnCloseRequest(windowEvent -> {
             LOGGER.info("Opening exit alert confitmation");
@@ -353,31 +376,49 @@ public class SubjectsViewController {
                 }
             });
         });
-        
-        
-        
-       btnSubjectReturn.setOnAction(actionEvent -> {
-           LOGGER.info("Closing the window");
-           myStage.close();
-           primaryStage.show();
-       });
-       
-        
-        
+
+        btnSubjectReturn.setOnAction(actionEvent -> {
+            LOGGER.info("Closing the window");
+            myStage.close();
+            primaryStage.show();
+        });
+
+        btnCreateSubject.setOnAction(actionEvent -> {
+            try {
+                LOGGER.info("Creating the subject");
+                Subject subject = new Subject();
+                subject.setName(txtSubjectName.getText());
+                subject.setLevel(txtLevel.getText());
+                subject.setType(txtType.getText());
+                subject.setCentury(txtCreatedCentury.getText());
+
+                subject.getTeachersSpecializedInSubject().add(comboSelectedTeacher);
+                subjectController.createSubject_XML(subject);
+               
+                clearFields();
+                subjectsData.add(subject);
+                
+                btnCreateSubject.setDisable(true);
+
+            } catch (Exception e) {
+                LOGGER.severe(e.getMessage());
+                e.printStackTrace();
+                alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al crear la asignatura, intentelo otra vez");
+            }
+
+        });
+
         myStage.showAndWait();
     }
-    
-    private Collection createSubjectTestData(){
-        List<Subject> ret = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Subject subject = new Subject();
-            subject.setName("name" + i);
-            subject.setLevel("level" + i);
-            subject.setCentury("century" + i);
-            subject.setType("type" + i);
-            ret.add(subject);
-        }
-        return ret;
+
+    private void clearFields() {
+        txtCreatedCentury.setText("");
+        txtFilter.setText("");
+        txtLevel.setText("");
+        txtSubjectName.setText("");
+        txtType.setText("");
+        cmbxFilterOptions.getSelectionModel().select(-1);
+        cmbxTeacher.getSelectionModel().select(-1);
     }
 
 }
