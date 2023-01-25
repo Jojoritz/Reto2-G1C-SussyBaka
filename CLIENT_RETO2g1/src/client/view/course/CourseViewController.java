@@ -248,7 +248,7 @@ public class CourseViewController {
             btnPrint.setDisable(false);
             btnReturn.setDisable(false);
             btnShowSubjects.setDisable(false);
-            cmbxFilter.getItems().addAll(FilterTypes.DATE, FilterTypes.NAME);
+            cmbxFilter.getItems().addAll(FilterTypes.FECHA, FilterTypes.NOMBRE);
             cmbxFilter.getSelectionModel().select(-1);
             Subject sub = new Subject();
             sub.setSubjectId(1);
