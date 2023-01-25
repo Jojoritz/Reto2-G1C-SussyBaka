@@ -5,6 +5,7 @@
  */
 package client.logic;
 
+import client.rest.CourseControllerREST;
 import client.rest.SubjectControllerREST;
 
 /**
@@ -14,5 +15,9 @@ import client.rest.SubjectControllerREST;
 public class ControllerFactory {
     public static SubjectController getSubjectController(){
         return new SubjectControllerREST();
+    }
+    
+    public static CourseController getCourseController(){
+        return new CourseControllerREST();
     }
 }

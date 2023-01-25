@@ -5,16 +5,21 @@
  */
 package client.view.course;
 
+import client.beans.Course;
 import client.beans.Subject;
 import client.beans.Teacher;
 import client.beans.enumerations.FilterTypes;
+import client.logic.ControllerFactory;
+import client.logic.CourseController;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -28,6 +33,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.ws.rs.core.GenericType;
 
 /**
  * FXML Controller class
@@ -72,12 +78,16 @@ public class CourseViewController {
     private Teacher comboSelectedTeacher;
     
     private Subject comboSelectedSubject;
+    
+    private ObservableList<Course> coursesData;
+    
+    private CourseController courseController;
 
     /**
      * The table of the window
      */
     @FXML
-    private TableView<?> tableCourses;
+    private TableView<Course> tableCourses;
 
     /**
      * The column "Name" of the table
@@ -258,8 +268,9 @@ public class CourseViewController {
             btnPrint.setDisable(false);
             btnReturn.setDisable(false);
             btnShowSubjects.setDisable(false);
+            tableCourses.setVisible(true);
 
-            cmbxFilter.getItems().addAll(FilterTypes.DATE, FilterTypes.NAME);
+            cmbxFilter.getItems().addAll(FilterTypes.FECHA, FilterTypes.NOMBRE);
             cmbxFilter.getSelectionModel().select(-1);
 
             Subject sub = new Subject();
@@ -287,6 +298,10 @@ public class CourseViewController {
                 cmbxTeacher.getItems().add(t.getFullName());
             }
             cmbxTeacher.getSelectionModel().select(-1);
+            
+            courseController = (CourseController) ControllerFactory.getCourseController();
+            coursesData = FXCollections.observableArrayList(courseController.findAll_XML(new GenericType<Collection<Course>>(){}));
+            tableCourses.setItems(coursesData);
         });
 
         txtCourseName.textProperty().addListener((event) -> {
