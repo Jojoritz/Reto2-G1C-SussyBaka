@@ -211,9 +211,9 @@ public class SubjectsViewController {
         comboSelectedTeacher = null;
         
         cmbxFilterOptions.getItems().addAll(
-                FilterTypes.NAME,
-                FilterTypes.LEVEL,
-                FilterTypes.TYPE
+                FilterTypes.NOMBRE,
+                FilterTypes.NIVEL,
+                FilterTypes.TIPO
         );
         cmbxFilterOptions.setEditable(false);
         cmbxTeacher.setEditable(false);
