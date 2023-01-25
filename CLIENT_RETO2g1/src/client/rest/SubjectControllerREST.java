@@ -47,37 +47,37 @@ public class SubjectControllerREST implements SubjectController{
         webTarget.path(java.text.MessageFormat.format("subject/{0}", new Object[]{id})).request().delete();
     }
     @Override
-    public <T> T searchByName_XML(Class<T> responseType, String nameParam) throws ClientErrorException {
+    public <T> T searchByName_XML(GenericType<T> responseType, String nameParam) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("subject/name/{0}", new Object[]{nameParam}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
     @Override
-    public <T> T searchByName_JSON(Class<T> responseType, String nameParam) throws ClientErrorException {
+    public <T> T searchByName_JSON(GenericType<T> responseType, String nameParam) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("subject/name/{0}", new Object[]{nameParam}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
     @Override
-    public <T> T find_XML(Class<T> responseType, String id) throws ClientErrorException {
+    public <T> T find_XML(GenericType<T> responseType, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("subject/{0}", new Object[]{id}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
     @Override
-    public <T> T find_JSON(Class<T> responseType, String id) throws ClientErrorException {
+    public <T> T find_JSON(GenericType<T> responseType, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("subject/{0}", new Object[]{id}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
     @Override
-    public <T> T searchByLevel_XML(Class<T> responseType, String level) throws ClientErrorException {
+    public <T> T searchByLevel_XML(GenericType<T> responseType, String level) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("subject/level/{0}", new Object[]{level}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
     @Override
-    public <T> T searchByLevel_JSON(Class<T> responseType, String level) throws ClientErrorException {
+    public <T> T searchByLevel_JSON(GenericType<T> responseType, String level) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("subject/level/{0}", new Object[]{level}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
@@ -91,13 +91,13 @@ public class SubjectControllerREST implements SubjectController{
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON));
     }
     @Override
-    public <T> T searchByType_XML(Class<T> responseType, String type) throws ClientErrorException {
+    public <T> T searchByType_XML(GenericType<T> responseType, String type) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("subject/type/{0}", new Object[]{type}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
     @Override
-    public <T> T searchByType_JSON(Class<T> responseType, String type) throws ClientErrorException {
+    public <T> T searchByType_JSON(GenericType<T> responseType, String type) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("subject/type/{0}", new Object[]{type}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
@@ -108,7 +108,7 @@ public class SubjectControllerREST implements SubjectController{
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
     @Override
-    public <T> T findAll_JSON(Class<T> responseType) throws ClientErrorException {
+    public <T> T findAll_JSON(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }

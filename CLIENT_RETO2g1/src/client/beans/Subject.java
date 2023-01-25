@@ -1,6 +1,7 @@
 package client.beans;
 
 import java.io.Serializable;
+import java.util.HashSet;
 
 import java.util.Objects;
 import java.util.Set;
@@ -56,6 +57,7 @@ public class Subject implements Serializable {
     //Constructor
     public Subject() {
         super();
+        this.teachersSpecializedInSubject = new HashSet<>();
     }
 
     //Getters and setters

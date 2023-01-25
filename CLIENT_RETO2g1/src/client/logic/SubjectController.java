@@ -41,7 +41,7 @@ public interface SubjectController {
      * @return
      * @throws ClientErrorException 
      */
-    public <T> T searchByName_XML(Class<T> responseType, String nameParam) throws ClientErrorException;
+    public <T> T searchByName_XML(GenericType<T> responseType, String nameParam) throws ClientErrorException;
     /**
      * A RESTful get method that search a subject by name passing the data in JSON format
      * @param <T>
@@ -50,25 +50,25 @@ public interface SubjectController {
      * @return
      * @throws ClientErrorException 
      */
-    public <T> T searchByName_JSON(Class<T> responseType, String nameParam) throws ClientErrorException;
-    public <T> T find_XML(Class<T> responseType, String id) throws ClientErrorException;
-    public <T> T find_JSON(Class<T> responseType, String id) throws ClientErrorException;
+    public <T> T searchByName_JSON(GenericType<T> responseType, String nameParam) throws ClientErrorException;
+    public <T> T find_XML(GenericType<T> responseType, String id) throws ClientErrorException;
+    public <T> T find_JSON(GenericType<T> responseType, String id) throws ClientErrorException;
     
-    public <T> T searchByLevel_XML(Class<T> responseType, String level) throws ClientErrorException;
+    public <T> T searchByLevel_XML(GenericType<T> responseType, String level) throws ClientErrorException;
     
 
-    public <T> T searchByLevel_JSON(Class<T> responseType, String level) throws ClientErrorException;
+    public <T> T searchByLevel_JSON(GenericType<T> responseType, String level) throws ClientErrorException;
 
     public void modifySubject_XML(Object requestEntity) throws ClientErrorException;
 
     public void modifySubject_JSON(Object requestEntity) throws ClientErrorException;
-    public <T> T searchByType_XML(Class<T> responseType, String type) throws ClientErrorException;
+    public <T> T searchByType_XML(GenericType<T> responseType, String type) throws ClientErrorException;
        
-    public <T> T searchByType_JSON(Class<T> responseType, String type) throws ClientErrorException;
+    public <T> T searchByType_JSON(GenericType<T> responseType, String type) throws ClientErrorException;
         
 
     public <T> T findAll_XML(GenericType<T> responseType) throws ClientErrorException;
-    public <T> T findAll_JSON(Class<T> responseType) throws ClientErrorException;
+    public <T> T findAll_JSON(GenericType<T> responseType) throws ClientErrorException;
     public void close();
       
 }
