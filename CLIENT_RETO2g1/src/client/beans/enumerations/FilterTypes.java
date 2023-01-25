@@ -6,9 +6,24 @@
 package client.beans.enumerations;
 
 /**
- *
- * @author GAME
+ *This enumeration is for the filter options combo box in the views
+ * @author Ioritz
  */
 public enum FilterTypes {
-    DATE,NAME,TYPE,LEVEL
+    /**
+     * The date option for the filter
+     */
+    FECHA,
+    /**
+     * The name option for the filter
+     */
+    NOMBRE,
+    /**
+     * The type option for the filter
+     */
+    TIPO,
+    /**
+     * The level option for the filter
+     */
+    NIVEL
 }
