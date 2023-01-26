@@ -7,9 +7,13 @@ package client.view.subject;
 
 import client.beans.Subject;
 import client.beans.Teacher;
+import client.beans.User;
 import client.beans.enumerations.FilterTypes;
+import client.beans.enumerations.UserPrivilege;
 import client.logic.ControllerFactory;
 import client.logic.SubjectController;
+import client.logic.UserController;
+import client.logic.exception.BusinessLogicException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +21,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -170,14 +176,23 @@ public class SubjectsViewController {
      * An object to save the selected teacher from the combo box
      */
     private Teacher comboSelectedTeacher;
-
+    /**
+     * A list of users for the teachers combobox
+     */
     private List<Teacher> teachersData;
+    /**
+     * A observable list of subjects for showing it in the table
+     */
     private ObservableList<Subject> subjectsData;
     /**
      * An object of SubjectController interface
      */
     private SubjectController subjectController;
-
+    
+    /**
+     * A object of UserController interface
+     */
+    private UserController userController;
     /**
      * This is the logger for the subjects view controller
      */
@@ -229,34 +244,36 @@ public class SubjectsViewController {
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 
         myStage.setOnShowing(event -> {
-            LOGGER.info("Charging the teachers combo box data and the table data");
-
-            cmbxFilterOptions.getItems().addAll(
-                    FilterTypes.NOMBRE,
-                    FilterTypes.NIVEL,
-                    FilterTypes.TIPO
-            );
-            //charging the data of the teachers combo box
-            teachersData = new ArrayList<>();
-            for (int i = 1; i <= 3; i++) {
-                Teacher t = new Teacher();
-                t.setEmail("email" + i);
-                t.setId(i);
-                t.setFullName("nombre" + i);
-                t.setLogin("login" + i);
-                teachersData.add(t);
+            try {
+                LOGGER.info("Charging the teachers combo box data and the table data");
+                //Charging the filter options combobox data
+                cmbxFilterOptions.getItems().addAll(
+                        FilterTypes.NOMBRE,
+                        FilterTypes.NIVEL,
+                        FilterTypes.TIPO
+                );
+                //charging the data of the teachers combo box
+                userController = ControllerFactory.getUserController();
+                List<User> users = FXCollections.observableArrayList(userController.findAll_XML(new GenericType<Collection<User>>() {
+                }));
+                //Getting the teachers from users list and saving it in teachersData list
+                teachersData = users.stream().filter(u -> u instanceof Teacher 
+                        && u.getPrivilege().equals(UserPrivilege.TEACHER))
+                        .map(u -> (Teacher)u).collect(Collectors.toList());
+                
+                teachersData.forEach(teacher -> {
+                    cmbxTeacher.getItems().add(teacher.getFullName());
+                });
+                
+                //Charging the data of the table
+                subjectController = ControllerFactory.getSubjectController();
+                
+                subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
+                }));
+                tableSubjects.setItems(subjectsData);
+            } catch (BusinessLogicException ex) {
+                Logger.getLogger(SubjectsViewController.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            teachersData.forEach(teacher -> {
-                cmbxTeacher.getItems().add(teacher.getFullName());
-            });
-
-            //Charging the data of the table
-            subjectController = ControllerFactory.getSubjectController();
-
-            subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
-            }));
-            tableSubjects.setItems(subjectsData);
 
         });
 
@@ -320,7 +337,7 @@ public class SubjectsViewController {
             try {
                 LOGGER.info("Validating the created century is not empty");
                 String createdCentury = txtCreatedCentury.getText();
-               
+
                 if (createdCentury.length() == 0
                         || createdCentury.trim().equals("")) {
 
@@ -342,6 +359,7 @@ public class SubjectsViewController {
         cmbxTeacher.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 LOGGER.info("Seleccting and getting the selected teachers data");
+                
                 teachersData.stream().forEach(t -> {
                     if (t.getFullName().equalsIgnoreCase(newValue)) {
                         comboSelectedTeacher = t;
@@ -394,10 +412,10 @@ public class SubjectsViewController {
 
                 subject.getTeachersSpecializedInSubject().add(comboSelectedTeacher);
                 subjectController.createSubject_XML(subject);
-               
+
                 clearFields();
                 subjectsData.add(subject);
-                
+
                 btnCreateSubject.setDisable(true);
 
             } catch (Exception e) {
@@ -410,6 +428,7 @@ public class SubjectsViewController {
 
         myStage.showAndWait();
     }
+
     /**
      * A method for clearing the fields and checkboxes
      */

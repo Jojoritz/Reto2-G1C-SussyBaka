@@ -7,6 +7,7 @@ package client.logic;
 
 import client.rest.CourseControllerREST;
 import client.rest.SubjectControllerREST;
+import client.rest.UserControllerREST;
 
 /**
  *This is the controller interfaces implementation factory
@@ -26,5 +27,13 @@ public class ControllerFactory {
      */
     public static CourseController getCourseController(){
         return new CourseControllerREST();
+    }
+    
+    /**
+     * Instanciates a user controller interface implementation
+     * @return A user controller interface implementation
+     */
+    public static UserController getUserController(){
+        return new UserControllerREST();
     }
 }
