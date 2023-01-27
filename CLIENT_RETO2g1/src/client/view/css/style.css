@@ -1,8 +1,10 @@
 /*
     This is the css from the application views
 */
-.root{
-    -fx-background-color: #dddddd;
+.combo-box-base {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, white;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 3px, 3px, 2px, 1px;
 }
 
 .text-field{
@@ -22,13 +24,23 @@
     -fx-alignment: center;
 }
 
+#btnPasswordReset{
+    -fx-background-color: transparent;
+    -fx-text-fill: #5b0c50;
+}
+
+#btnPasswordReset:hover{
+    -fx-underline: true;
+    
+}
+
 #btnSignIn, #btnSignUp, #btnLogOut{
     -fx-background-color: #5b0c50;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
 
-#btnSignUpView, #btnBack, #btnPasswordReset{
+#btnSignUpView, #btnBack{
     -fx-background-color: white;
     -fx-font-weight: bold;
     -fx-border-color: gray;
@@ -37,7 +49,7 @@
     -fx-border-radius: 5px;
 }
 
-#btnSignUpView:hover, #btnSignIn:hover, #btnSignUp:hover, #btnBack:hover, #btnLogOut:hover, #btnPasswordReset:hover{
+#btnSignUpView:hover, #btnSignIn:hover, #btnSignUp:hover, #btnBack:hover, #btnLogOut:hover{
     -fx-background-color: pink;
     -fx-text-fill: black;
     -fx-font-weight: bold;
