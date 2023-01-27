@@ -347,10 +347,10 @@ public class SubjectsViewController {
         });
 
         cmbxTeacher.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            /*try {
+            try {
                 LOGGER.info("Seleccting and getting the selected teachers data");
                 
-                teachersData.stream().forEach(t -> {
+                usersData.stream().forEach(t -> {
                     if (t.getFullName().equalsIgnoreCase(newValue)) {
                         comboSelectedTeacher = t;
                     }
@@ -366,7 +366,7 @@ public class SubjectsViewController {
                 LOGGER.severe("An error ocurred while getting the teacher data");
                 btnCreateSubject.setDisable(true);
                 comboSelectedTeacher = null;
-            }*/
+            }
         });
 
         //Handle an window close request event
@@ -393,13 +393,14 @@ public class SubjectsViewController {
 
         btnCreateSubject.setOnAction(actionEvent -> {
             try {
-              /*  LOGGER.info("Creating the subject");
+                LOGGER.info("Creating the subject");
                 Subject subject = new Subject();
                 subject.setName(txtSubjectName.getText());
                 subject.setLevel(txtLevel.getText());
                 subject.setType(txtType.getText());
                 subject.setCentury(txtCreatedCentury.getText());
 
+                
                 subject.getTeachersSpecializedInSubject().add(comboSelectedTeacher);
                 subjectController.createSubject_XML(subject);
 
@@ -412,7 +413,7 @@ public class SubjectsViewController {
                 creationCenturyEmpty = true;
                 levelEmpty = true;
                 comboSelectedTeacher = null;
-*/
+
             } catch (Exception e) {
                 LOGGER.severe(e.getMessage());
                 e.printStackTrace();

@@ -30,10 +30,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/course/Courses.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/subject/Subjects.fxml"));
             Parent root = (Parent) loader.load();
-            CourseViewController controller = ((CourseViewController) loader.getController());
-            controller.initStage(root, primaryStage, null);
+            SubjectsViewController controller = ((SubjectsViewController) loader.getController());
+            controller.initStage(root, primaryStage);
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
