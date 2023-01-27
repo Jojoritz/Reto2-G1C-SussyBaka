@@ -52,7 +52,7 @@ public interface SubjectController {
      * @return A subject searched by name
      * @throws ClientErrorException
      */
-    public <T> T searchByName_XML(GenericType<T> responseType, String nameParam) throws ClientErrorException;
+    public <T> T searchByName_XML(Class<T> responseType, String nameParam) throws ClientErrorException;
 
     /**
      * A RESTful get method that search a subject by name passing the data in
@@ -64,7 +64,7 @@ public interface SubjectController {
      * @return A subject searched by name
      * @throws ClientErrorException
      */
-    public <T> T searchByName_JSON(GenericType<T> responseType, String nameParam) throws ClientErrorException;
+    public <T> T searchByName_JSON(Class<T> responseType, String nameParam) throws ClientErrorException;
 
     /**
      * A RESTful get method that search a subject by id passing the data in XML
@@ -76,7 +76,7 @@ public interface SubjectController {
      * @return A subject with the id
      * @throws ClientErrorException
      */
-    public <T> T find_XML(GenericType<T> responseType, String id) throws ClientErrorException;
+    public <T> T find_XML(Class<T> responseType, String id) throws ClientErrorException;
 
     /**
      * A RESTful get method that search a subject by id passing the data in JSON
@@ -88,7 +88,7 @@ public interface SubjectController {
      * @return A subject with the id
      * @throws ClientErrorException
      */
-    public <T> T find_JSON(GenericType<T> responseType, String id) throws ClientErrorException;
+    public <T> T find_JSON(Class<T> responseType, String id) throws ClientErrorException;
 
     /**
      * A RESTful get method that search subjects by the level passing the data
@@ -101,7 +101,7 @@ public interface SubjectController {
      * @throws ClientErrorException
      */
 
-    public <T> T searchByLevel_XML(GenericType<T> responseType, String level) throws ClientErrorException;
+    public <T> T searchByLevel_XML(Class<T> responseType, String level) throws ClientErrorException;
 
     /**
      * A RESTful get method that subjects by the level passing the data
@@ -114,7 +114,7 @@ public interface SubjectController {
      * @throws ClientErrorException
      */
 
-    public <T> T searchByLevel_JSON(GenericType<T> responseType, String level) throws ClientErrorException;
+    public <T> T searchByLevel_JSON(Class<T> responseType, String level) throws ClientErrorException;
 
     /**
      * A RESTful update method that updates subject data passing the data in XML
@@ -143,7 +143,7 @@ public interface SubjectController {
      * @return Subject list with the type
      * @throws ClientErrorException
      */
-    public <T> T searchByType_XML(GenericType<T> responseType, String type) throws ClientErrorException;
+    public <T> T searchByType_XML(Class<T> responseType, String type) throws ClientErrorException;
 /**
      * A RESTful get method that search subjects by the type passing the data
      * in JSON format
@@ -155,7 +155,7 @@ public interface SubjectController {
      * @throws ClientErrorException
      */
     
-    public <T> T searchByType_JSON(GenericType<T> responseType, String type) throws ClientErrorException;
+    public <T> T searchByType_JSON(Class<T> responseType, String type) throws ClientErrorException;
     /**
      * A RESTfuo get method that gets all subjects in XML format
      * @param <T> The type of the response type
