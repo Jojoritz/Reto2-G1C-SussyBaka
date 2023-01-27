@@ -172,7 +172,7 @@ public class UserControllerREST implements UserController {
     }
     
     @Override
-    public <T> T getStudent_XML(GenericType<T> responseType, String id) throws BusinessLogicException {
+    public <T> T getStudent_XML(Class<T> responseType, String id) throws BusinessLogicException {
         try {
             LOGGER.info("Searching a student with id");
             WebTarget resource = webTarget;
@@ -186,7 +186,7 @@ public class UserControllerREST implements UserController {
     }
     
     @Override
-    public <T> T getStudent_JSON(GenericType<T> responseType, String id) throws BusinessLogicException {
+    public <T> T getStudent_JSON(Class<T> responseType, String id) throws BusinessLogicException {
         try {
             LOGGER.info("Searching a student with id");
             WebTarget resource = webTarget;
@@ -225,7 +225,7 @@ public class UserControllerREST implements UserController {
     }
     
     @Override
-    public <T> T getTeacher_XML(GenericType<T> responseType, String id) throws BusinessLogicException {
+    public <T> T getTeacher_XML(Class<T> responseType, String id) throws BusinessLogicException {
         try {
             LOGGER.info("Searching the teacher by id");
             WebTarget resource = webTarget;
@@ -239,7 +239,7 @@ public class UserControllerREST implements UserController {
     }
     
     @Override
-    public <T> T getTeacher_JSON(GenericType<T> responseType, String id) throws BusinessLogicException {
+    public <T> T getTeacher_JSON(Class<T> responseType, String id) throws BusinessLogicException {
         try {
             LOGGER.info("Searching the teacher by id");
             WebTarget resource = webTarget;
@@ -264,7 +264,7 @@ public class UserControllerREST implements UserController {
     }
     
     @Override
-    public <T> T signIn_XML(GenericType<T> responseType, String login, String password) throws BusinessLogicException {
+    public <T> T signIn_XML(Class<T> responseType, String login, String password) throws BusinessLogicException {
         try {
             LOGGER.info("Trying to signIn");
             WebTarget resource = webTarget;
@@ -278,7 +278,7 @@ public class UserControllerREST implements UserController {
     }
     
     @Override
-    public <T> T signIn_JSON(GenericType<T> responseType, String login, String password) throws BusinessLogicException {
+    public <T> T signIn_JSON(Class<T> responseType, String login, String password) throws BusinessLogicException {
         try {
             WebTarget resource = webTarget;
             resource = resource.path(java.text.MessageFormat.format("user/login/{0}/{1}", new Object[]{login, password}));

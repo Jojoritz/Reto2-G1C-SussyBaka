@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.lang.Class;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -304,7 +305,9 @@ public class SubjectsViewController {
                 typeEmpty = true;
             }
         });
-
+        
+        
+        
         txtLevel.textProperty().addListener(observable -> {
             try {
                 LOGGER.info("Validating the level text field is not empty");
@@ -391,6 +394,7 @@ public class SubjectsViewController {
             primaryStage.show();
         });
 
+        
         btnCreateSubject.setOnAction(actionEvent -> {
             try {
                 LOGGER.info("Creating the subject");
@@ -400,8 +404,9 @@ public class SubjectsViewController {
                 subject.setType(txtType.getText());
                 subject.setCentury(txtCreatedCentury.getText());
 
+                Teacher teacher = userController.getTeacher_XML(Teacher.class, comboSelectedTeacher.getId().toString());
                 
-                subject.getTeachersSpecializedInSubject().add(comboSelectedTeacher);
+                subject.getTeachersSpecializedInSubject().add(teacher);
                 subjectController.createSubject_XML(subject);
 
                 clearFields();
