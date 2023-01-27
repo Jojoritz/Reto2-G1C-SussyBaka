@@ -14,13 +14,8 @@ import client.logic.ControllerFactory;
 import client.logic.SubjectController;
 import client.logic.UserController;
 import client.logic.exception.BusinessLogicException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -28,7 +23,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -175,11 +169,11 @@ public class SubjectsViewController {
     /**
      * An object to save the selected teacher from the combo box
      */
-    private Teacher comboSelectedTeacher;
+    private User comboSelectedTeacher;
     /**
      * A list of users for the teachers combobox
      */
-    private List<Teacher> teachersData;
+    private List<User> usersData;
     /**
      * A observable list of subjects for showing it in the table
      */
@@ -254,26 +248,22 @@ public class SubjectsViewController {
                 );
                 //charging the data of the teachers combo box
                 userController = ControllerFactory.getUserController();
-                List<User> users = FXCollections.observableArrayList(userController.findAll_XML(new GenericType<Collection<User>>() {
-                }));
-                //Getting the teachers from users list and saving it in teachersData list
-                teachersData = users.stream().filter(u -> u instanceof Teacher 
-                        && u.getPrivilege().equals(UserPrivilege.TEACHER))
-                        .map(u -> (Teacher)u).collect(Collectors.toList());
-                
-                teachersData.forEach(teacher -> {
-                    cmbxTeacher.getItems().add(teacher.getFullName());
-                });
-                
-                //Charging the data of the table
                 subjectController = ControllerFactory.getSubjectController();
                 
-                subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
-                }));
+                usersData = FXCollections.observableArrayList(userController.findAll_XML(new GenericType<Collection<User>>(){}));
+                
+                usersData.stream().forEach(u -> {
+                    if (u.getPrivilege().equals(UserPrivilege.TEACHER)) {
+                        cmbxTeacher.getItems().add(u.getFullName());
+                    }
+                });
+                
+                subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>(){}));
                 tableSubjects.setItems(subjectsData);
             } catch (BusinessLogicException ex) {
                 Logger.getLogger(SubjectsViewController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
 
         });
 
@@ -357,7 +347,7 @@ public class SubjectsViewController {
         });
 
         cmbxTeacher.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            try {
+            /*try {
                 LOGGER.info("Seleccting and getting the selected teachers data");
                 
                 teachersData.stream().forEach(t -> {
@@ -376,7 +366,7 @@ public class SubjectsViewController {
                 LOGGER.severe("An error ocurred while getting the teacher data");
                 btnCreateSubject.setDisable(true);
                 comboSelectedTeacher = null;
-            }
+            }*/
         });
 
         //Handle an window close request event
@@ -403,7 +393,7 @@ public class SubjectsViewController {
 
         btnCreateSubject.setOnAction(actionEvent -> {
             try {
-                LOGGER.info("Creating the subject");
+              /*  LOGGER.info("Creating the subject");
                 Subject subject = new Subject();
                 subject.setName(txtSubjectName.getText());
                 subject.setLevel(txtLevel.getText());
@@ -415,9 +405,14 @@ public class SubjectsViewController {
 
                 clearFields();
                 subjectsData.add(subject);
-
                 btnCreateSubject.setDisable(true);
-
+                
+                subjectNameEmpty = true;
+                typeEmpty = true;
+                creationCenturyEmpty = true;
+                levelEmpty = true;
+                comboSelectedTeacher = null;
+*/
             } catch (Exception e) {
                 LOGGER.severe(e.getMessage());
                 e.printStackTrace();
