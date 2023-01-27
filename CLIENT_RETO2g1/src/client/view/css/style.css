@@ -63,3 +63,8 @@
 
 
 }
+
+.buttonSearch{
+    -fx-background-image: url("/client/view/icon/searchIcon.png");
+    -fx-background-size: cover;
+}
