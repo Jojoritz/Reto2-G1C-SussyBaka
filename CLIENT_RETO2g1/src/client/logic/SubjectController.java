@@ -50,7 +50,7 @@ public interface SubjectController {
      * @return A subject searched by name
      * @throws BusinessLogicException
      */
-    public <T> T searchByName_XML(Class<T> responseType, String nameParam) throws BusinessLogicException;
+    public <T> T searchByName_XML(GenericType<T> responseType, String nameParam) throws BusinessLogicException;
 
     /**
      * A RESTful get method that search a subject by name passing the data in
@@ -62,7 +62,7 @@ public interface SubjectController {
      * @return A subject searched by name
      * @throws BusinessLogicException
      */
-    public <T> T searchByName_JSON(Class<T> responseType, String nameParam) throws BusinessLogicException;
+    public <T> T searchByName_JSON(GenericType<T> responseType, String nameParam) throws BusinessLogicException;
 
     /**
      * A RESTful get method that search a subject by id passing the data in XML
@@ -99,7 +99,7 @@ public interface SubjectController {
      * @throws BusinessLogicException
      */
 
-    public <T> T searchByLevel_XML(Class<T> responseType, String level) throws BusinessLogicException;
+    public <T> T searchByLevel_XML(GenericType<T> responseType, String level) throws BusinessLogicException;
 
     /**
      * A RESTful get method that subjects by the level passing the data
@@ -112,7 +112,7 @@ public interface SubjectController {
      * @throws BusinessLogicException
      */
 
-    public <T> T searchByLevel_JSON(Class<T> responseType, String level) throws BusinessLogicException;
+    public <T> T searchByLevel_JSON(GenericType<T> responseType, String level) throws BusinessLogicException;
 
     /**
      * A RESTful update method that updates subject data passing the data in XML
@@ -141,7 +141,7 @@ public interface SubjectController {
      * @return Subject list with the type
      * @throws BusinessLogicException
      */
-    public <T> T searchByType_XML(Class<T> responseType, String type) throws BusinessLogicException;
+    public <T> T searchByType_XML(GenericType<T> responseType, String type) throws BusinessLogicException;
 /**
      * A RESTful get method that search subjects by the type passing the data
      * in JSON format
@@ -153,7 +153,7 @@ public interface SubjectController {
      * @throws BusinessLogicException
      */
     
-    public <T> T searchByType_JSON(Class<T> responseType, String type) throws BusinessLogicException;
+    public <T> T searchByType_JSON(GenericType<T> responseType, String type) throws BusinessLogicException;
     /**
      * A RESTfuo get method that gets all subjects in XML format
      * @param <T> The type of the response type

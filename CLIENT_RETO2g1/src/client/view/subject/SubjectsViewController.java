@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.lang.Class;
+import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -99,7 +100,7 @@ public class SubjectsViewController {
      * The combo box with the filter type options
      */
     @FXML
-    private ComboBox<FilterTypes> cmbxFilterOptions;
+    private ComboBox<String> cmbxFilterOptions;
     /**
      * A button for printing the data of the table view
      */
@@ -183,11 +184,15 @@ public class SubjectsViewController {
      * An object of SubjectController interface
      */
     private SubjectController subjectController;
-    
+
     /**
      * A object of UserController interface
      */
     private UserController userController;
+    /**
+     * The filter to apply
+     */
+    private FilterTypes filterToApply = null;
     /**
      * This is the logger for the subjects view controller
      */
@@ -218,6 +223,7 @@ public class SubjectsViewController {
         levelEmpty = true;
         typeEmpty = true;
         comboSelectedTeacher = null;
+        filterToApply = null;
         LOGGER.info("Charging t");
 
         cmbxFilterOptions.setEditable(false);
@@ -230,6 +236,7 @@ public class SubjectsViewController {
         btnSearchSubject.getStyleClass().add("buttonSearch");
         btnSubjectPrint.setDisable(false);
         btnSubjectReturn.setDisable(false);
+        txtFilter.setDisable(true);
 
         tableSubjects.setVisible(true);
 
@@ -243,28 +250,30 @@ public class SubjectsViewController {
                 LOGGER.info("Charging the teachers combo box data and the table data");
                 //Charging the filter options combobox data
                 cmbxFilterOptions.getItems().addAll(
-                        FilterTypes.NOMBRE,
-                        FilterTypes.NIVEL,
-                        FilterTypes.TIPO
+                        "",
+                        FilterTypes.NOMBRE.toString(),
+                        FilterTypes.NIVEL.toString(),
+                        FilterTypes.TIPO.toString()
                 );
                 //charging the data of the teachers combo box
                 userController = ControllerFactory.getUserController();
                 subjectController = ControllerFactory.getSubjectController();
-                
-                usersData = FXCollections.observableArrayList(userController.findAll_XML(new GenericType<Collection<User>>(){}));
-                
+
+                usersData = FXCollections.observableArrayList(userController.findAll_XML(new GenericType<Collection<User>>() {
+                }));
+
                 usersData.stream().forEach(u -> {
                     if (u.getPrivilege().equals(UserPrivilege.TEACHER)) {
                         cmbxTeacher.getItems().add(u.getFullName());
                     }
                 });
-                
-                subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>(){}));
+
+                subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
+                }));
                 tableSubjects.setItems(subjectsData);
             } catch (BusinessLogicException ex) {
                 Logger.getLogger(SubjectsViewController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
 
         });
 
@@ -305,9 +314,7 @@ public class SubjectsViewController {
                 typeEmpty = true;
             }
         });
-        
-        
-        
+
         txtLevel.textProperty().addListener(observable -> {
             try {
                 LOGGER.info("Validating the level text field is not empty");
@@ -352,7 +359,7 @@ public class SubjectsViewController {
         cmbxTeacher.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 LOGGER.info("Seleccting and getting the selected teachers data");
-                
+
                 usersData.stream().forEach(t -> {
                     if (t.getFullName().equalsIgnoreCase(newValue)) {
                         comboSelectedTeacher = t;
@@ -369,6 +376,62 @@ public class SubjectsViewController {
                 LOGGER.severe("An error ocurred while getting the teacher data");
                 btnCreateSubject.setDisable(true);
                 comboSelectedTeacher = null;
+            }
+        });
+
+        cmbxFilterOptions.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            LOGGER.info("Seleccting the filter type to apply");
+            if (newValue.equals(FilterTypes.NOMBRE.toString())) {
+                filterToApply = FilterTypes.NOMBRE;
+                txtFilter.setDisable(false);
+
+            } else if (newValue.equals(FilterTypes.TIPO.toString())) {
+                filterToApply = FilterTypes.TIPO;
+                txtFilter.setDisable(false);
+            } else if (newValue.equals(FilterTypes.NIVEL.toString())) {
+                filterToApply = FilterTypes.NIVEL;
+                txtFilter.setDisable(false);
+            } else {
+                txtFilter.setDisable(true);
+                filterToApply = null;
+            }
+
+        });
+
+        btnSearchSubject.setOnAction(actionEvent -> {
+            try {
+                LOGGER.info("Applying the filters and searching the subjects");
+                if (filterToApply == null) {
+                    try {
+
+                        LOGGER.info("If is not applyed any filters");
+                        subjectsData.clear();
+                        subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
+                        }));
+                        tableSubjects.setItems(subjectsData);
+                    } catch (BusinessLogicException e) {
+                        LOGGER.severe(e.getMessage());
+                        throw new Exception(e.getMessage());
+                    }
+
+                } else {
+                    LOGGER.info("If any filter is being applyed");
+                    applyFilter();
+                }
+            } catch (Exception ex) {
+                try {
+                    LOGGER.severe(ex.getMessage());
+                    alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al aplicar un filtro por lo que se desaplicaran todos");
+                    txtFilter.setDisable(true);
+                    cmbxFilterOptions.getSelectionModel().select(-1);
+                    subjectsData.clear();
+                    subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
+                    }));
+                    tableSubjects.setItems(subjectsData);
+                } catch (BusinessLogicException ex1) {
+                    LOGGER.severe(ex.getMessage());
+                    alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al cargar los datos de la tabla, intentelo de nuevo despues");
+                }
             }
         });
 
@@ -394,7 +457,6 @@ public class SubjectsViewController {
             primaryStage.show();
         });
 
-        
         btnCreateSubject.setOnAction(actionEvent -> {
             try {
                 LOGGER.info("Creating the subject");
@@ -404,15 +466,16 @@ public class SubjectsViewController {
                 subject.setType(txtType.getText());
                 subject.setCentury(txtCreatedCentury.getText());
 
-                Teacher teacher = userController.getTeacher_XML(Teacher.class, comboSelectedTeacher.getId().toString());
-                
+                Teacher teacher = userController.getTeacher_XML(Teacher.class, String.valueOf(comboSelectedTeacher.getId()));
+
                 subject.getTeachersSpecializedInSubject().add(teacher);
                 subjectController.createSubject_XML(subject);
 
                 clearFields();
                 subjectsData.add(subject);
+                tableSubjects.refresh();
                 btnCreateSubject.setDisable(true);
-                
+
                 subjectNameEmpty = true;
                 typeEmpty = true;
                 creationCenturyEmpty = true;
@@ -424,6 +487,113 @@ public class SubjectsViewController {
                 e.printStackTrace();
                 alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al crear la asignatura, intentelo otra vez");
             }
+
+        });
+
+        tableSubjects.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            LOGGER.info("Table selection event handling");
+
+            if (newValue != null) {
+                LOGGER.info("A row was selected");
+                Subject selectedSubject = (Subject) tableSubjects.getSelectionModel().getSelectedItem();
+
+                txtSubjectName.setText(selectedSubject.getName());
+                txtLevel.setText(selectedSubject.getLevel());
+                txtCreatedCentury.setText(selectedSubject.getCentury());
+                txtType.setText(selectedSubject.getType());
+
+                subjectNameEmpty = false;
+                typeEmpty = false;
+                levelEmpty = false;
+                creationCenturyEmpty = false;
+
+                if (!subjectNameEmpty && !creationCenturyEmpty && !levelEmpty
+                        && !typeEmpty) {
+                    btnModifySubject.setDisable(false);
+                    btnDeleteSubject.setDisable(false);
+                }
+            } else if (newValue == null) {
+                LOGGER.info("The row was diselected");
+                clearFields();
+                btnModifySubject.setDisable(true);
+                btnDeleteSubject.setDisable(true);
+                subjectNameEmpty = true;
+                typeEmpty = true;
+                levelEmpty = true;
+                creationCenturyEmpty = true;
+            }
+        });
+
+        btnModifySubject.setOnAction(actionEvent -> {
+            LOGGER.info("Modifying the subject");
+
+            alert = new Alert(Alert.AlertType.CONFIRMATION, "Esta seguro de que quiere modificar la asignatura?", ButtonType.YES, ButtonType.NO);
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    LOGGER.info("Modify confirmed");
+                    try {
+                        Subject subject = (Subject) tableSubjects.getSelectionModel().getSelectedItem();
+                        subject.setName(txtSubjectName.getText());
+                        subject.setType(txtType.getText());
+                        subject.setCentury(txtCreatedCentury.getText());
+                        subject.setLevel(txtLevel.getText());
+
+                        if (comboSelectedTeacher != null) {
+                            Teacher selectedTeacher = userController.getTeacher_XML(Teacher.class, String.valueOf(comboSelectedTeacher.getId()));
+                            subject.getTeachersSpecializedInSubject().add(selectedTeacher);
+                        }
+
+                        subjectController.modifySubject_XML(subject);
+                        for (int i = 0; i < subjectsData.size(); i++) {
+                            if (subjectsData.get(i).getSubjectId().equals(subject.getSubjectId())) {
+                                subjectsData.set(i, subject);
+                            }
+                        }
+                        tableSubjects.refresh();
+
+                        alert = new Alert(Alert.AlertType.INFORMATION, "La modificacion se ha hecho correctamenete");
+                        clearFields();
+                    } catch (BusinessLogicException ex) {
+                        LOGGER.severe(ex.getMessage());
+                        alert = new Alert(Alert.AlertType.ERROR, "A sucedido un error al modificar la asignatura, intentelo de nuevo mas tarde");
+
+                    }
+                } else {
+                    alert = new Alert(Alert.AlertType.WARNING, "La modificacion se ha cancelado");
+                    LOGGER.info("Cancelling the modification");
+                }
+            });
+
+        });
+
+        btnDeleteSubject.setOnAction(actionEvent -> {
+
+            LOGGER.info("Deleting the subject");
+            alert = new Alert(Alert.AlertType.CONFIRMATION, "Esta seguro que quiere eliminar la asignatura", ButtonType.YES, ButtonType.NO);
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    try {
+                        LOGGER.info("Deleting confirmed");
+                        Subject selectedSubject = (Subject) tableSubjects.getSelectionModel().getSelectedItem();
+                        subjectController.removeSubject(String.valueOf(selectedSubject.getSubjectId()));
+                        
+                        for (int i = 0; i < subjectsData.size(); i++) {
+                            if (subjectsData.get(i).getSubjectId().equals(selectedSubject.getSubjectId())) {
+                                subjectsData.remove(i);
+                            }
+                        }
+                        tableSubjects.refresh();
+                        alert = new Alert(Alert.AlertType.WARNING, "El borrado se ha realizado correctamente");
+                        clearFields();
+                    } catch (BusinessLogicException e) {
+                        LOGGER.severe(e.getMessage());
+                        alert = new Alert(Alert.AlertType.ERROR, "A sucedido un error al borrar la asignatura, intentelo de nuevo mas tarde");
+                    }
+                } else {
+                    LOGGER.info("Deleting aborted");
+                    alert = new Alert(Alert.AlertType.WARNING, "El borrado ha sido cancelado");
+                }
+            });
 
         });
 
@@ -441,6 +611,37 @@ public class SubjectsViewController {
         txtType.setText("");
         cmbxFilterOptions.getSelectionModel().select(-1);
         cmbxTeacher.getSelectionModel().select(-1);
+    }
+
+    private void applyFilter() throws Exception {
+        try {
+            LOGGER.info("Applying a filter");
+            switch (filterToApply) {
+                case NOMBRE:
+                    subjectsData.clear();
+                    subjectsData = FXCollections.observableArrayList(subjectController.searchByName_XML(new GenericType<Collection<Subject>>() {
+                    }, txtFilter.getText()));
+                    tableSubjects.setItems(subjectsData);
+                    break;
+                case NIVEL:
+                    subjectsData.clear();
+                    subjectsData = FXCollections.observableArrayList(subjectController.searchByLevel_XML(new GenericType<Collection<Subject>>() {
+                    }, txtFilter.getText()));
+                    tableSubjects.setItems(subjectsData);
+                    break;
+                case TIPO:
+                    subjectsData.clear();
+                    subjectsData = FXCollections.observableArrayList(subjectController.searchByType_XML(new GenericType<Collection<Subject>>() {
+                    }, txtFilter.getText()));
+                    tableSubjects.setItems(subjectsData);
+
+                    break;
+            }
+
+        } catch (BusinessLogicException e) {
+            LOGGER.severe("An error happened while applying a filter: " + e.getMessage());
+            throw new Exception("An error happened while applying a filter");
+        }
     }
 
 }

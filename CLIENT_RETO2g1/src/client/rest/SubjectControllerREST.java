@@ -73,7 +73,7 @@ public class SubjectControllerREST implements SubjectController {
 
     }
 
-    public <T> T searchByName_XML(Class<T> responseType, String nameParam) throws BusinessLogicException {
+    public <T> T searchByName_XML(GenericType<T> responseType, String nameParam) throws BusinessLogicException {
         try {
             LOGGER.info("Searching the subject by the name");
             WebTarget resource = webTarget;
@@ -87,7 +87,7 @@ public class SubjectControllerREST implements SubjectController {
 
     }
 
-    public <T> T searchByName_JSON(Class<T> responseType, String nameParam) throws BusinessLogicException {
+    public <T> T searchByName_JSON(GenericType<T> responseType, String nameParam) throws BusinessLogicException {
         try {
             LOGGER.info("Searching the subject by the name");
             WebTarget resource = webTarget;
@@ -127,7 +127,7 @@ public class SubjectControllerREST implements SubjectController {
 
     }
 
-    public <T> T searchByLevel_XML(Class<T> responseType, String level) throws BusinessLogicException {
+    public <T> T searchByLevel_XML(GenericType<T> responseType, String level) throws BusinessLogicException {
         try {
             LOGGER.info("Searching the subject by the level");
             WebTarget resource = webTarget;
@@ -141,7 +141,7 @@ public class SubjectControllerREST implements SubjectController {
 
     }
 
-    public <T> T searchByLevel_JSON(Class<T> responseType, String level) throws BusinessLogicException {
+    public <T> T searchByLevel_JSON(GenericType<T> responseType, String level) throws BusinessLogicException {
         try {
             LOGGER.info("Searching the subject by the level");
             WebTarget resource = webTarget;
@@ -179,7 +179,7 @@ public class SubjectControllerREST implements SubjectController {
        
     }
 
-    public <T> T searchByType_XML(Class<T> responseType, String type) throws BusinessLogicException {
+    public <T> T searchByType_XML(GenericType<T> responseType, String type) throws BusinessLogicException {
         try {
             LOGGER.info("Searching the subject by the type");
             WebTarget resource = webTarget;
@@ -192,7 +192,7 @@ public class SubjectControllerREST implements SubjectController {
         
     }
 
-    public <T> T searchByType_JSON(Class<T> responseType, String type) throws BusinessLogicException {
+    public <T> T searchByType_JSON(GenericType<T> responseType, String type) throws BusinessLogicException {
         try {
             LOGGER.info("Searching the subject by the type");
             WebTarget resource = webTarget;
