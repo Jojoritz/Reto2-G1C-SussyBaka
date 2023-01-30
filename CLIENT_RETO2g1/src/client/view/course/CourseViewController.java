@@ -8,31 +8,44 @@ package client.view.course;
 import client.beans.Course;
 import client.beans.Subject;
 import client.beans.Teacher;
+import client.beans.User;
 import client.beans.enumerations.FilterTypes;
+import client.beans.enumerations.UserPrivilege;
 import client.logic.ControllerFactory;
 import client.logic.CourseController;
+import client.logic.SubjectController;
+import client.logic.UserController;
+import client.logic.exception.BusinessLogicException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
 
 /**
@@ -61,26 +74,74 @@ public class CourseViewController {
      */
     private Scene scene = null;
 
+    /**
+     * The stage of the antecesor window
+     */
     private Stage primaryStage = null;
 
+    /**
+     * Boolean that verifies if the Date is correct or not
+     */
     private boolean correctDate = false;
 
+    /**
+     * Boolean that verifies if the Name is correct or not
+     */
     private boolean correctName = false;
 
+    /**
+     * List for the existing Subjects
+     */
     private List<Subject> subjects = null;
 
+    /**
+     * List for the existing Teachers
+     */
     private List<Teacher> teachers = null;
 
-    List<Teacher> testingTeachersData;
+    /**
+     * A list of users for the teachers combobox
+     */
+    private List<User> teachersData;
 
-    ObservableList<Subject> testingSubjetsData;
+    /**
+     * A list of subjects for the subjects combobox
+     */
+    private List<Subject> subjectsData;
 
-    private Teacher comboSelectedTeacher;
-    
+    /**
+     * A object of SubjectController interface
+     */
+    private SubjectController subjectController;
+
+    /**
+     * A object of UserController interface
+     */
+    private UserController userController;
+
+    /**
+     * Object that confirm if there are teachers
+     */
+    private User comboSelectedTeacher;
+
+    /**
+     * Object that confirm if there are subjects
+     */
     private Subject comboSelectedSubject;
-    
+
+    /**
+     * List that gets the existing Courses
+     */
     private ObservableList<Course> coursesData;
-    
+
+    /**
+     *
+     */
+    private List<User> users;
+
+    /**
+     * Course REST Controller
+     */
     private CourseController courseController;
 
     /**
@@ -93,25 +154,25 @@ public class CourseViewController {
      * The column "Name" of the table
      */
     @FXML
-    private TableColumn<?, ?> colName;
+    private TableColumn<Course, String> colName;
 
     /**
      * The column "Creation Date" of the table
      */
     @FXML
-    private TableColumn<?, ?> colCreationDate;
+    private TableColumn<Course, Date> colCreationDate;
 
     /**
      * The column "Teacher" of the table
      */
     @FXML
-    private TableColumn<?, ?> colTeacher;
+    private TableColumn<Course, Teacher> colTeacher;
 
     /**
      * The column "Subject" of the table
      */
     @FXML
-    private TableColumn<?, ?> colSubject;
+    private TableColumn<Course, Subject> colSubject;
 
     /**
      * The button to show all the table data
@@ -241,6 +302,11 @@ public class CourseViewController {
     private Button btnJoin;
 
     /**
+     * A alert for showing any alerts and errors to the user
+     */
+    private Alert alert;
+
+    /**
      * Initializes the controller class.
      */
     public void initStage(Parent root, Stage primaryStage, String css) {
@@ -252,57 +318,77 @@ public class CourseViewController {
         primaryStage.hide();
         this.primaryStage = primaryStage;
 
+        stage.setTitle("Course");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.initModality(Modality.WINDOW_MODAL);
+
+        btnCreate.setDisable(true);
+        btnDelete.setDisable(true);
+        btnModify.setDisable(true);
+        btnEnter.setDisable(true);
+        btnJoin.setDisable(true);
+        btnPrint.setDisable(false);
+        btnReturn.setDisable(false);
+        btnShowSubjects.setDisable(false);
+
+        tableCourses.setVisible(true);
+
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colCreationDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        colCreationDate.setCellFactory(column -> {
+            TableCell<Course, Date> cell = new TableCell<Course, Date>() {
+                private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+
+                @Override
+                protected void updateItem(Date item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        if (item != null) {
+                            setText(format.format(item));
+                        }
+                    }
+                }
+            };
+            return cell;
+        });
+        colTeacher.setCellValueFactory(new PropertyValueFactory<>("teacher"));
+        colSubject.setCellValueFactory(new PropertyValueFactory<>("subject"));
+
         stage.setOnShowing((event) -> {
-            //When the screen launch the onShowing event
+            try {
+                //When the screen launch the onShowing event
 
-            stage.setTitle("Course");
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.initModality(Modality.WINDOW_MODAL);
+                cmbxFilter.getItems().addAll(FilterTypes.FECHA, FilterTypes.NOMBRE);
+                cmbxFilter.getSelectionModel().select(-1);
 
-            btnCreate.setDisable(true);
-            btnDelete.setDisable(true);
-            btnModify.setDisable(true);
-            btnEnter.setDisable(true);
-            btnJoin.setDisable(true);
-            btnPrint.setDisable(false);
-            btnReturn.setDisable(false);
-            btnShowSubjects.setDisable(false);
+                subjectController = ControllerFactory.getSubjectController();
+                subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
+                }));
 
-            tableCourses.setVisible(true);
+                subjectsData.stream().forEach(s -> {
+                    cmbxSubject.getItems().add(s.getName());
+                });
 
-            cmbxFilter.getItems().addAll(FilterTypes.FECHA, FilterTypes.NOMBRE);
-            cmbxFilter.getSelectionModel().select(-1);
+                userController = ControllerFactory.getUserController();
+                teachersData = FXCollections.observableArrayList(userController.findAll_XML(new GenericType<Collection<User>>() {
+                }));
 
-            Subject sub = new Subject();
-            sub.setSubjectId(1);
-            sub.setName("Mondongo");
-            sub.setLevel("Alto");
-            sub.setCentury("VII");
-            sub.setType("Difilic");
-            subjects = new ArrayList();
-            subjects.add(sub);
-            for (Subject s : subjects) {
-                cmbxSubject.getItems().add(s.getName());
+                teachersData.stream().forEach(t -> {
+                    if (t.getPrivilege().equals(UserPrivilege.TEACHER)) {
+                        cmbxTeacher.getItems().add(t.getFullName());
+                    }
+                });
+
+                courseController = ControllerFactory.getCourseController();
+                coursesData = FXCollections.observableArrayList(courseController.findAll_XML(new GenericType<Collection<Course>>() {
+                }));
+                tableCourses.setItems(coursesData);
+            } catch (BusinessLogicException ex) {
+                LOG.severe(ex.getMessage());
             }
-            cmbxSubject.getSelectionModel().select(-1);
-
-            Teacher tea = new Teacher();
-            tea.setId(1);
-            tea.setFullName("Mogambo");
-            tea.setLogin("Ermeregildo");
-            tea.setPassword("abcd*1234");
-            tea.setEmail("HermesRegildo@gmail.com");
-            teachers = new ArrayList();
-            teachers.add(tea);
-            for (Teacher t : teachers) {
-                cmbxTeacher.getItems().add(t.getFullName());
-            }
-            cmbxTeacher.getSelectionModel().select(-1);
-            
-            courseController = (CourseController) ControllerFactory.getCourseController();
-            coursesData = FXCollections.observableArrayList(courseController.findAll_XML(new GenericType<Collection<Course>>(){}));
-            tableCourses.setItems(coursesData);
         });
 
         txtCourseName.textProperty().addListener((event) -> {
@@ -311,7 +397,7 @@ public class CourseViewController {
                 //If the course name is empty
                 if (txtCourseName.getText().length() == 0 || txtCourseName.getText().trim().equals("")) {
                     correctName = false;
-                    throw new Exception("El nombre del curso no debe de estar vacio");
+                    throw new Exception("The course name can't be empty");
                 } else {
                     correctName = true;
                 }
@@ -331,7 +417,7 @@ public class CourseViewController {
                 if (date.length() == 10) {
                     res = validateDate(date);
                     if (!res && date.length() == 0 || date.trim().equals("")) {
-                        throw new Exception("El formato de fecha no es valido y/o no debe estar vacio");
+                        throw new Exception("The Date can't be empty or the Date Format is not valid");
                     }
                     correctDate = true;
                 } else {
@@ -339,7 +425,7 @@ public class CourseViewController {
                 }
                 btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
             } catch (Exception e) {
-                LOG.warning(e.getMessage());
+                LOG.warning("The Date is empty or the Date Format is not valid: " + e.getMessage());
                 btnCreate.setDisable(false);
                 correctDate = false;
             }
@@ -347,7 +433,7 @@ public class CourseViewController {
 
         cmbxTeacher.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             try {
-                testingTeachersData.stream().forEach(t -> {
+                teachersData.stream().forEach(t -> {
                     if (t.getFullName().equals(newValue)) {
                         comboSelectedTeacher = t;
                     }
@@ -357,6 +443,7 @@ public class CourseViewController {
                 }
                 btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
             } catch (Exception e) {
+                LOG.severe("An error ocurred while getting the teacher data");
                 btnCreate.setDisable(true);
                 comboSelectedTeacher = null;
             }
@@ -364,7 +451,7 @@ public class CourseViewController {
 
         cmbxSubject.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             try {
-                testingSubjetsData.stream().forEach(s -> {
+                subjectsData.stream().forEach(s -> {
                     if (s.getName().equals(newValue)) {
                         comboSelectedSubject = s;
                     }
@@ -374,17 +461,63 @@ public class CourseViewController {
                 }
                 btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
             } catch (Exception e) {
+                LOG.severe("An error ocurred while getting the subject data");
                 btnCreate.setDisable(true);
                 comboSelectedSubject = null;
             }
         });
 
-        btnReturn.setOnAction(actionEvent ->{
+        btnReturn.setOnAction(actionEvent -> {
             LOG.info("Closing Window");
             stage.close();
             primaryStage.show();
         });
-        
+
+        stage.setOnCloseRequest(windowEvent -> {
+            LOG.info("Opening exit alert confitmation");
+
+            alert = new Alert(Alert.AlertType.CONFIRMATION, "Quieres cerrar el programa?", ButtonType.YES, ButtonType.NO);
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    LOG.info("Closing the application");
+                    Platform.exit();
+                } else {
+                    LOG.info("Canceled application close");
+                    windowEvent.consume();
+                }
+            });
+        });
+
+        btnCreate.setOnAction(actionEvent -> {
+            try {
+                LOG.info("Creating Course");
+
+                SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
+                Date formatedDate = format.parse(txtCreatedDate.getText());
+
+                Course course = new Course();
+                course.setName(txtCourseName.getText());
+                course.setStartDate(formatedDate);
+
+                Teacher teacher = userController.getTeacher_XML(Teacher.class, comboSelectedTeacher.getId().toString());
+                course.setTeacher(teacher);
+
+                Subject subject = subjectController.find_XML(Subject.class, comboSelectedSubject.getSubjectId().toString());
+                course.setSubject(subject);
+
+                courseController.create_XML(course);
+
+                clearFields();
+                coursesData.add(course);
+                btnCreate.setDisable(true);
+
+            } catch (ParseException ex) {
+                LOG.severe(ex.getMessage());
+            } catch (BusinessLogicException ex) {
+                LOG.severe(ex.getMessage());
+            }
+        });
+
         stage.showAndWait();
     }
 
@@ -394,9 +527,21 @@ public class CourseViewController {
             format.setLenient(false);
             format.parse(date);
         } catch (ParseException ex) {
-            Logger.getLogger(CourseViewController.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.severe(ex.getMessage());
             return false;
         }
         return true;
+    }
+
+    /**
+     * A method for clearing the fields and checkboxes
+     */
+    private void clearFields() {
+        txtCourseName.setText("");
+        txtCreatedDate.setText("");
+        txtFilter.setText("");
+        cmbxFilter.getSelectionModel().select(-1);
+        cmbxSubject.getSelectionModel().select(-1);
+        cmbxTeacher.getSelectionModel().select(-1);
     }
 }

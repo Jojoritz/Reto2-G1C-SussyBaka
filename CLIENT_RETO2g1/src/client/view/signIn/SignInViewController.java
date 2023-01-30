@@ -271,8 +271,7 @@ public class SignInViewController {
             try {
                 UserController userRest = ControllerFactory.getUserController();
                 //UserRESTInterface userRest = ControllerFactroy.getUserControllerREST();
-                user = userRest.signIn_XML(new GenericType<User>() {
-                }, txtUser.getText(), txtPassword.getText());
+                user = userRest.signIn_XML(User.class, txtUser.getText(), txtPassword.getText());
 
             } catch (ClientErrorException exc) {
                 exc.printStackTrace();
