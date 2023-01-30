@@ -13,6 +13,7 @@ import client.beans.enumerations.FilterTypes;
 import client.beans.enumerations.UserPrivilege;
 import client.logic.ControllerFactory;
 import client.logic.CourseController;
+import client.logic.SubjectController;
 import client.logic.UserController;
 import client.logic.exception.BusinessLogicException;
 import java.text.ParseException;
@@ -36,14 +37,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
+import jxl.write.DateTime;
 
 /**
  * FXML Controller class
@@ -97,14 +101,19 @@ public class CourseViewController {
     private List<Teacher> teachers = null;
 
     /**
-     *
+     * A list of users for the teachers combobox
      */
-    List<Teacher> testingTeachersData;
+    private List<User> teachersData;
 
     /**
-     *
+     * A list of subjects for the subjects combobox
      */
-    ObservableList<Subject> testingSubjetsData;
+    private List<Subject> subjectsData;
+
+    /**
+     * A object of SubjectController interface
+     */
+    private SubjectController subjectController;
 
     /**
      * A object of UserController interface
@@ -114,7 +123,7 @@ public class CourseViewController {
     /**
      * Object that confirm if there are teachers
      */
-    private Teacher comboSelectedTeacher;
+    private User comboSelectedTeacher;
 
     /**
      * Object that confirm if there are subjects
@@ -326,43 +335,61 @@ public class CourseViewController {
 
         tableCourses.setVisible(true);
 
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colCreationDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        colCreationDate.setCellFactory(column -> {
+            TableCell<Course, Date> cell = new TableCell<Course, Date>() {
+                private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+
+                @Override
+                protected void updateItem(Date item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        if (item != null) {
+                            setText(format.format(item));
+                        }
+                    }
+                }
+            };
+            return cell;
+        });
+        colTeacher.setCellValueFactory(new PropertyValueFactory<>("teacher"));
+        colSubject.setCellValueFactory(new PropertyValueFactory<>("subject"));
+
         stage.setOnShowing((event) -> {
-            //When the screen launch the onShowing event
+            try {
+                //When the screen launch the onShowing event
 
-            cmbxFilter.getItems().addAll(FilterTypes.FECHA, FilterTypes.NOMBRE);
-            cmbxFilter.getSelectionModel().select(-1);
+                cmbxFilter.getItems().addAll(FilterTypes.FECHA, FilterTypes.NOMBRE);
+                cmbxFilter.getSelectionModel().select(-1);
 
-            Subject sub = new Subject();
-            sub.setSubjectId(1);
-            sub.setName("Compases");
-            sub.setLevel("Alto");
-            sub.setCentury("VII");
-            sub.setType("Difilic");
-            subjects = new ArrayList();
-            subjects.add(sub);
-            for (Subject s : subjects) {
-                cmbxSubject.getItems().add(s.getName());
+                subjectController = ControllerFactory.getSubjectController();
+                subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
+                }));
+
+                subjectsData.stream().forEach(s -> {
+                    cmbxSubject.getItems().add(s.getName());
+                });
+
+                userController = ControllerFactory.getUserController();
+                teachersData = FXCollections.observableArrayList(userController.findAll_XML(new GenericType<Collection<User>>() {
+                }));
+
+                teachersData.stream().forEach(t -> {
+                    if (t.getPrivilege().equals(UserPrivilege.TEACHER)) {
+                        cmbxTeacher.getItems().add(t.getFullName());
+                    }
+                });
+
+                courseController = ControllerFactory.getCourseController();
+                coursesData = FXCollections.observableArrayList(courseController.findAll_XML(new GenericType<Collection<Course>>() {
+                }));
+                tableCourses.setItems(coursesData);
+            } catch (BusinessLogicException ex) {
+                LOG.severe(ex.getMessage());
             }
-            cmbxSubject.getSelectionModel().select(-1);
-
-            Teacher tea = new Teacher();
-            tea.setId(1);
-            tea.setFullName("Antonio");
-            tea.setLogin("Ermeregildo");
-            tea.setPassword("abcd*1234");
-            tea.setEmail("HermesRegildo@gmail.com");
-            teachers = new ArrayList();
-            teachers.add(tea);
-            for (Teacher t : teachers) {
-                cmbxTeacher.getItems().add(t.getFullName());
-            }
-            cmbxTeacher.getSelectionModel().select(-1);
-
-            courseController = ControllerFactory.getCourseController();
-            
-            coursesData = FXCollections.observableArrayList(courseController.findAll_XML(new GenericType<Collection<Course>>() {
-            }));
-            tableCourses.setItems(coursesData);
         });
 
         txtCourseName.textProperty().addListener((event) -> {
@@ -371,7 +398,7 @@ public class CourseViewController {
                 //If the course name is empty
                 if (txtCourseName.getText().length() == 0 || txtCourseName.getText().trim().equals("")) {
                     correctName = false;
-                    throw new Exception("El nombre del curso no debe de estar vacio");
+                    throw new Exception("The course name can't be empty");
                 } else {
                     correctName = true;
                 }
@@ -391,7 +418,7 @@ public class CourseViewController {
                 if (date.length() == 10) {
                     res = validateDate(date);
                     if (!res && date.length() == 0 || date.trim().equals("")) {
-                        throw new Exception("El formato de fecha no es valido y/o no debe estar vacio");
+                        throw new Exception("The Date can't be empty or the Date Format is not valid");
                     }
                     correctDate = true;
                 } else {
@@ -399,7 +426,7 @@ public class CourseViewController {
                 }
                 btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
             } catch (Exception e) {
-                LOG.warning(e.getMessage());
+                LOG.warning("The Date is empty or the Date Format is not valid: " + e.getMessage());
                 btnCreate.setDisable(false);
                 correctDate = false;
             }
@@ -407,7 +434,7 @@ public class CourseViewController {
 
         cmbxTeacher.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             try {
-                testingTeachersData.stream().forEach(t -> {
+                teachersData.stream().forEach(t -> {
                     if (t.getFullName().equals(newValue)) {
                         comboSelectedTeacher = t;
                     }
@@ -417,6 +444,7 @@ public class CourseViewController {
                 }
                 btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
             } catch (Exception e) {
+                LOG.severe("An error ocurred while getting the teacher data");
                 btnCreate.setDisable(true);
                 comboSelectedTeacher = null;
             }
@@ -424,7 +452,7 @@ public class CourseViewController {
 
         cmbxSubject.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             try {
-                testingSubjetsData.stream().forEach(s -> {
+                subjectsData.stream().forEach(s -> {
                     if (s.getName().equals(newValue)) {
                         comboSelectedSubject = s;
                     }
@@ -434,6 +462,7 @@ public class CourseViewController {
                 }
                 btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
             } catch (Exception e) {
+                LOG.severe("An error ocurred while getting the subject data");
                 btnCreate.setDisable(true);
                 comboSelectedSubject = null;
             }
@@ -460,6 +489,36 @@ public class CourseViewController {
             });
         });
 
+        btnCreate.setOnAction(actionEvent -> {
+            try {
+                LOG.info("Creating Course");
+
+                SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
+                Date formatedDate = format.parse(txtCreatedDate.getText());
+
+                Course course = new Course();
+                course.setName(txtCourseName.getText());
+                course.setStartDate(formatedDate);
+
+                Teacher teacher = userController.getTeacher_XML(Teacher.class, comboSelectedTeacher.getId().toString());
+                course.setTeacher(teacher);
+
+                Subject subject = subjectController.find_XML(Subject.class, comboSelectedSubject.getSubjectId().toString());
+                course.setSubject(subject);
+
+                courseController.create_XML(course);
+
+                clearFields();
+                coursesData.add(course);
+                btnCreate.setDisable(true);
+
+            } catch (ParseException ex) {
+                LOG.severe(ex.getMessage());
+            } catch (BusinessLogicException ex) {
+                LOG.severe(ex.getMessage());
+            }
+        });
+
         stage.showAndWait();
     }
 
@@ -469,9 +528,21 @@ public class CourseViewController {
             format.setLenient(false);
             format.parse(date);
         } catch (ParseException ex) {
-            Logger.getLogger(CourseViewController.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.severe(ex.getMessage());
             return false;
         }
         return true;
+    }
+
+    /**
+     * A method for clearing the fields and checkboxes
+     */
+    private void clearFields() {
+        txtCourseName.setText("");
+        txtCreatedDate.setText("");
+        txtFilter.setText("");
+        cmbxFilter.getSelectionModel().select(-1);
+        cmbxSubject.getSelectionModel().select(-1);
+        cmbxTeacher.getSelectionModel().select(-1);
     }
 }
