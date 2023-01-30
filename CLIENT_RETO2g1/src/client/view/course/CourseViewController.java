@@ -47,7 +47,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
-import jxl.write.DateTime;
 
 /**
  * FXML Controller class
