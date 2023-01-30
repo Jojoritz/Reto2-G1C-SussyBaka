@@ -5,6 +5,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javax.xml.bind.annotation.XmlElement;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -13,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Henrique Yeguo
  */
-@XmlRootElement
+@XmlRootElement(name = "post")
 public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -26,8 +29,7 @@ public class Post implements Serializable {
     /**
      * Post title
      */
-    private String title;
-
+    private final SimpleStringProperty title;
     /**
      * Content field, contains the data in the post
      */
@@ -36,7 +38,7 @@ public class Post implements Serializable {
     /**
      * Publication date field, contains when the post date was created
      */
-    private Date publicationDate;
+    private final SimpleObjectProperty<Date> publicationDate;
 
     /**
      * Link {@link Course} of the post
@@ -51,7 +53,7 @@ public class Post implements Serializable {
     /**
      * Video field contains the relative path to the video
      */
-    private String video;
+    private final SimpleStringProperty video;
 
     /**
      * List containing all the {@link Comments} a {@link Post} has
@@ -60,11 +62,33 @@ public class Post implements Serializable {
      */
     private Set<Comment> postComments;
 
-    /**
-     * {@link Post} class empty constructor
-     */
     public Post() {
-        super();
+        this.title = new SimpleStringProperty();
+        this.publicationDate = new SimpleObjectProperty();
+        this.video = new SimpleStringProperty();
+    }
+
+    /**
+     * {@link Post} Constructor
+     *
+     * @param title
+     * @param publicationDate
+     * @param video
+     */
+    public Post(String title, Date publicationDate, String video) {
+        this.title = new SimpleStringProperty(title);
+        this.publicationDate = new SimpleObjectProperty(publicationDate);
+        this.video = new SimpleStringProperty(video);
+    }
+
+    public Post(Integer postId, String title, String content, Date publicationDate, String image, String video, Course course) {
+        this.title = new SimpleStringProperty(title);
+        this.publicationDate = new SimpleObjectProperty(publicationDate);
+        this.video = new SimpleStringProperty(video);
+        this.postId = postId;
+        this.content = content;
+        this.image = image;
+        this.course = course;
     }
 
     /**
@@ -90,8 +114,9 @@ public class Post implements Serializable {
      *
      * @return Returns the title of the post
      */
+    @XmlElement(name = "title")
     public String getTitle() {
-        return title;
+        return this.title.get();
     }
 
     /**
@@ -100,7 +125,7 @@ public class Post implements Serializable {
      * @param title String value with the title for the post
      */
     public void setTitle(String title) {
-        this.title = title;
+        this.title.set(title);
     }
 
     /**
@@ -108,6 +133,7 @@ public class Post implements Serializable {
      *
      * @return content Content
      */
+    @XmlElement(name = "content")
     public String getContent() {
         return content;
     }
@@ -126,8 +152,9 @@ public class Post implements Serializable {
      *
      * @return publicationDate Publication Date
      */
+    @XmlElement(name = "publicationDate")
     public Date getPublicationDate() {
-        return publicationDate;
+        return this.publicationDate.get();
     }
 
     /**
@@ -136,7 +163,7 @@ public class Post implements Serializable {
      * @param publicationDate PublicationDate
      */
     public void setPublicationDate(Date publicationDate) {
-        this.publicationDate = publicationDate;
+        this.publicationDate.set(publicationDate);
     }
 
     /**
@@ -162,6 +189,7 @@ public class Post implements Serializable {
      *
      * @return image Image
      */
+    @XmlElement(name = "image")
     public String getImage() {
         return image;
     }
@@ -180,8 +208,9 @@ public class Post implements Serializable {
      *
      * @return video Video
      */
+    @XmlElement(name = "video")
     public String getVideo() {
-        return video;
+        return this.video.get();
     }
 
     /**
@@ -190,7 +219,7 @@ public class Post implements Serializable {
      * @param video Video
      */
     public void setVideo(String video) {
-        this.video = video;
+        this.video.set(video);
     }
 
     /**
@@ -240,10 +269,7 @@ public class Post implements Serializable {
             return false;
         }
         final Post other = (Post) obj;
-        if (!Objects.equals(this.postId, other.postId)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.postId, other.postId);
     }
 
     /**
@@ -253,7 +279,6 @@ public class Post implements Serializable {
      */
     @Override
     public String toString() {
-        return "Post{" + "postId=" + postId + ", content=" + content + ", publicationDate=" + publicationDate + ", course=" + course + ", image=" + image + ", video=" + video + ", postComments=" + postComments + '}';
+        return "Post{" + "postId=" + postId + ", title=" + title + ", content=" + content + ", publicationDate=" + publicationDate + ", course=" + course + ", image=" + image + ", video=" + video + ", postComments=" + postComments + '}';
     }
-
 }

@@ -12,20 +12,31 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="610.0" prefWidth="1005.0" 
-      xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.principal.PrincipalViewController">
-   <children>
-      <fx:include fx:id="menuBarContainer" source="../MenuBar.fxml"/>
-      <Label layoutX="397.0" layoutY="75.0" text="Bienvenido">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <Label fx:id="lblLoggedUser" layoutX="391.0" layoutY="110.0">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <ImageView fitHeight="277.0" fitWidth="477.0" layoutX="51.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
-   </children>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
+      prefHeight="720.0" prefWidth="1280" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="client.view.principal.PrincipalViewController"
+      stylesheets="@../css/style.css">
+    <children>
+        <fx:include fx:id="menuBarContainer" source="../MenuBar.fxml" />
+        <Label layoutX="429.0" layoutY="55.0" text="Bienvenido">
+            <font>
+                <Font size="30.0" />
+            </font>
+        </Label>
+        <Label fx:id="lblLoggedUser" layoutX="441.0" layoutY="108.0" text="Placeholder">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <ImageView fitHeight="377.0" fitWidth="685.0" layoutX="42.0" layoutY="176.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@principal.png" />
+            </image>
+        </ImageView>
+        <Button fx:id="btnCourse" layoutX="772.0" layoutY="231.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Cursos" />
+        <Button fx:id="btnSubject" layoutX="772.0" layoutY="305.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Asignaturas" />
+        <Button fx:id="btnProfile" layoutX="772.0" layoutY="375.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Perfil" />
+        <Button fx:id="btnCloseSession" layoutX="772.0" layoutY="447.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="100.0" text="Cerrar sesión" />
+        
+    </children>
 </Pane>

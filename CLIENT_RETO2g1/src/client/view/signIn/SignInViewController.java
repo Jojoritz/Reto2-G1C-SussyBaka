@@ -6,7 +6,10 @@
 package client.view.signIn;
 
 import client.beans.User;
+import client.logic.ControllerFactory;
+import client.logic.UserController;
 import client.logic.exception.BusinessLogicException;
+import client.view.principal.PrincipalViewController;
 import client.view.signUp.SignUpViewController;
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -27,6 +30,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.core.GenericType;
 
 /**
  * FXML Controller class This class is the controller of the Sign In view
@@ -81,7 +86,7 @@ public class SignInViewController {
     @FXML
     private TextField txtUser;
     /**
-     * The passwor field
+     * The password field
      */
     @FXML
     private PasswordField txtPassword;
@@ -105,7 +110,6 @@ public class SignInViewController {
      * This method initialize the stage (@code SignInView)
      *
      * @param root the principal stage where this window will be showed
-     * @param css The css file reference
      */
     public void initStage(Parent root) {
         LOG.info("Initiating Sign In View stage");
@@ -113,8 +117,6 @@ public class SignInViewController {
         //Set the scene, add the css and setting the client socket and the primary stage
         Scene scene = new Scene(root);
         Stage stage = new Stage();
-        stage.setScene(scene);
-        stage.setTitle("Iniciar Sesion");
         this.primaryStage = stage;
 
         LOG.info("Setting validator for the username field");
@@ -137,6 +139,7 @@ public class SignInViewController {
                     showTooltip(stage, txtUser, error, userTooltip);
                     throw new Exception(error);
                 }
+
                 //Else
                 userTooltip.hide();
                 usernameFilled = true;
@@ -199,6 +202,10 @@ public class SignInViewController {
 
         stage.setOnShowing((Event) -> {
             LOG.info("Setting the status of the items shown on scene");
+            stage.setScene(scene);
+            stage.setTitle("Iniciar Sesion");
+            stage.setResizable(false);
+
             txtUser.setDisable(false);
             txtPassword.setDisable(false);
             btnSignIn.setDisable(true);
@@ -206,7 +213,6 @@ public class SignInViewController {
             btnSignUpView.setDisable(false);
             txtLogInError.setVisible(false);
             txtLogInError.setText("LogIn incorrecto, usuario y/o contraseña incorrecto");
-            stage.setResizable(false);
 
         });
         //When the Sign in button is clicked
@@ -220,7 +226,9 @@ public class SignInViewController {
                 SignUpViewController signUp = ((SignUpViewController) loader.getController());
                 signUp.initStage(rootSignUp, stage);
             } catch (IOException ex) {
-                LOG.info("No se puede abrir la ventana " + ex.getLocalizedMessage());
+                LOG.info(ex.getMessage());
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Ha ocurrido un error al abrir la ventana de registro", ButtonType.OK);
+                alert.showAndWait();
             }
         });
         stage.show();
@@ -235,11 +243,6 @@ public class SignInViewController {
     private void signIn(ActionEvent e) {
         try {
             LOG.info("Starting the sign in and getting data from required fields");
-            //Setting the user required data
-            User user = new User();
-
-            user.setLogin(txtUser.getText());
-            user.setPassword(txtPassword.getText());
 
             String error = "Login incorrecto, compruebe el usuario y/o la contraseña";
 
@@ -255,7 +258,7 @@ public class SignInViewController {
 
             //validate password
             String PASSWORD_PATTERN
-                    = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!¡@#$%&¿?]).{8,100}$";
+                    = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*?]).{8,100}$";
             pattern = Pattern.compile(PASSWORD_PATTERN);
             matcher = pattern.matcher(txtPassword.getText());
 
@@ -264,16 +267,26 @@ public class SignInViewController {
                 LOG.info("La contraseña no es válida, debe tener al menos una mayuscula, una minuscula, un número y un caracter especial");
             }
 
-            //TODO
-            /*
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/clientProject/view/logged/LoggedView.fxml"));
+            User user = null;
+            try {
+                UserController userRest = ControllerFactory.getUserController();
+                //UserRESTInterface userRest = ControllerFactroy.getUserControllerREST();
+                user = userRest.signIn_XML(new GenericType<User>() {
+                }, txtUser.getText(), txtPassword.getText());
+
+            } catch (ClientErrorException exc) {
+                exc.printStackTrace();
+                LOG.info(exc.getMessage());
+                throw new BusinessLogicException(exc.getMessage());
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/principal/PrincipalView.fxml"));
             Parent root = (Parent) loader.load();
-            LoggedViewController controller = ((LoggedViewController) loader.getController());
-            controller.initStage(root, message.getUserData(), primaryStage, this.css);
+            PrincipalViewController principalController = ((PrincipalViewController) loader.getController());
+            principalController.initStage(root, primaryStage, user);
             txtUser.setText("");
             txtPassword.setText("");
-             */
-            throw new BusinessLogicException("hola");
+
         } catch (BusinessLogicException ex) {
             LOG.severe(ex.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK);
