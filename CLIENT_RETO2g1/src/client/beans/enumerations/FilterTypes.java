@@ -6,10 +6,15 @@
 package client.beans.enumerations;
 
 /**
- *This enumeration is for the filter options combo box in the views
+ * This enumeration is for the filter options combo box in the views
+ *
  * @author Ioritz
  */
 public enum FilterTypes {
+    /**
+     * The date range option for the filter
+     */
+    RANGO_FECHA,
     /**
      * The date option for the filter
      */
@@ -25,5 +30,9 @@ public enum FilterTypes {
     /**
      * The level option for the filter
      */
-    NIVEL
+    NIVEL,
+    /**
+     * The NONE option for the filter
+     */
+    NINGUNO
 }

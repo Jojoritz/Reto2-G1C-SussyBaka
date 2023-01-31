@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * This is the user entity class
@@ -16,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author ioritz
  */
 @XmlRootElement
+@XmlSeeAlso({Student.class, Teacher.class})
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;

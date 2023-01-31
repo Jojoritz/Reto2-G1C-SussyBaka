@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="843.0" prefWidth="1228.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.signUp.SignUpViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.signUp.SignUpViewController">
     <children>
         <Label layoutX="705.0" layoutY="14.0" prefHeight="35.0" prefWidth="449.0" text="Registro">
             <font>
@@ -32,7 +32,7 @@
                 <Font size="16.0" />
             </font>
         </TextField>
-        <Label fx:id="txtFullNameError" layoutX="511.0" layoutY="133.0" textFill="RED" visible="false">            
+        <Label fx:id="txtFullNameError" layoutX="754" layoutY="120.0" textFill="RED" visible="false" text="hola">            
             <font>
                 <Font size="14.0" />
             </font>
@@ -104,23 +104,27 @@
             </font>
         </Label>
 
-        <Button fx:id="btnSignUp" layoutX="750.0" layoutY="762.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="147.0" text="Registrarse">
+        <Button fx:id="btnSignUp" layoutX="897.0" layoutY="643.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="147.0" text="Registrarse">
             <font>
                 <Font size="16.0" />
             </font>
         </Button>
-        <Button fx:id="btnBack" layoutX="1007.0" layoutY="762.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="147.0" text="Volver">
+        <Button fx:id="btnBack" layoutX="1095.0" layoutY="643.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="147.0" text="Volver">
             <font>
                 <Font size="16.0" />
             </font>
         </Button>
-        <ImageView fitHeight="849.0" fitWidth="697.0" layoutY="-4.0" pickOnBounds="true">
+        <ImageView fitHeight="730.0" fitWidth="618.0" layoutY="2.0" pickOnBounds="true">
             <image>
                 <Image url="@SignUpImage.png" />
             </image>
         </ImageView>
-      <ComboBox fx:id="cmbxUserType" layoutX="750.0" layoutY="663.0" prefHeight="25.0" prefWidth="388.0" promptText="Tipo de usuario" visibleRowCount="2" />
-      <ComboBox prefWidth="150.0" />
+        <ComboBox fx:id="cmbxUserType" layoutX="664.0" layoutY="655.0" prefHeight="25.0" prefWidth="181.0" />
+        <Label layoutX="664.0" layoutY="625.0" prefHeight="25.0" prefWidth="96.0" text="Tipo de usuario:">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
 
       
 

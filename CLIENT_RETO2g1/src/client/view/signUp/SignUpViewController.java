@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -17,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -91,6 +93,9 @@ public class SignUpViewController {
      */
     @FXML
     private PasswordField txtConfirmPassword;
+
+    @FXML
+    private ComboBox<String> cmbxUserType;
     /**
      * The stage where the scene is going to be displayed
      */
@@ -136,8 +141,6 @@ public class SignUpViewController {
      */
     private static final Logger LOG = Logger.getLogger(SignUpViewController.class.getName());
 
-    private Stage primaryStage = null;
-
     /**
      * This method starts the Sign Up window
      *
@@ -150,7 +153,6 @@ public class SignUpViewController {
         myScene = new Scene(root);
         myStage = new Stage();
         primaryStage.hide();
-        this.primaryStage = primaryStage;
 
         myStage.setOnShowing((event) -> {
             //When the screen launch the onShowing event
@@ -170,6 +172,9 @@ public class SignUpViewController {
             txtPasswordError.setVisible(false);
             txtUsernameError.setVisible(false);
             txtPasswordConfirmError.setVisible(false);
+
+            cmbxUserType.setItems(FXCollections.observableArrayList("Student", "Teacher"));
+
         });
 
         LOG.info("Setting validator for the full name field");
