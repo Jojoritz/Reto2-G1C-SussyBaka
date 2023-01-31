@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 import java.lang.Class;
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -39,6 +41,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javax.ws.rs.core.GenericType;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * FXML Controller class
@@ -529,6 +538,26 @@ public class SubjectsViewController {
             }
         });
 
+        btnSubjectPrint.setOnAction(actionEvent -> {
+            try {
+                LOGGER.info("Printing a report");
+                
+                JasperReport report =
+                        JasperCompileManager.compileReport("src/client/view/subject/SubjectsReport");
+                
+                JRBeanCollectionDataSource dataItems = new JRBeanCollectionDataSource((Collection<Subject>) this.tableSubjects.getItems());
+                Map<String,Object> parameters = new HashMap<>();
+                
+                JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
+                
+                JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+                jasperViewer.setVisible(true);
+            } catch (JRException ex) {
+                Logger.getLogger(SubjectsViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+        });
         btnModifySubject.setOnAction(actionEvent -> {
             LOGGER.info("Modifying the subject");
 
