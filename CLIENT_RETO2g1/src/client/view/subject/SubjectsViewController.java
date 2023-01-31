@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.lang.Class;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -271,9 +272,13 @@ public class SubjectsViewController {
                 subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
                 }));
                 tableSubjects.setItems(subjectsData);
-            } catch (BusinessLogicException ex) {
-                Logger.getLogger(SubjectsViewController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } 
+            catch (BusinessLogicException ex) { 
+                LOGGER.severe("An error happened while loading data: " + ex.getMessage());
+                LOGGER.severe("Its posible that the server is shut down, or a connection error had happened");
+                alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al cargar los datos, intentelo de nuevo mas tarde");
+                alert.showAndWait();
+            } 
 
         });
 
@@ -485,7 +490,7 @@ public class SubjectsViewController {
             } catch (Exception e) {
                 LOGGER.severe(e.getMessage());
                 e.printStackTrace();
-                alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al crear la asignatura, intentelo otra vez");
+                alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al crear la asignatura, intentelo de nuevo otra vez");
             }
 
         });
