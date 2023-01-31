@@ -577,11 +577,9 @@ public class SubjectsViewController {
                         Subject selectedSubject = (Subject) tableSubjects.getSelectionModel().getSelectedItem();
                         subjectController.removeSubject(String.valueOf(selectedSubject.getSubjectId()));
                         
-                        for (int i = 0; i < subjectsData.size(); i++) {
-                            if (subjectsData.get(i).getSubjectId().equals(selectedSubject.getSubjectId())) {
-                                subjectsData.remove(i);
-                            }
-                        }
+                        subjectsData.remove(selectedSubject);
+                        tableSubjects.getItems().remove(selectedSubject);
+                        
                         tableSubjects.refresh();
                         alert = new Alert(Alert.AlertType.WARNING, "El borrado se ha realizado correctamente");
                         clearFields();
