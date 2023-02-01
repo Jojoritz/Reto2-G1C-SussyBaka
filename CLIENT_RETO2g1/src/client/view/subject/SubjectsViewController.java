@@ -543,7 +543,7 @@ public class SubjectsViewController {
                 LOGGER.info("Printing a report");
                 
                 JasperReport report =
-                        JasperCompileManager.compileReport("src/client/view/subject/SubjectsReport");
+                        JasperCompileManager.compileReport("src/client/view/subject/SubjectsReport.jrxml");
                 
                 JRBeanCollectionDataSource dataItems = new JRBeanCollectionDataSource((Collection<Subject>) this.tableSubjects.getItems());
                 Map<String,Object> parameters = new HashMap<>();
@@ -553,7 +553,10 @@ public class SubjectsViewController {
                 JasperViewer jasperViewer = new JasperViewer(jasperPrint);
                 jasperViewer.setVisible(true);
             } catch (JRException ex) {
-                Logger.getLogger(SubjectsViewController.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.severe("An error happened while trying to print a report");
+                ex.printStackTrace();
+                alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al tratar de imprimir el informe");
+                alert.showAndWait();
             }
             
             
