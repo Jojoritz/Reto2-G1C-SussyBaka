@@ -290,10 +290,12 @@ public class SignInViewController {
             LOG.severe(ex.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK);
             alert.showAndWait();
+            ex.printStackTrace();
         } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, "Ha ocurrido un error al iniciar la ventana de inicio de sesión", ButtonType.OK);
             alert.showAndWait();
+            ex.printStackTrace();
         }
     }
 

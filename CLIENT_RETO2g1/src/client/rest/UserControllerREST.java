@@ -5,6 +5,7 @@
  */
 package client.rest;
 
+import client.logic.EncryptDecrypt;
 import client.logic.UserController;
 import client.logic.exception.BusinessLogicException;
 import java.util.logging.Logger;
@@ -267,6 +268,7 @@ public class UserControllerREST implements UserController {
     public <T> T signIn_XML(Class<T> responseType, String login, String password) throws BusinessLogicException {
         try {
             LOGGER.info("Trying to signIn");
+            password = EncryptDecrypt.cifrarTextoAsimetrico(password);
             WebTarget resource = webTarget;
             resource = resource.path(java.text.MessageFormat.format("user/login/{0}/{1}", new Object[]{login, password}));
             return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
