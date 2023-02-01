@@ -5,7 +5,17 @@
  */
 package client.view.signUp;
 
+import client.beans.Student;
+import client.beans.Teacher;
 import client.beans.User;
+import client.beans.enumerations.UserPrivilege;
+import client.beans.enumerations.UserStatus;
+import client.logic.ControllerFactory;
+import client.logic.EncryptDecrypt;
+import client.logic.UserController;
+import client.logic.exception.BusinessLogicException;
+import client.logic.exception.EncriptionException;
+import client.logic.exception.UserAllReadyExistException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -95,7 +105,7 @@ public class SignUpViewController {
     private PasswordField txtConfirmPassword;
 
     @FXML
-    private ComboBox<String> cmbxUserType;
+    private ComboBox<UserPrivilege> cmbxUserType;
     /**
      * The stage where the scene is going to be displayed
      */
@@ -136,6 +146,16 @@ public class SignUpViewController {
      * The matcher that validates if the field text matches the pattern
      */
     private Matcher matcher = null;
+    
+    /**
+     * The user type
+     */
+    private UserPrivilege userType;
+    
+    /**
+     * the user controller interface
+     */
+    private UserController userController;
     /**
      * The logger of this class
      */
@@ -173,8 +193,8 @@ public class SignUpViewController {
             txtUsernameError.setVisible(false);
             txtPasswordConfirmError.setVisible(false);
 
-            cmbxUserType.setItems(FXCollections.observableArrayList("Student", "Teacher"));
-
+            cmbxUserType.setItems(FXCollections.observableArrayList(UserPrivilege.STUDENT, UserPrivilege.TEACHER));
+            
         });
 
         LOG.info("Setting validator for the full name field");
@@ -186,7 +206,7 @@ public class SignUpViewController {
 
                 //Validating the full name
                 String fullNamePattern
-                        = "^([A-Z][a-z]*((\\s)))+[A-Z][a-z]*$";
+                        = "([A-Z\\u00d1ÁÉÍÓÚÜ][a-z\\u00f1áéíóúü]*((\\s)))+[A-Z\\u00d1ÁÉÍÓÚÜ][a-z\\u00f1áéíóúü";
                 String fullName = txtFullName.getText();
 
                 pattern = Pattern.compile(fullNamePattern);
@@ -206,7 +226,7 @@ public class SignUpViewController {
                 }
                 //Else
                 correctFullName = true;
-                btnSignUp.setDisable(!(correctFullName && correctEmail && correctPassword && correctUserName && correctPasswordConfirmation));
+                btnSignUp.setDisable((!(correctFullName && correctEmail && correctPassword && correctUserName && correctPasswordConfirmation)) && userType != null);
 
             } catch (Exception e) {
                 LOG.warning(e.getMessage());
@@ -236,7 +256,7 @@ public class SignUpViewController {
                 if (!correctEmail) {
                     throw new Exception("El email no es correcto\nEj: usuario@ejemplo.com");
                 }
-                btnSignUp.setDisable(!(correctFullName && correctEmail && correctPassword && correctUserName && correctPasswordConfirmation));
+                btnSignUp.setDisable((!(correctFullName && correctEmail && correctPassword && correctUserName && correctPasswordConfirmation)) && userType != null);
 
             } catch (Exception e) {
                 LOG.warning(e.getMessage());
@@ -256,7 +276,7 @@ public class SignUpViewController {
             try {
                 txtUsernameError.setVisible(false);
                 //Validating the username
-                String usernamePattern = "^[a-zA-Z0-9]+$";
+                String usernamePattern = "^[a-zA-Z0-9\\u00D1\\u00f1\\u00C7\\u00e7]+$";
                 pattern = Pattern.compile(usernamePattern);
                 matcher = pattern.matcher(txtUsername.getText());
 
@@ -273,7 +293,7 @@ public class SignUpViewController {
                 }
                 //Else
                 correctUserName = true;
-                btnSignUp.setDisable(!(correctFullName && correctEmail && correctPassword && correctUserName && correctPasswordConfirmation));
+                btnSignUp.setDisable((!(correctFullName && correctEmail && correctPassword && correctUserName && correctPasswordConfirmation)) && userType != null);
 
             } catch (Exception e) {
                 LOG.warning(e.getMessage());
@@ -299,7 +319,7 @@ public class SignUpViewController {
                 correctPassword = false;
             }
 
-            btnSignUp.setDisable(!(correctFullName && correctEmail && correctPassword && correctUserName && correctPasswordConfirmation));
+            btnSignUp.setDisable((!(correctFullName && correctEmail && correctPassword && correctUserName && correctPasswordConfirmation)) && userType != null);
         }
         );
 
@@ -320,7 +340,7 @@ public class SignUpViewController {
                 }
                 //Else
                 correctPasswordConfirmation = true;
-                btnSignUp.setDisable(!(correctFullName && correctEmail && correctPassword && correctUserName && correctPasswordConfirmation));
+                btnSignUp.setDisable((!(correctFullName && correctEmail && correctPassword && correctUserName && correctPasswordConfirmation)) && userType != null);
 
             } catch (Exception e) {
                 txtPasswordConfirmError.setVisible(true);
@@ -357,6 +377,26 @@ public class SignUpViewController {
                     }
                 }
         );
+        
+        
+        cmbxUserType.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            LOG.info("Selecting a user type");
+            try {
+                userType = cmbxUserType.getSelectionModel().getSelectedItem();
+
+                if (userType == null) {
+                    throw new Exception();
+                }
+                
+                btnSignUp.setDisable((!(correctFullName && correctEmail && correctPassword && correctUserName && correctPasswordConfirmation)) && userType != null);
+                
+            } catch (Exception e) {
+                LOG.severe("A user type must be selected");
+                btnSignUp.setDisable(true);
+                userType = null;
+            }
+            
+        });
         myStage.showAndWait();
     }
 
@@ -369,8 +409,7 @@ public class SignUpViewController {
      */
     private Boolean emailValidator(String email) {
         if (email.length() <= 100) {
-            return Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
-                    + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")
+            return Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\\\.[A-Za-z0-9-]+)*(\\\\.[A-Za-z]{2,})$")
                     .matcher(email)
                     .matches();
         }
@@ -387,7 +426,7 @@ public class SignUpViewController {
      */
     private Boolean passwordValidator(String password) throws Exception {
         String PASSWORD_PATTERN
-                = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!¡@#$%&¿?]).{8,100}$";
+                = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#\\$%^&\\*\\?]).{8,100}$";
 
         if (password.length() < 8) {
             throw new Exception("La contraseña debe de tener al menos 8 caracteres");
@@ -411,15 +450,59 @@ public class SignUpViewController {
      */
     private void signUp(ActionEvent event) {
         LOG.info("Starting the sign up and setting up all equired objects");
-        User user;
+        User user = null;
+        
+        try {
+            //TODO connection and user types
 
-        //Setting the user data and the message data
-        user = new User();
-        user.setFullName(txtFullName.getText());
-        user.setEmail(txtEmail.getText());
-        user.setPassword(txtPassword.getText());
-        user.setLogin(txtUsername.getText().trim());
+            if (userType.equals(UserPrivilege.STUDENT)) {
+                user = new Student();
+            } else if (userType.equals(UserPrivilege.TEACHER)) {
+                user = new Teacher();
+            }
 
+            //Setting the user data and the message data
+            user.setFullName(txtFullName.getText());
+            user.setEmail(txtEmail.getText());
+            user.setPassword(txtPassword.getText());
+            user.setLogin(txtUsername.getText().trim());
+            user.setPrivilege(userType);
+            user.setStatus(UserStatus.ENABLED);
+            user.setPassword(EncryptDecrypt.cifrarTextoAsimetrico(user.getPassword()));
+            
+            userController = ControllerFactory.getUserController();
+            User userExistComprobation = userController.signIn_XML(User.class, user.getLogin(), user.getPassword());
+            
+            if(userExistComprobation == null){
+                throw new UserAllReadyExistException("El usuario ya existe");
+            }
+            
+            //Sign up
+            if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
+                userController.createStudent_XML(user);
+            } else if(user.getPrivilege().equals(UserPrivilege.TEACHER)){
+                userController.createTeacher_XML(user);
+            }
+            
+            alert = new Alert(Alert.AlertType.INFORMATION, "El usuario ha sido correctamente creado");
+            alert.showAndWait();
+            myStage.close();
+                
+        } catch(UserAllReadyExistException ex){
+            LOG.severe(ex.getMessage());
+            alert = new Alert(Alert.AlertType.ERROR, ex.getMessage());
+            alert.showAndWait();
+        }
+        
+        catch (BusinessLogicException | EncriptionException e) {
+            LOG.severe("An error happened while registering the user: " + e.getMessage());
+            alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al registrarse, intentelo de nuevo mas tarde por favor");
+            alert.showAndWait();
+        }
+        
+        
+        
+        
         /*
         try {
             message = clientSocket.connectToServer(message);
