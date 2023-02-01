@@ -45,6 +45,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
 
@@ -301,10 +302,18 @@ public class CourseViewController {
     @FXML
     private Button btnJoin;
 
+    @FXML
+    private Button btnSearchCourse;
+
     /**
      * A alert for showing any alerts and errors to the user
      */
     private Alert alert;
+
+    /**
+     * The Applyed filter
+     */
+    private FilterTypes filterToApply;
 
     /**
      * Initializes the controller class.
@@ -330,151 +339,213 @@ public class CourseViewController {
         btnJoin.setDisable(true);
         btnPrint.setDisable(false);
         btnReturn.setDisable(false);
+        btnSearchCourse.setDisable(false);
         btnShowSubjects.setDisable(false);
 
         tableCourses.setVisible(true);
 
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colCreationDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-        colCreationDate.setCellFactory(column -> {
-            TableCell<Course, Date> cell = new TableCell<Course, Date>() {
-                private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        colCreationDate.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+        Callback<TableColumn<Course, Date>, TableCell<Course, Date>> dateCellFactory = new Callback<TableColumn<Course, Date>, TableCell<Course, Date>>() {
+            @Override
+            public TableCell call(final TableColumn<Course, Date> param) {
+                return new TableCell<Course, Date>() {
+                    private final SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
-                @Override
-                protected void updateItem(Date item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                    } else {
-                        if (item != null) {
+                    @Override
+                    protected void updateItem(Date item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setText(null);
+                        } else {
                             setText(format.format(item));
                         }
                     }
-                }
-            };
-            return cell;
-        });
+                };
+            }
+        };
 
+        colCreationDate.setCellFactory(dateCellFactory);
         colTeacher.setCellValueFactory(new PropertyValueFactory<>("teacher"));
         colSubject.setCellValueFactory(new PropertyValueFactory<>("subject"));
 
-        stage.setOnShowing((event) -> {
-            try {
-                //When the screen launch the onShowing event
+        stage.setOnShowing(
+                (event) -> {
+                    try {
+                        //When the screen launch the onShowing event
 
-                cmbxFilter.getItems().addAll(FilterTypes.FECHA, FilterTypes.NOMBRE);
-                cmbxFilter.getSelectionModel().select(-1);
+                        cmbxFilter.getItems().addAll(FilterTypes.FECHA, FilterTypes.NOMBRE);
+                        cmbxFilter.getSelectionModel().select(-1);
 
-                subjectController = ControllerFactory.getSubjectController();
-                subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
-                }));
+                        subjectController = ControllerFactory.getSubjectController();
+                        subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
+                        }));
 
-                subjectsData.stream().forEach(s -> {
-                    cmbxSubject.getItems().add(s.getName());
-                });
+                        subjectsData.stream().forEach(s -> {
+                            cmbxSubject.getItems().add(s.getName());
+                        });
 
-                userController = ControllerFactory.getUserController();
-                teachersData = FXCollections.observableArrayList(userController.findAll_XML(new GenericType<Collection<User>>() {
-                }));
+                        userController = ControllerFactory.getUserController();
+                        teachersData = FXCollections.observableArrayList(userController.findAll_XML(new GenericType<Collection<User>>() {
+                        }));
 
-                teachersData.stream().forEach(t -> {
-                    if (t.getPrivilege().equals(UserPrivilege.TEACHER)) {
-                        cmbxTeacher.getItems().add(t.getFullName());
+                        teachersData.stream().forEach(t -> {
+                            if (t.getPrivilege().equals(UserPrivilege.TEACHER)) {
+                                cmbxTeacher.getItems().add(t.getFullName());
+                            }
+                        });
+
+                        courseController = ControllerFactory.getCourseController();
+                        coursesData = FXCollections.observableArrayList(courseController.findAll_XML(new GenericType<Collection<Course>>() {
+                        }));
+                        tableCourses.setItems(coursesData);
+                    } catch (BusinessLogicException ex) {
+                        LOG.severe(ex.getMessage());
                     }
-                });
+                }
+        );
 
-                courseController = ControllerFactory.getCourseController();
-                coursesData = FXCollections.observableArrayList(courseController.findAll_XML(new GenericType<Collection<Course>>() {
-                }));
-                tableCourses.setItems(coursesData);
-            } catch (BusinessLogicException ex) {
-                LOG.severe(ex.getMessage());
-            }
-        });
+        txtCourseName.textProperty()
+                .addListener((event) -> {
+                    //When the text is being modified in the text field
+                    try {
+                        //If the course name is empty
+                        if (txtCourseName.getText().length() == 0 || txtCourseName.getText().trim().equals("")) {
+                            correctName = false;
+                            throw new Exception("The course name can't be empty");
+                        } else {
+                            correctName = true;
+                        }
+                        btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
+                    } catch (Exception e) {
+                        LOG.warning(e.getMessage());
+                        btnCreate.setDisable(false);
+                        correctName = false;
+                    }
+                }
+                );
 
-        txtCourseName.textProperty().addListener((event) -> {
-            //When the text is being modified in the text field
+        txtCreatedDate.textProperty()
+                .addListener((event) -> {
+                    //When the text is being modified in the text field
+                    try {
+                        boolean res = false;
+                        String date = txtCreatedDate.getText();
+                        if (date.length() == 10) {
+                            res = validateDate(date);
+                            if (!res && date.length() == 0 || date.trim().equals("")) {
+                                throw new Exception("The Date can't be empty or the Date Format is not valid");
+                            }
+                            correctDate = true;
+                        } else {
+                            correctDate = false;
+                        }
+                        btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
+                    } catch (Exception e) {
+                        LOG.warning("The Date is empty or the Date Format is not valid: " + e.getMessage());
+                        btnCreate.setDisable(false);
+                        correctDate = false;
+                    }
+                }
+                );
+
+        cmbxTeacher.getSelectionModel()
+                .selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                    try {
+                        teachersData.stream().forEach(t -> {
+                            if (t.getFullName().equals(newValue)) {
+                                comboSelectedTeacher = t;
+                            }
+                        });
+                        if (comboSelectedTeacher == null) {
+                            throw new Exception();
+                        }
+                        btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
+                    } catch (Exception e) {
+                        LOG.severe("An error ocurred while getting the teacher data");
+                        btnCreate.setDisable(true);
+                        comboSelectedTeacher = null;
+                    }
+                }
+                );
+
+        cmbxSubject.getSelectionModel()
+                .selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                    try {
+                        subjectsData.stream().forEach(s -> {
+                            if (s.getName().equals(newValue)) {
+                                comboSelectedSubject = s;
+                            }
+                        });
+                        if (comboSelectedSubject == null) {
+                            throw new Exception();
+                        }
+                        btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
+                    } catch (Exception e) {
+                        LOG.severe("An error ocurred while getting the subject data");
+                        btnCreate.setDisable(true);
+                        comboSelectedSubject = null;
+                    }
+                }
+                );
+
+        cmbxFilter.getSelectionModel()
+                .selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                    LOG.info("Selecting the filter");
+                    if (newValue.equals(FilterTypes.NOMBRE)) {
+                        filterToApply = FilterTypes.NOMBRE;
+                    } else if (newValue.equals(FilterTypes.FECHA)) {
+                        filterToApply = FilterTypes.FECHA;
+                    } else {
+                        filterToApply = null;
+                    }
+                }
+                );
+
+        btnSearchCourse.setOnAction(actionEvent
+                -> {
             try {
-                //If the course name is empty
-                if (txtCourseName.getText().length() == 0 || txtCourseName.getText().trim().equals("")) {
-                    correctName = false;
-                    throw new Exception("The course name can't be empty");
+                LOG.info("Searching Courses");
+                if (filterToApply == null) {
+                    try {
+                        LOG.info("There is no filter to apply");
+                        coursesData.clear();
+                        coursesData = FXCollections.observableArrayList(courseController.findAll_XML(new GenericType<Collection<Course>>() {
+                        }));
+                    } catch (ClientErrorException ex) {
+                        LOG.severe(ex.getMessage());
+                    }
                 } else {
-                    correctName = true;
+                    LOG.info("There is a filter to apply");
+                    applyFilter();
                 }
-                btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
             } catch (Exception e) {
-                LOG.warning(e.getMessage());
-                btnCreate.setDisable(false);
-                correctName = false;
-            }
-        });
-
-        txtCreatedDate.textProperty().addListener((event) -> {
-            //When the text is being modified in the text field
-            try {
-                boolean res = false;
-                String date = txtCreatedDate.getText();
-                if (date.length() == 10) {
-                    res = validateDate(date);
-                    if (!res && date.length() == 0 || date.trim().equals("")) {
-                        throw new Exception("The Date can't be empty or the Date Format is not valid");
-                    }
-                    correctDate = true;
-                } else {
-                    correctDate = false;
+                try {
+                    LOG.info(e.getMessage());
+                    alert = new Alert(Alert.AlertType.ERROR, "An error has ocurred during the filter applying");
+                    cmbxFilter.getSelectionModel().select(-1);
+                    coursesData.clear();
+                    coursesData = FXCollections.observableArrayList(courseController.findAll_XML(new GenericType<Collection<Course>>() {
+                    }));
+                    tableCourses.setItems(coursesData);
+                } catch (ClientErrorException ex) {
+                    LOG.severe(ex.getMessage());
+                    alert = new Alert(Alert.AlertType.ERROR, "There was an Error while charging the Data on the table");
                 }
-                btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
-            } catch (Exception e) {
-                LOG.warning("The Date is empty or the Date Format is not valid: " + e.getMessage());
-                btnCreate.setDisable(false);
-                correctDate = false;
             }
-        });
+        }
+        );
 
-        cmbxTeacher.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                teachersData.stream().forEach(t -> {
-                    if (t.getFullName().equals(newValue)) {
-                        comboSelectedTeacher = t;
-                    }
-                });
-                if (comboSelectedTeacher == null) {
-                    throw new Exception();
-                }
-                btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
-            } catch (Exception e) {
-                LOG.severe("An error ocurred while getting the teacher data");
-                btnCreate.setDisable(true);
-                comboSelectedTeacher = null;
-            }
-        });
-
-        cmbxSubject.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                subjectsData.stream().forEach(s -> {
-                    if (s.getName().equals(newValue)) {
-                        comboSelectedSubject = s;
-                    }
-                });
-                if (comboSelectedSubject == null) {
-                    throw new Exception();
-                }
-                btnCreate.setDisable(!(correctName && correctDate && comboSelectedTeacher != null && comboSelectedSubject != null));
-            } catch (Exception e) {
-                LOG.severe("An error ocurred while getting the subject data");
-                btnCreate.setDisable(true);
-                comboSelectedSubject = null;
-            }
-        });
-
-        btnReturn.setOnAction(actionEvent -> {
+        btnReturn.setOnAction(actionEvent
+                -> {
             LOG.info("Closing Window");
             stage.close();
             primaryStage.show();
-        });
+        }
+        );
 
-        stage.setOnCloseRequest(windowEvent -> {
+        stage.setOnCloseRequest(windowEvent
+                -> {
             LOG.info("Opening exit alert confitmation");
 
             alert = new Alert(Alert.AlertType.CONFIRMATION, "Quieres cerrar el programa?", ButtonType.YES, ButtonType.NO);
@@ -487,36 +558,40 @@ public class CourseViewController {
                     windowEvent.consume();
                 }
             });
-        });
+        }
+        );
 
-        tableCourses.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            LOG.info("Table selection event handling");
+        tableCourses.getSelectionModel()
+                .selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                    LOG.info("Table selection event handling");
 
-            if (newValue != null) {
-                LOG.info("A row was selected");
-                Course selectedCourse = (Course) tableCourses.getSelectionModel().getSelectedItem();
+                    if (newValue != null) {
+                        LOG.info("A row was selected");
+                        Course selectedCourse = (Course) tableCourses.getSelectionModel().getSelectedItem();
 
-                txtCourseName.setText(selectedCourse.getName());
-                txtCreatedDate.setText(selectedCourse.getStartDate().toString());
+                        txtCourseName.setText(selectedCourse.getName());
+                        txtCreatedDate.setText(selectedCourse.getStartDate().toString());
 
-                correctName = true;
-                correctDate = true;
+                        correctName = true;
+                        correctDate = true;
 
-                if (correctName && correctDate) {
-                    btnModify.setDisable(false);
-                    btnDelete.setDisable(false);
+                        if (correctName && correctDate) {
+                            btnModify.setDisable(false);
+                            btnDelete.setDisable(false);
+                        }
+                    } else {
+                        LOG.info("The row was diselected");
+                        clearFields();
+                        btnModify.setDisable(true);
+                        btnDelete.setDisable(true);
+                        correctName = false;
+                        correctDate = false;
+                    }
                 }
-            } else {
-                LOG.info("The row was diselected");
-                clearFields();
-                btnModify.setDisable(true);
-                btnDelete.setDisable(true);
-                correctName = false;
-                correctDate = false;
-            }
-        });
+                );
 
-        btnCreate.setOnAction(actionEvent -> {
+        btnCreate.setOnAction(actionEvent
+                -> {
             try {
                 LOG.info("Creating Course");
 
@@ -550,9 +625,11 @@ public class CourseViewController {
                 LOG.severe(ex.getMessage());
                 ex.printStackTrace();
             }
-        });
+        }
+        );
 
-        btnModify.setOnAction(actionEvent -> {
+        btnModify.setOnAction(actionEvent
+                -> {
             LOG.info("Modifying the course");
             alert = new Alert(Alert.AlertType.CONFIRMATION, "Esta seguro de que quiere modificar el Curso?", ButtonType.YES, ButtonType.NO);
             alert.showAndWait().ifPresent(response -> {
@@ -562,7 +639,7 @@ public class CourseViewController {
                         SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
                         Date formatedDate = format.parse(txtCreatedDate.getText());
 
-                        Course course = tableCourses.getSelectionModel().getSelectedItem();
+                        Course course = (Course) tableCourses.getSelectionModel().getSelectedItem();
                         course.setName(txtCourseName.getText());
                         course.setStartDate(formatedDate);
                         if (comboSelectedSubject != null) {
@@ -593,8 +670,37 @@ public class CourseViewController {
                     }
                 }
             });
-        });
+        }
+        );
 
+        btnDelete.setOnAction(actionEvent
+                -> {
+            LOG.info("Deleting the Course");
+            alert = new Alert(Alert.AlertType.CONFIRMATION, "Esta seguro que quiere eliminar el Curso?", ButtonType.YES, ButtonType.NO);
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    try {
+                        LOG.info("Deleting confirmed");
+                        Course course = (Course) tableCourses.getSelectionModel().getSelectedItem();
+                        courseController.remove(String.valueOf(course.getCourseId()));
+
+                        coursesData.remove(course);
+                        tableCourses.getItems().remove(course);
+
+                        tableCourses.refresh();
+                        alert = new Alert(Alert.AlertType.WARNING, "El borrado se ha realizado correctamente");
+                        clearFields();
+                    } catch (ClientErrorException e) {
+                        LOG.severe(e.getMessage());
+                        alert = new Alert(Alert.AlertType.ERROR, "A sucedido un error al borrar el curso");
+                    }
+                } else {
+                    LOG.info("Deleting aborted");
+                    alert = new Alert(Alert.AlertType.WARNING, "El borrado ha sido cancelado");
+                }
+            });
+        }
+        );
         stage.showAndWait();
     }
 
@@ -620,5 +726,27 @@ public class CourseViewController {
         cmbxFilter.getSelectionModel().select(-1);
         cmbxSubject.getSelectionModel().select(-1);
         cmbxTeacher.getSelectionModel().select(-1);
+    }
+
+    private void applyFilter() {
+        try {
+            LOG.info("Applying a Filter");
+            switch (filterToApply) {
+                case NOMBRE:
+                    coursesData.clear();
+                    coursesData = FXCollections.observableArrayList(courseController.findByName_XML(new GenericType<Collection<Course>>() {
+                    }, txtFilter.getText()));
+                    tableCourses.setItems(coursesData);
+                    break;
+                case FECHA:
+                    coursesData.clear();
+                    coursesData = FXCollections.observableArrayList(courseController.findByDate_XML(new GenericType<Collection<Course>>() {
+                    }, txtFilter.getText()));
+                    tableCourses.setItems(coursesData);
+                    break;
+            }
+        } catch (ClientErrorException ex) {
+            LOG.severe("Error: " + ex.getMessage());
+        }
     }
 }
