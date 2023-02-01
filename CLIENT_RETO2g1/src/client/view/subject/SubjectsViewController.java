@@ -234,7 +234,7 @@ public class SubjectsViewController {
         typeEmpty = true;
         comboSelectedTeacher = null;
         filterToApply = null;
-        LOGGER.info("Charging t");
+       
 
         cmbxFilterOptions.setEditable(false);
         cmbxTeacher.setEditable(false);
