@@ -128,7 +128,7 @@ public class MailSender {
 
                 @Override
                 public String getCharacters() {
-                    return "!@#\\$%^&\\*\\?";
+                    return "!@#$%^&*?";
                 }
             };
             CharacterRule specialCharRule = new CharacterRule(specialChars);
