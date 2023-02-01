@@ -354,6 +354,7 @@ public class CourseViewController {
             };
             return cell;
         });
+
         colTeacher.setCellValueFactory(new PropertyValueFactory<>("teacher"));
         colSubject.setCellValueFactory(new PropertyValueFactory<>("subject"));
 
@@ -499,23 +500,66 @@ public class CourseViewController {
                 course.setName(txtCourseName.getText());
                 course.setStartDate(formatedDate);
 
-                Teacher teacher = userController.getTeacher_XML(Teacher.class, comboSelectedTeacher.getId().toString());
+                Teacher teacher = userController.getTeacher_XML(Teacher.class, String.valueOf(comboSelectedTeacher.getId()));
                 course.setTeacher(teacher);
-
-                Subject subject = subjectController.find_XML(Subject.class, comboSelectedSubject.getSubjectId().toString());
+                
+                Subject subject = subjectController.find_XML(Subject.class, String.valueOf(comboSelectedSubject.getSubjectId()));
                 course.setSubject(subject);
 
                 courseController.create_XML(course);
 
                 clearFields();
                 coursesData.add(course);
+                tableCourses.refresh();
                 btnCreate.setDisable(true);
-
+                
+                correctName = false;
+                correctDate = false;
+                comboSelectedTeacher = null;
+                comboSelectedSubject = null;
             } catch (ParseException ex) {
                 LOG.severe(ex.getMessage());
             } catch (BusinessLogicException ex) {
                 LOG.severe(ex.getMessage());
             }
+        });
+
+        btnModify.setOnAction(actionEvent -> {
+            LOG.info("Modifying the course");
+            alert = new Alert(Alert.AlertType.CONFIRMATION, "Esta seguro de que quiere modificar el Curso?", ButtonType.YES, ButtonType.NO);
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    LOG.info("Modify Confirmed");
+                    try {
+                        Course course = tableCourses.getSelectionModel().getSelectedItem();
+                        course.setName(txtCourseName.getText());
+                        //course.setStartDate(Date.parse(txtCreatedDate.getText()));
+                        if (comboSelectedSubject != null) {
+                            Subject selectedSubject = userController.getTeacher_XML(Subject.class, String.valueOf(comboSelectedSubject.getSubjectId()));
+                            //course.getSubject().add(selectedSubject);
+                        }
+
+                        if (comboSelectedTeacher != null) {
+                            Teacher selectedTeacher = userController.getTeacher_XML(Teacher.class, String.valueOf(comboSelectedTeacher.getId()));
+                            //course.getTeacher().add(selectedTeacher);
+                        }
+
+                        courseController.edit_XML(course);
+                        for (int i = 0; i < coursesData.size(); i++) {
+                            if (coursesData.get(i).getCourseId().equals(course.getCourseId())) {
+                                coursesData.set(i, course);
+                            }
+                        }
+                        tableCourses.refresh();
+
+                        alert = new Alert(Alert.AlertType.INFORMATION, "La modificacion se ha hecho correctamenete");
+                        clearFields();
+                    } catch (BusinessLogicException ex) {
+                        LOG.severe(ex.getMessage());
+                        alert = new Alert(Alert.AlertType.ERROR, "A sucedido un error al modificar el curso");
+                    }
+                }
+            });
         });
 
         stage.showAndWait();
@@ -545,3 +589,4 @@ public class CourseViewController {
         cmbxTeacher.getSelectionModel().select(-1);
     }
 }
+
