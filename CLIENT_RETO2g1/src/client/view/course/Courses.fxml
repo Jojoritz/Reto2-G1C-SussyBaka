@@ -71,5 +71,6 @@
       <Button fx:id="btnEnter" layoutX="60.0" layoutY="276.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="94.0" text="Entrar" />
       <Button fx:id="btnShowSubjects" layoutX="813.0" layoutY="276.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="125.0" text="Mostrar Asignaturas" />
       <Button fx:id="btnJoin" layoutX="815.0" layoutY="333.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="125.0" text="Inscribirse" />
+      <Button fx:id="btnSearchCourse" layoutX="850.0" layoutY="200.0" mnemonicParsing="false"/>
    </children>
 </Pane>
