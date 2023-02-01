@@ -152,11 +152,11 @@ public class MailSender {
      */
     private static synchronized Properties getPropertiesInfo() throws Exception {
         try {
-            /*
+
             if (mailProperties != null) {
                 return mailProperties;
             }
-             */
+
             mailProperties = new Properties();
             mailProperties.put("mail.smtp.auth", Boolean.parseBoolean(RB.getString("mail.smtp.auth")));
             mailProperties.put("mail.smtp.starttls.enable", RB.getString("mail.smtp.starttls.enable"));
