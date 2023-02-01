@@ -489,6 +489,33 @@ public class CourseViewController {
             });
         });
 
+        tableCourses.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            LOG.info("Table selection event handling");
+
+            if (newValue != null) {
+                LOG.info("A row was selected");
+                Course selectedCourse = (Course) tableCourses.getSelectionModel().getSelectedItem();
+
+                txtCourseName.setText(selectedCourse.getName());
+                txtCreatedDate.setText(selectedCourse.getStartDate().toString());
+
+                correctName = true;
+                correctDate = true;
+
+                if (correctName && correctDate) {
+                    btnModify.setDisable(false);
+                    btnDelete.setDisable(false);
+                }
+            } else {
+                LOG.info("The row was diselected");
+                clearFields();
+                btnModify.setDisable(true);
+                btnDelete.setDisable(true);
+                correctName = false;
+                correctDate = false;
+            }
+        });
+
         btnCreate.setOnAction(actionEvent -> {
             try {
                 LOG.info("Creating Course");
@@ -502,7 +529,7 @@ public class CourseViewController {
 
                 Teacher teacher = userController.getTeacher_XML(Teacher.class, String.valueOf(comboSelectedTeacher.getId()));
                 course.setTeacher(teacher);
-                
+
                 Subject subject = subjectController.find_XML(Subject.class, String.valueOf(comboSelectedSubject.getSubjectId()));
                 course.setSubject(subject);
 
@@ -512,7 +539,7 @@ public class CourseViewController {
                 coursesData.add(course);
                 tableCourses.refresh();
                 btnCreate.setDisable(true);
-                
+
                 correctName = false;
                 correctDate = false;
                 comboSelectedTeacher = null;
@@ -521,6 +548,7 @@ public class CourseViewController {
                 LOG.severe(ex.getMessage());
             } catch (BusinessLogicException ex) {
                 LOG.severe(ex.getMessage());
+                ex.printStackTrace();
             }
         });
 
@@ -531,17 +559,20 @@ public class CourseViewController {
                 if (response == ButtonType.YES) {
                     LOG.info("Modify Confirmed");
                     try {
+                        SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
+                        Date formatedDate = format.parse(txtCreatedDate.getText());
+
                         Course course = tableCourses.getSelectionModel().getSelectedItem();
                         course.setName(txtCourseName.getText());
-                        //course.setStartDate(Date.parse(txtCreatedDate.getText()));
+                        course.setStartDate(formatedDate);
                         if (comboSelectedSubject != null) {
                             Subject selectedSubject = userController.getTeacher_XML(Subject.class, String.valueOf(comboSelectedSubject.getSubjectId()));
-                            //course.getSubject().add(selectedSubject);
+                            course.setSubject(selectedSubject);
                         }
 
                         if (comboSelectedTeacher != null) {
                             Teacher selectedTeacher = userController.getTeacher_XML(Teacher.class, String.valueOf(comboSelectedTeacher.getId()));
-                            //course.getTeacher().add(selectedTeacher);
+                            course.setTeacher(selectedTeacher);
                         }
 
                         courseController.edit_XML(course);
@@ -557,6 +588,8 @@ public class CourseViewController {
                     } catch (BusinessLogicException ex) {
                         LOG.severe(ex.getMessage());
                         alert = new Alert(Alert.AlertType.ERROR, "A sucedido un error al modificar el curso");
+                    } catch (ParseException ex) {
+                        LOG.severe(ex.getMessage());
                     }
                 }
             });
@@ -589,4 +622,3 @@ public class CourseViewController {
         cmbxTeacher.getSelectionModel().select(-1);
     }
 }
-
