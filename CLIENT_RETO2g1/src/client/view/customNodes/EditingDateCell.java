@@ -18,8 +18,9 @@ import jfxtras.scene.control.LocalDateTimePicker;
 /**
  *
  * @author Henri
+ * @param <T>
  */
-public class EditingDateCell extends TableCell<Post, Date> {
+public class EditingDateCell<T> extends TableCell<T, Date> {
 
     private LocalDateTimePicker datePicker;
     private final DateTimeFormatter dateFormat = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL).withZone(ZoneId.systemDefault());
