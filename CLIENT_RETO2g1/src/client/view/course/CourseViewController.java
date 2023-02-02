@@ -23,8 +23,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -51,6 +53,13 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * FXML Controller class
@@ -539,7 +548,7 @@ public class CourseViewController {
         }
         );
 
-        btnShowSubjects.setOnAction(actionEvent ->{
+        btnShowSubjects.setOnAction(actionEvent -> {
             try {
                 LOG.info("Entering on Subject Window");
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/subject/Subjects.fxml"));
@@ -550,7 +559,7 @@ public class CourseViewController {
                 Logger.getLogger(CourseViewController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
+
         btnReturn.setOnAction(actionEvent
                 -> {
             LOG.info("Closing Window");
@@ -716,6 +725,24 @@ public class CourseViewController {
             });
         }
         );
+        
+        btnPrint.setOnAction(actionEvent ->{
+            try {
+                LOG.info("Printing Report");
+                
+                JasperReport report = JasperCompileManager.compileReport(getClass().getResourceAsStream("/client/view/course/CourseReport.jrxml"));
+                JRBeanCollectionDataSource dataItems = new JRBeanCollectionDataSource((Collection<Course>) this.tableCourses.getItems());
+                Map<String, Object> parameters = new HashMap<>();
+                
+                JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, dataItems);
+                
+                JasperViewer view = new JasperViewer(jasperPrint);
+                view.setVisible(true);
+            } catch (JRException ex) {
+                Logger.getLogger(CourseViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
         stage.showAndWait();
     }
 
@@ -765,4 +792,3 @@ public class CourseViewController {
         }
     }
 }
-
