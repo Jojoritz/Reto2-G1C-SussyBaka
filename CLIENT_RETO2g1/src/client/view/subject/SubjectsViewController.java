@@ -543,7 +543,7 @@ public class SubjectsViewController {
                 LOGGER.info("Printing a report");
                 
                 JasperReport report =
-                        JasperCompileManager.compileReport(getClass().getResourceAsStream("/client/view/subject/SubjectsReport.jrxml"));
+                        JasperCompileManager.compileReport(getClass().getResourceAsStream("/client/view/subject/SubjectReport.jrxml"));
                 
                 JRBeanCollectionDataSource dataItems = new JRBeanCollectionDataSource((Collection<Subject>) this.tableSubjects.getItems());
                 Map<String,Object> parameters = new HashMap<>();

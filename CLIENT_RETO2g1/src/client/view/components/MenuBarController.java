@@ -6,11 +6,13 @@
 package client.view.components;
 
 import client.view.signUp.SignUpViewController;
+import client.view.subject.SubjectsViewController;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -57,6 +59,8 @@ public class MenuBarController {
                 menHelp.getItems().get(0).fire();
             }
         });
+        
+        
     }
 
     public void setStage(Stage stageParam) {
@@ -78,6 +82,17 @@ public class MenuBarController {
 
     @FXML
     private void handleMenuBarSubjects(ActionEvent event) {
+        try {
+            LOG.info("Opening subjects window...");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/subject/Subjects.fxml"));
+            Parent root = (Parent) loader.load();
+            SubjectsViewController subjectViewController = ((SubjectsViewController) loader.getController());
+            subjectViewController.initStage(root, stage);
+        } catch (Exception e) {
+            LOG.severe("An error happened while opening the subjects window");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al abrir la ventana");
+            alert.showAndWait();
+        }
     }
 
     @FXML
