@@ -254,6 +254,7 @@ public class UserFacadeREST {
 
         } catch (ReadException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
+            e.printStackTrace();
             throw new NotFoundException(e.getMessage());
         }
 
