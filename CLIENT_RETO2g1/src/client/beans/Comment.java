@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import java.util.Objects;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -21,24 +20,28 @@ public class Comment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final SimpleIntegerProperty commentID;
+    private Integer commentID;
     private final SimpleObjectProperty<Student> student;
-    private final SimpleObjectProperty<Post> post;
+    private Post post;
     private final SimpleObjectProperty<Date> dateComment;
     private final SimpleStringProperty commentText;
 
     public Comment() {
-        this.commentID = new SimpleIntegerProperty();
         this.student = new SimpleObjectProperty();
-        this.post = new SimpleObjectProperty();
         this.dateComment = new SimpleObjectProperty();
         this.commentText = new SimpleStringProperty();
     }
 
-    public Comment(Integer commentID, Student student, Post post, Date dateComment, String commentText) {
-        this.commentID = new SimpleIntegerProperty(commentID);
+    public Comment(Student student, Date dateComment, String commentText) {
         this.student = new SimpleObjectProperty(student);
-        this.post = new SimpleObjectProperty(post);
+        this.dateComment = new SimpleObjectProperty(dateComment);
+        this.commentText = new SimpleStringProperty(commentText);
+    }
+
+    public Comment(Integer commentID, Student student, Post post, Date dateComment, String commentText) {
+        this.commentID = commentID;
+        this.student = new SimpleObjectProperty(student);
+        this.post = post;
         this.dateComment = new SimpleObjectProperty(dateComment);
         this.commentText = new SimpleStringProperty(commentText);
     }
@@ -49,7 +52,7 @@ public class Comment implements Serializable {
      * @return Returns the Id of the comment
      */
     public Integer getCommentID() {
-        return this.commentID.get();
+        return this.commentID;
     }
 
     /**
@@ -58,7 +61,7 @@ public class Comment implements Serializable {
      * @param commentID The ID of the comment
      */
     public void setCommentID(Integer commentID) {
-        this.commentID.set(commentID);
+        this.commentID = commentID;
     }
 
     /**
@@ -85,7 +88,7 @@ public class Comment implements Serializable {
      * @return Returns the post where the comment is posted
      */
     public Post getPost() {
-        return this.post.get();
+        return this.post;
     }
 
     /**
@@ -94,7 +97,7 @@ public class Comment implements Serializable {
      * @param post Sets the post where the comment is posted
      */
     public void setPost(Post post) {
-        this.post.set(post);
+        this.post = post;
     }
 
     /**
@@ -162,6 +165,13 @@ public class Comment implements Serializable {
             return false;
         }
         Comment other = (Comment) obj;
+        if (!Objects.equals(dateComment, other.getDateComment())) {
+            return false;
+        }
+        if (!Objects.equals(commentText, other.commentText.get())) {
+            return false;
+        }
+
         return Objects.equals(commentID, other.commentID);
     }
 

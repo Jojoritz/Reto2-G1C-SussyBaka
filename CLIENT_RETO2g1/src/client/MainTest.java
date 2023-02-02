@@ -7,7 +7,10 @@ package client;
 
 import client.beans.Course;
 import client.beans.Post;
+import client.beans.Student;
+import client.beans.Teacher;
 import client.beans.User;
+import client.beans.enumerations.UserPrivilege;
 import client.logic.ControllerFactory;
 import client.logic.PostController;
 import client.logic.exception.BusinessLogicException;
@@ -44,6 +47,9 @@ public class MainTest extends Application {
     public void start(Stage primaryStage) {
         try {
             User user = new User();
+            user.setPrivilege(UserPrivilege.TEACHER);
+            user.setId(2);
+            //user.setPrivilege(UserPrivilege.TEACHER);
             PostController postController = ControllerFactory.getPostController();
             List<Post> postList = postController.
                     getCoursePosts(new GenericType<ArrayList<Post>>() {
@@ -54,7 +60,8 @@ public class MainTest extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("view/post/PostView.fxml"));
             Parent root = (Parent) loader.load();
             PostViewController controller = ((PostViewController) loader.getController());
-            controller.initStage(root, postController, stage, user, postList, 1);
+            controller.setUser(user);
+            controller.initStage(root, postController, stage, postList, 1);
         } catch (IOException ex) {
             Logger.getLogger(MainTest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (BusinessLogicException e) {

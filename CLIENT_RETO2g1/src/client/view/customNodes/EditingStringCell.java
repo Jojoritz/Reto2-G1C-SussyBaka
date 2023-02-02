@@ -16,7 +16,7 @@ import javafx.scene.input.KeyCode;
  *
  * @author Henri
  */
-public class EditingStringCell extends TableCell<Post, String> {
+public class EditingStringCell<K> extends TableCell<K, String> {
 
     private TextField textField;
     private static final Logger LOG = Logger.getLogger(EditingStringCell.class.getName());
