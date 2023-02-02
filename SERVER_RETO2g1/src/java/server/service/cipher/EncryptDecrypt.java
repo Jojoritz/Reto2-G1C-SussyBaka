@@ -32,9 +32,9 @@ public class EncryptDecrypt {
 
     private static final String KEY = "[g#>3!tx9Xr\\eeKt";
     private static final byte[] SALT = String.valueOf(".....").getBytes();
-    private static final String CREDENTIALS = "credentials.dat";
-    private static final String PRIVATE = "Private.key";
-    private static final String PUBLIC = "Public.key";
+    private static final String CREDENTIALS = EncryptDecrypt.class.getResource("credentials.dat").getPath();
+    private static final String PRIVATE = EncryptDecrypt.class.getResource("Private.key").getPath();
+    private static final String PUBLIC = EncryptDecrypt.class.getResource("Public.key").getPath();
 
     /**
      * Get password for the email decrypt a encrypted file

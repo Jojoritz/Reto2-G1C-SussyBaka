@@ -55,6 +55,13 @@ public class CommentEJB implements CommentEJBLocal {
     public void create(Comment entity) throws CreateException {
         try {
             LOG.info(String.format("CommentEJB: Creating %s", Comment.class.getName()));
+            if (!em.contains(entity.getPost())) {
+                entity.setPost(em.find(Post.class, entity.getPost().getPostId()));
+
+            }
+            if (!em.contains(entity.getStudent())) {
+                entity.setStudent(em.find(Student.class, entity.getStudent().getId()));
+            }
             em.persist(entity);
             LOG.info(String.format("CommentEJB: %s created successfully", Comment.class.getName()));
         } catch (Exception e) {

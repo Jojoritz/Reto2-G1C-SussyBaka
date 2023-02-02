@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
@@ -105,7 +106,7 @@ public class Post implements Serializable {
      *
      * @associates <{model.Comment}>
      */
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Comment> postComments;
 
     /**
@@ -192,8 +193,6 @@ public class Post implements Serializable {
      *
      * @return course Course
      */
-    @XmlTransient
-    @JsonIgnore
     public Course getCourse() {
         return course;
     }

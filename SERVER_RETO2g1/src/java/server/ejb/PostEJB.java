@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import server.entities.Course;
 import server.exception.CreateException;
 import server.exception.DeleteException;
 import server.exception.UpdateException;
@@ -115,14 +116,13 @@ public class PostEJB implements PostEJBLocal {
     @Override
     public void create(Post entity) throws CreateException {
         try {
-            LOG.info(entity.toString());
-            LOG
-                    .info(String.format("PostEJB: Creating %s", Post.class
-                            .getName()));
+            LOG.info(String.format("PostEJB: Creating %s", Post.class.getName()));
+
+            if (!em.contains(entity)) {
+                entity.setCourse(em.find(Course.class, entity.getCourse().getCourseId()));
+            }
             em.persist(entity);
-            LOG
-                    .info(String.format("PostEJB: %s created successfully", Post.class
-                            .getName()));
+            LOG.info(String.format("PostEJB: %s created successfully", Post.class.getName()));
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("PostEJB: Exception on creating %s",
                     entity.getClass().getName()), e.getMessage());
@@ -139,13 +139,14 @@ public class PostEJB implements PostEJBLocal {
     @Override
     public void edit(Post entity) throws UpdateException {
         try {
-            LOG.info(String.format("PostEJB: editing %s", Post.class
-                    .getName()));
+            LOG.info(String.format("PostEJB: editing %s with ID: %d", Post.class
+                    .getName(), entity.getPostId()));
+            if (!em.contains(entity.getCourse())) {
+                entity.setCourse(em.find(Course.class, entity.getCourse().getCourseId()));
+            }
             em.merge(entity);
             em.flush();
-            LOG
-                    .info(String.format("PostEJB: %s edited successfully", Post.class
-                            .getName()));
+            LOG.info(String.format("PostEJB: %s edited successfully", Post.class.getName()));
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("PostEJB: Exception on editing %s",
                     entity.getClass().getName()), e.getMessage());
@@ -157,20 +158,19 @@ public class PostEJB implements PostEJBLocal {
     /**
      * Deletes/Removes all the data from the entity passed
      *
-     * @param entity
+     * @param id ID of the post to remove
      * @throws DeleteException If the creation method threw an exception
      */
     @Override
     public void remove(Integer id) throws DeleteException {
         try {
-            LOG.info(String.format("PostEJB: Deleting %s", Post.class
-                    .getName()));
+            LOG.info(String.format("PostEJB: Deleting %s with ID: %d", Post.class
+                    .getName(), id));
             Post post = find(id);
             post = em.merge(post);
             em.remove(post);
-            LOG
-                    .info(String.format("PostEJB: %s deleted successfully", Post.class
-                            .getName()));
+            LOG.info(String.format("PostEJB: %s deleted successfully", Post.class
+                    .getName()));
 
         } catch (Exception e) {
             LOG.log(Level.SEVERE, String.format("PostEJB: Exception on deleting %s",
@@ -196,7 +196,7 @@ public class PostEJB implements PostEJBLocal {
                     .getName(), obj.toString()));
             entity
                     = em.find(Post.class,
-                             (Integer) obj);
+                            (Integer) obj);
             return entity;
 
         } catch (Exception e) {
