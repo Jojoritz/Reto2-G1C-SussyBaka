@@ -7,6 +7,7 @@ package client.rest;
 
 import client.logic.SubjectController;
 import client.logic.exception.BusinessLogicException;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -29,7 +30,7 @@ public class SubjectControllerREST implements SubjectController {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/SERVER_RETO2g1/webresources";
+    private static final String BASE_URI = ResourceBundle.getBundle("client.config").getString("restful_server");
     private static final Logger LOGGER = Logger.getLogger(SubjectControllerREST.class.getName());
 
     public SubjectControllerREST() {

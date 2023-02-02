@@ -28,7 +28,7 @@ public interface SubjectController {
      * format
      *
      * @param requestEntity the subject to create
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while creating the subject
      */
     public void createSubject_JSON(Object requestEntity) throws BusinessLogicException;
 
@@ -36,7 +36,7 @@ public interface SubjectController {
      * A RESTful remove method for delete the entity with a concret id
      *
      * @param id the id of the subject that want delete
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while deleting a subject
      */
     public void removeSubject(String id) throws BusinessLogicException;
 
@@ -48,7 +48,7 @@ public interface SubjectController {
      * @param responseType the response type
      * @param nameParam the name to search by
      * @return A subject searched by name
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while searching by the name
      */
     public <T> T searchByName_XML(GenericType<T> responseType, String nameParam) throws BusinessLogicException;
 
@@ -60,7 +60,7 @@ public interface SubjectController {
      * @param responseType the response type
      * @param nameParam the name to search by
      * @return A subject searched by name
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while searching the subject by the name
      */
     public <T> T searchByName_JSON(GenericType<T> responseType, String nameParam) throws BusinessLogicException;
 
@@ -72,7 +72,7 @@ public interface SubjectController {
      * @param responseType The response type
      * @param id the id of the subject that want find
      * @return A subject with the id
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while searching the subject by the id
      */
     public <T> T find_XML(Class<T> responseType, String id) throws BusinessLogicException;
 
@@ -84,7 +84,7 @@ public interface SubjectController {
      * @param responseType The response type
      * @param id the id of the subject that want find
      * @return A subject with the id
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while searching the subject by the id
      */
     public <T> T find_JSON(Class<T> responseType, String id) throws BusinessLogicException;
 
@@ -96,7 +96,7 @@ public interface SubjectController {
      * @param responseType The response type
      * @param level the level of the subject that want find
      * @return A list of subjects with the level
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while searching the subjec by the level
      */
 
     public <T> T searchByLevel_XML(GenericType<T> responseType, String level) throws BusinessLogicException;
@@ -109,7 +109,7 @@ public interface SubjectController {
      * @param responseType The response type
      * @param level the level of the subject that want find
      * @return A list of subjects with the level
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while seraching the subject by the level
      */
 
     public <T> T searchByLevel_JSON(GenericType<T> responseType, String level) throws BusinessLogicException;
@@ -119,7 +119,7 @@ public interface SubjectController {
      * format
      *
      * @param requestEntity the entity to update with the updated data
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while searching the subject by the level
      */
     public void modifySubject_XML(Object requestEntity) throws BusinessLogicException;
 
@@ -128,7 +128,7 @@ public interface SubjectController {
      * format
      *
      * @param requestEntity the entity to update with the updated data
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while modifying the subject
      */
     public void modifySubject_JSON(Object requestEntity) throws BusinessLogicException;
 /**
@@ -139,7 +139,7 @@ public interface SubjectController {
      * @param responseType The response type
      * @param type the type of the subject that want find
      * @return Subject list with the type
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while searching the subject by the type
      */
     public <T> T searchByType_XML(GenericType<T> responseType, String type) throws BusinessLogicException;
 /**
@@ -150,7 +150,7 @@ public interface SubjectController {
      * @param responseType The response type
      * @param type the type of the subject that want find
      * @return Subject list with the type
-     * @throws BusinessLogicException
+     * @throws BusinessLogicException if any error happened while searching the subject by the type
      */
     
     public <T> T searchByType_JSON(GenericType<T> responseType, String type) throws BusinessLogicException;
@@ -159,7 +159,7 @@ public interface SubjectController {
      * @param <T> The type of the response type
      * @param responseType the response type
      * @return A collection of subjects
-     * @throws BusinessLogicException 
+     * @throws BusinessLogicException if any error happened while getting all the subjects
      */
     public <T> T findAll_XML(GenericType<T> responseType) throws BusinessLogicException;
      /**
@@ -167,7 +167,7 @@ public interface SubjectController {
      * @param <T> The type of the response type
      * @param responseType the response type
      * @return A collection of subjects
-     * @throws BusinessLogicException 
+     * @throws BusinessLogicException  if any error happened while searching all the subject
      */
 
     public <T> T findAll_JSON(GenericType<T> responseType) throws BusinessLogicException;
