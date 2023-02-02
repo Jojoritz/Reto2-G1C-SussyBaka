@@ -112,7 +112,7 @@ public class Course implements Serializable {
      * @associates <{Post}>
      * This is a collection with the actual post of the course
      */
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "course")
     private Set<Post> coursePosts;
 
     /**

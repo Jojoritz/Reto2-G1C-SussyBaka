@@ -47,7 +47,7 @@ public interface CourseEJBLocal{
     /**
      * Deletes/Removes all the data from the entity passed
      *
-     * @param entity
+     * @param id
      * @throws DeleteException If the creation method threw an exception
      */
     public void remove(Integer id) throws DeleteException;

@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -98,13 +99,13 @@ public class Subject implements Serializable {
      * @associates <{entities.Course}>
      * The collection of courses that contains this subject
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subjects")
+    @OneToMany(mappedBy = "subjects", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Course> courseWithSubject;
     /**
      * @associates <{entities.Teacher}>
      * The collection of teacher that are specialized in this subject
      */
-    @ManyToMany(mappedBy = "specializedSubjects")
+    @ManyToMany(mappedBy = "specializedSubjects", fetch = FetchType.EAGER)
     private Set<Teacher> teachersSpecializedInSubject;
 
     //Constructor
