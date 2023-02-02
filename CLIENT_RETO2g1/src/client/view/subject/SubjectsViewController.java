@@ -20,7 +20,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.lang.Class;
+import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,6 +41,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javax.ws.rs.core.GenericType;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * FXML Controller class
@@ -224,7 +234,7 @@ public class SubjectsViewController {
         typeEmpty = true;
         comboSelectedTeacher = null;
         filterToApply = null;
-        LOGGER.info("Charging t");
+       
 
         cmbxFilterOptions.setEditable(false);
         cmbxTeacher.setEditable(false);
@@ -271,9 +281,13 @@ public class SubjectsViewController {
                 subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
                 }));
                 tableSubjects.setItems(subjectsData);
-            } catch (BusinessLogicException ex) {
-                Logger.getLogger(SubjectsViewController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } 
+            catch (BusinessLogicException ex) { 
+                LOGGER.severe("An error happened while loading data: " + ex.getMessage());
+                LOGGER.severe("Its posible that the server is shut down, or a connection error had happened");
+                alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al cargar los datos, intentelo de nuevo mas tarde");
+                alert.showAndWait();
+            } 
 
         });
 
@@ -485,7 +499,7 @@ public class SubjectsViewController {
             } catch (Exception e) {
                 LOGGER.severe(e.getMessage());
                 e.printStackTrace();
-                alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al crear la asignatura, intentelo otra vez");
+                alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al crear la asignatura, intentelo de nuevo otra vez");
             }
 
         });
@@ -524,6 +538,29 @@ public class SubjectsViewController {
             }
         });
 
+        btnSubjectPrint.setOnAction(actionEvent -> {
+            try {
+                LOGGER.info("Printing a report");
+                
+                JasperReport report =
+                        JasperCompileManager.compileReport(getClass().getResourceAsStream("/client/view/subject/SubjectReport.jrxml"));
+                
+                JRBeanCollectionDataSource dataItems = new JRBeanCollectionDataSource((Collection<Subject>) this.tableSubjects.getItems());
+                Map<String,Object> parameters = new HashMap<>();
+                
+                JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
+                
+                JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+                jasperViewer.setVisible(true);
+            } catch (JRException ex) {
+                LOGGER.severe("An error happened while trying to print a report");
+                ex.printStackTrace();
+                alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al tratar de imprimir el informe");
+                alert.showAndWait();
+            }
+            
+            
+        });
         btnModifySubject.setOnAction(actionEvent -> {
             LOGGER.info("Modifying the subject");
 
@@ -577,11 +614,9 @@ public class SubjectsViewController {
                         Subject selectedSubject = (Subject) tableSubjects.getSelectionModel().getSelectedItem();
                         subjectController.removeSubject(String.valueOf(selectedSubject.getSubjectId()));
                         
-                        for (int i = 0; i < subjectsData.size(); i++) {
-                            if (subjectsData.get(i).getSubjectId().equals(selectedSubject.getSubjectId())) {
-                                subjectsData.remove(i);
-                            }
-                        }
+                        subjectsData.remove(selectedSubject);
+                        tableSubjects.getItems().remove(selectedSubject);
+                        
                         tableSubjects.refresh();
                         alert = new Alert(Alert.AlertType.WARNING, "El borrado se ha realizado correctamente");
                         clearFields();
