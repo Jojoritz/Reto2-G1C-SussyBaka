@@ -76,7 +76,7 @@ public class CourseViewController {
     /**
      * The socket to connect to the server
      */
-    //private ClientSocket clientSocket;
+
     /**
      * The stage where the scene is going to be displayed
      */
@@ -146,11 +146,6 @@ public class CourseViewController {
      * List that gets the existing Courses
      */
     private ObservableList<Course> coursesData;
-
-    /**
-     *
-     */
-    private List<User> users;
 
     /**
      * Course REST Controller
