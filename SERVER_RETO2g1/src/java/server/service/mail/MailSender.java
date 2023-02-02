@@ -148,7 +148,7 @@ public class MailSender {
      * mailProperties,
      *
      * @return Returns a properties object with all the mail that filled up
-     * @throws If there is any exception thrown
+     * @throws Exception If there is any exception thrown
      */
     private static synchronized Properties getPropertiesInfo() throws Exception {
         try {

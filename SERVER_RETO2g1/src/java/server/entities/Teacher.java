@@ -27,7 +27,6 @@ public class Teacher extends User {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @associates <{entities.Course}>
      * A collection of the actually teaching courses of the teacher
      */
     @OneToMany(mappedBy = "teacher", fetch = FetchType.EAGER, orphanRemoval = true)
@@ -35,7 +34,6 @@ public class Teacher extends User {
     private Set<Course> teachingCourses;
 
     /**
-     * @associates <{entities.Subject}>
      * A collection with the specialized subject of this teacher
      */
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -65,7 +63,7 @@ public class Teacher extends User {
     /**
      * Sets the course of the teacher
      *
-     * @param teachingCourses
+     * @param teachingCourses the courses that the teacher is teaching
      */
     public void setTeachingCourses(Set<Course> teachingCourses) {
         this.teachingCourses = teachingCourses;
@@ -74,7 +72,7 @@ public class Teacher extends User {
     /**
      * Gets the subject that the teacher imparts
      *
-     * @return Subject
+     * @return Subject the subject that the teacher teaches
      */
     public Set<Subject> getSpecializedSubjects() {
         return specializedSubjects;
@@ -83,7 +81,7 @@ public class Teacher extends User {
     /**
      * Sets the subject that the teacher imparts
      *
-     * @param specializedSubjects
+     * @param specializedSubjects the subjects where the teacher is specialized in
      */
     public void setSpecializedSubjects(Set<Subject> specializedSubjects) {
         this.specializedSubjects = specializedSubjects;

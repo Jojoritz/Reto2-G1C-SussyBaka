@@ -109,7 +109,7 @@ public class Course implements Serializable {
     private Teacher teacher;
 
     /**
-     * @associates <{Post}>
+     * 
      * This is a collection with the actual post of the course
      */
     @OneToMany(mappedBy = "course")
@@ -184,7 +184,7 @@ public class Course implements Serializable {
     /**
      * Gets if the course is visible or not
      *
-     * @return Boolean
+     * @return Boolean a boolean that indicates if it is visible or not
      */
     public Boolean getIsVisible() {
         return isVisible;
@@ -193,7 +193,7 @@ public class Course implements Serializable {
     /**
      * Sets if the course is visible or not
      *
-     * @param isVisible
+     * @param isVisible a boolean that indicates if it is visible or not
      */
     public void setIsVisible(Boolean isVisible) {
         this.isVisible = isVisible;
@@ -202,7 +202,7 @@ public class Course implements Serializable {
     /**
      * Gets if the course is private or not
      *
-     * @return Boolean
+     * @return Boolean a boolean that indicates if it is private or not
      */
     public Boolean getIsPrivate() {
         return isPrivate;
@@ -211,7 +211,7 @@ public class Course implements Serializable {
     /**
      * Sets if the course is private or not
      *
-     * @param isPrivate
+     * @param isPrivate a boolean that indicates if it is private or not
      */
     public void setIsPrivate(Boolean isPrivate) {
         this.isPrivate = isPrivate;
@@ -231,7 +231,7 @@ public class Course implements Serializable {
     /**
      * Sets the students that are in the course
      *
-     * @param courseStudents
+     * @param courseStudents a collection of students that studies the course
      */
     public void setCourseStudents(Set<Student> courseStudents) {
         this.courseStudents = courseStudents;
@@ -249,7 +249,7 @@ public class Course implements Serializable {
     /**
      * Sets the teacher of the group
      *
-     * @param teacher
+     * @param teacher the teacher of the course
      */
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
@@ -269,7 +269,7 @@ public class Course implements Serializable {
     /**
      * Sets the posts of the course
      *
-     * @param coursePosts
+     * @param coursePosts a collection of post of the course
      */
     public void setCoursePosts(Set<Post> coursePosts) {
         this.coursePosts = coursePosts;
@@ -287,7 +287,7 @@ public class Course implements Serializable {
     /**
      * Sets the subject of the course
      *
-     * @param subject
+     * @param subject the subject of the course
      */
     public void setSubject(Subject subject) {
         this.subjects = subject;

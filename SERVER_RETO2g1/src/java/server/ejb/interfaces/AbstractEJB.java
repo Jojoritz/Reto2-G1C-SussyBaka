@@ -19,9 +19,7 @@ import javax.persistence.PersistenceContext;
 /**
  * This generic interface declares basic {@code CUD} contract to improve
  * boilerplate code:
- * <li>{@link #create Create}</li>
- * <li>{@link #edit Edit}</li>
- * <li>{@link #remove Remove}</li>
+
  *
  * @author yeguo
  * @param <T> Generic type
@@ -43,7 +41,7 @@ public abstract class AbstractEJB<T extends Serializable> {
     /**
      * Creates/inserts the data of the entity passed
      *
-     * @param entity
+     * @param entity the entity to persist
      * @throws CreateException If the creation method threw an exception
      */
     public void create(T entity) throws CreateException {
@@ -61,7 +59,7 @@ public abstract class AbstractEJB<T extends Serializable> {
     /**
      * Edits/Modify the data of the entity passed
      *
-     * @param entity
+     * @param entity the entity to edit
      * @throws UpdateException If the creation method threw an exception
      */
     public void edit(T entity) throws UpdateException {
@@ -77,7 +75,7 @@ public abstract class AbstractEJB<T extends Serializable> {
     /**
      * Deletes/Removes all the data from the entity passed
      *
-     * @param entity
+     * @param entity the entity to remove
      * @throws DeleteException If the creation method threw an exception
      */
     public void remove(T entity) throws DeleteException {

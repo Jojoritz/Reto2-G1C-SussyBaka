@@ -137,7 +137,7 @@ public class User implements Serializable {
     /**
      * Sets the id of user
      *
-     * @param id
+     * @param id the user id
      */
     public void setId(Integer id) {
         this.id = id;
@@ -155,7 +155,7 @@ public class User implements Serializable {
     /**
      * Sets the login of user
      *
-     * @param login
+     * @param login the login of the user
      */
     public void setLogin(String login) {
         this.login = login;
@@ -173,7 +173,7 @@ public class User implements Serializable {
     /**
      * Sets the email of the user
      *
-     * @param email
+     * @param email the email of the user
      */
     public void setEmail(String email) {
         this.email = email;
@@ -191,7 +191,7 @@ public class User implements Serializable {
     /**
      * Sets the full name of the user
      *
-     * @param fullName
+     * @param fullName the full name of the user
      */
     public void setFullName(String fullName) {
         this.fullName = fullName;
@@ -200,7 +200,7 @@ public class User implements Serializable {
     /**
      * Gets the password of the user
      *
-     * @return password
+     * @return password the password of the user
      */
     public String getPassword() {
         return password;
@@ -209,7 +209,7 @@ public class User implements Serializable {
     /**
      * Sets the password of the user
      *
-     * @param password
+     * @param password the password of the user 
      */
     public void setPassword(String password) {
         this.password = password;
@@ -218,7 +218,7 @@ public class User implements Serializable {
     /**
      * Gets the last time where the user changed his password
      *
-     * @return Timestamp
+     * @return Date a date of last password change
      */
     public Date getLastPasswordChange() {
         return lastPasswordChange;
@@ -227,7 +227,7 @@ public class User implements Serializable {
     /**
      * Sets the last time where the user changed his password
      *
-     * @param lastPasswordChange
+     * @param lastPasswordChange the las password change date
      */
     public void setLastPasswordChange(Date lastPasswordChange) {
         this.lastPasswordChange = lastPasswordChange;
@@ -236,7 +236,7 @@ public class User implements Serializable {
     /**
      * Gets the status of the user
      *
-     * @return
+     * @return the status of the user
      */
     public UserStatus getStatus() {
         return status;
@@ -245,7 +245,7 @@ public class User implements Serializable {
     /**
      * Sets the status of the user
      *
-     * @param status
+     * @param status the status of the user
      */
     public void setStatus(UserStatus status) {
         this.status = status;
@@ -254,7 +254,7 @@ public class User implements Serializable {
     /**
      * Gets the privilege of the user
      *
-     * @return
+     * @return the privilege of the user
      */
     public UserPrivilege getPrivilege() {
         return privilege;
@@ -263,7 +263,7 @@ public class User implements Serializable {
     /**
      * Sets the privilege of the user
      *
-     * @param privilege
+     * @param privilege the privilege of the user
      */
     public void setPrivilege(UserPrivilege privilege) {
         this.privilege = privilege;
@@ -272,7 +272,7 @@ public class User implements Serializable {
     /**
      * Gets the times that the user has signed in
      *
-     * @return
+     * @return a list with the dates of the sign in history
      */
     public List<Date> getSignInHistory() {
         return signInHistory;
@@ -281,7 +281,7 @@ public class User implements Serializable {
     /**
      * Sets the times that the user has signed in
      *
-     * @param signInHistory
+     * @param signInHistory the list with the sign in history
      */
     public void setSignInHistory(List<Date> signInHistory) {
         this.signInHistory = signInHistory;

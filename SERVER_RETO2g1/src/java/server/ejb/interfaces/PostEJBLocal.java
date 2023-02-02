@@ -73,7 +73,7 @@ public interface PostEJBLocal {
     /**
      * Creates/inserts the data of the entity passed
      *
-     * @param entity
+     * @param entity The post to create
      * @throws CreateException If the creation method threw an exception
      */
     public void create(Post entity) throws CreateException;
@@ -81,7 +81,7 @@ public interface PostEJBLocal {
     /**
      * Edits/Modify the data of the entity passed
      *
-     * @param entity
+     * @param entity the post  to edit
      * @throws UpdateException If the creation method threw an exception
      */
     public void edit(Post entity) throws UpdateException;
@@ -89,7 +89,7 @@ public interface PostEJBLocal {
     /**
      * Deletes/Removes all the data from the entity passed
      *
-     * @param id
+     * @param id the id of the post to remove
      * @throws DeleteException If the creation method threw an exception
      */
     public void remove(Integer id) throws DeleteException;

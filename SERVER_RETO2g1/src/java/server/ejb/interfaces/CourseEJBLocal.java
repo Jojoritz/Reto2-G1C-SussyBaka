@@ -31,7 +31,7 @@ public interface CourseEJBLocal{
     /**
      * Creates/inserts the data of the entity passed
      *
-     * @param entity
+     * @param entity the course to create
      * @throws CreateException If the creation method threw an exception
      */
     public void create(Course entity) throws CreateException;
@@ -39,7 +39,7 @@ public interface CourseEJBLocal{
     /**
      * Edits/Modify the data of the entity passed
      *
-     * @param entity
+     * @param entity the course to edit
      * @throws UpdateException If the creation method threw an exception
      */
     public void edit(Course entity) throws UpdateException;
@@ -47,7 +47,7 @@ public interface CourseEJBLocal{
     /**
      * Deletes/Removes all the data from the entity passed
      *
-     * @param id
+     * @param id the id of the course to delete
      * @throws DeleteException If the creation method threw an exception
      */
     public void remove(Integer id) throws DeleteException;

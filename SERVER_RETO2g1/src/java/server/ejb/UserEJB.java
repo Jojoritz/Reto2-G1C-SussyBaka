@@ -144,7 +144,7 @@ public class UserEJB implements UserEJBLocal {
     /**
      * The method to hash a text, this is used to hash the password
      *
-     * @param user The password without hashed
+     * @param textToHash The password without hashed
      * @return the hashed password
      * @throws Exception if any error when hashing the password
      */
