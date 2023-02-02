@@ -30,7 +30,7 @@ public class Teacher extends User {
      * @associates <{entities.Course}>
      * A collection of the actually teaching courses of the teacher
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "teacher", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonManagedReference
     private Set<Course> teachingCourses;
 

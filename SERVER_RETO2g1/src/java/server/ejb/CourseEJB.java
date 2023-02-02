@@ -26,7 +26,7 @@ import server.exception.UpdateException;
 @Stateless
 public class CourseEJB implements CourseEJBLocal {
 
-    private static final Logger LOG = Logger.getLogger("ejb.CourseEJB");
+    private static final Logger LOG = Logger.getLogger(CourseEJB.class.getName());
 
     @PersistenceContext(unitName = "JavaFX-WebApplicationUD5ExamplePU")
     private EntityManager em;
