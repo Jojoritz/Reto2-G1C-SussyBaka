@@ -16,6 +16,8 @@ import client.logic.CourseController;
 import client.logic.SubjectController;
 import client.logic.UserController;
 import client.logic.exception.BusinessLogicException;
+import client.view.subject.SubjectsViewController;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -536,6 +539,18 @@ public class CourseViewController {
         }
         );
 
+        btnShowSubjects.setOnAction(actionEvent ->{
+            try {
+                LOG.info("Entering on Subject Window");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/subject/Subjects.fxml"));
+                Parent rootSubject = (Parent) loader.load();
+                SubjectsViewController controller = ((SubjectsViewController) loader.getController());
+                controller.initStage(rootSubject, stage);
+            } catch (IOException ex) {
+                Logger.getLogger(CourseViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
         btnReturn.setOnAction(actionEvent
                 -> {
             LOG.info("Closing Window");
@@ -750,3 +765,4 @@ public class CourseViewController {
         }
     }
 }
+
