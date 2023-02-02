@@ -16,13 +16,17 @@ import client.logic.CourseController;
 import client.logic.SubjectController;
 import client.logic.UserController;
 import client.logic.exception.BusinessLogicException;
+import client.view.subject.SubjectsViewController;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -30,6 +34,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -48,6 +53,13 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * FXML Controller class
@@ -64,7 +76,7 @@ public class CourseViewController {
     /**
      * The socket to connect to the server
      */
-    //private ClientSocket clientSocket;
+
     /**
      * The stage where the scene is going to be displayed
      */
@@ -134,11 +146,6 @@ public class CourseViewController {
      * List that gets the existing Courses
      */
     private ObservableList<Course> coursesData;
-
-    /**
-     *
-     */
-    private List<User> users;
 
     /**
      * Course REST Controller
@@ -536,6 +543,18 @@ public class CourseViewController {
         }
         );
 
+        btnShowSubjects.setOnAction(actionEvent -> {
+            try {
+                LOG.info("Entering on Subject Window");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/subject/Subjects.fxml"));
+                Parent rootSubject = (Parent) loader.load();
+                SubjectsViewController controller = ((SubjectsViewController) loader.getController());
+                controller.initStage(rootSubject, stage);
+            } catch (IOException ex) {
+                Logger.getLogger(CourseViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
         btnReturn.setOnAction(actionEvent
                 -> {
             LOG.info("Closing Window");
@@ -701,6 +720,24 @@ public class CourseViewController {
             });
         }
         );
+        
+        btnPrint.setOnAction(actionEvent ->{
+            try {
+                LOG.info("Printing Report");
+                
+                JasperReport report = JasperCompileManager.compileReport(getClass().getResourceAsStream("/client/view/course/CourseReport.jrxml"));
+                JRBeanCollectionDataSource dataItems = new JRBeanCollectionDataSource((Collection<Course>) this.tableCourses.getItems());
+                Map<String, Object> parameters = new HashMap<>();
+                
+                JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, dataItems);
+                
+                JasperViewer view = new JasperViewer(jasperPrint);
+                view.setVisible(true);
+            } catch (JRException ex) {
+                Logger.getLogger(CourseViewController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
         stage.showAndWait();
     }
 

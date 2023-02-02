@@ -1,10 +1,12 @@
 package client.beans;
 
+import client.view.post.PostContentViewController;
 import java.io.Serializable;
 
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Logger;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javax.xml.bind.annotation.XmlElement;
@@ -20,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOG = Logger.getLogger(Post.class.getName());
 
     /**
      * ID field for post entity
@@ -269,6 +272,16 @@ public class Post implements Serializable {
             return false;
         }
         final Post other = (Post) obj;
+
+        if (!Objects.equals(this.title.get(), other.title.get())) {
+            return false;
+        }
+        if (!Objects.equals(this.publicationDate.get(), other.publicationDate.get())) {
+            return false;
+        }
+        if (!Objects.equals(this.video.get(), other.video.get())) {
+            return false;
+        }
         return Objects.equals(this.postId, other.postId);
     }
 

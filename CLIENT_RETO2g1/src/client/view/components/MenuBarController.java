@@ -7,6 +7,7 @@ package client.view.components;
 
 import client.view.signUp.SignUpViewController;
 import client.view.subject.SubjectsViewController;
+import java.io.IOException;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -47,6 +48,13 @@ public class MenuBarController {
     private MenuItem menitmHelp;
 
     private static Stage stage;
+
+    private static String helpHtml;
+
+    public void setHelpHtml(String url) {
+        helpHtml = url;
+    }
+
     /**
      * The logger of this class
      */
@@ -59,8 +67,7 @@ public class MenuBarController {
                 menHelp.getItems().get(0).fire();
             }
         });
-        
-        
+
     }
 
     public void setStage(Stage stageParam) {
@@ -108,13 +115,12 @@ public class MenuBarController {
     @FXML
     private void handleMenuBarHelp(ActionEvent event) {
         try {
-            LOG.info("Opening help window....");
+            LOG.info("Opening help window...." + helpHtml);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("HelpView.fxml"));
             Parent root = (Parent) loader.load();
             HelpViewController helpController = ((HelpViewController) loader.getController());
-            helpController.initAndShowStage(root);
-
-        } catch (Exception e) {
+            helpController.initAndShowStage(root, helpHtml);
+        } catch (IOException e) {
             LOG.severe(e.getMessage());
         }
     }
