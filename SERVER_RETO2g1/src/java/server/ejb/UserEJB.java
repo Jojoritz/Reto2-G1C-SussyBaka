@@ -64,41 +64,54 @@ public class UserEJB implements UserEJBLocal {
                     Set<Subject> subjects = new HashSet<>();
                     Set<Course> courses = new HashSet<>();
 
-                    teacher.getSpecializedSubjects().forEach((subject) -> {
-                        if (subject.getSubjectId() != null) {
-                            subjects.add(em.find(Subject.class, subject.getSubjectId()));
-                        } else if (!em.contains(subject)) {
-                            subjects.add(em.merge(subject));
+                    try {
+                        teacher.getSpecializedSubjects().forEach((subject) -> {
+                            if (subject.getSubjectId() != null) {
+                                subjects.add(em.find(Subject.class, subject.getSubjectId()));
+                            } else if (!em.contains(subject)) {
+                                subjects.add(em.merge(subject));
+                            }
+                        });
+                        if (!subjects.isEmpty()) {
+                            teacher.setSpecializedSubjects(subjects);
                         }
-                    });
-                    if (!subjects.isEmpty()) {
-                        teacher.setSpecializedSubjects(subjects);
+
+                    } catch (Exception e) {
+                        LOGGER.info("No Specialized Subjects passed on restful");
                     }
 
-                    teacher.getTeachingCourses().forEach((course) -> {
-                        if (course.getCourseId() != null) {
-                            courses.add(em.find(Course.class, course.getCourseId()));
-                        } else if (!em.contains(course)) {
-                            courses.add(em.merge(course));
+                    try {
+                        teacher.getTeachingCourses().forEach((course) -> {
+                            if (course.getCourseId() != null) {
+                                courses.add(em.find(Course.class, course.getCourseId()));
+                            } else if (!em.contains(course)) {
+                                courses.add(em.merge(course));
+                            }
+                        });
+                        if (!courses.isEmpty()) {
+                            teacher.setTeachingCourses(courses);
                         }
-                    });
-                    if (!courses.isEmpty()) {
-                        teacher.setTeachingCourses(courses);
+                    } catch (Exception e) {
+                        LOGGER.info("No Teaching Courses passed on restful");
                     }
 
                 } else if (entity instanceof Student) {
                     Student student = (Student) entity;
                     List<Course> courses = new ArrayList<>();
 
-                    student.getStudyingCourses().forEach((course) -> {
-                        if (course.getCourseId() != null) {
-                            courses.add(em.find(Course.class, course.getCourseId()));
-                        } else if (!em.contains(course)) {
-                            courses.add(em.merge(course));
+                    try {
+                        student.getStudyingCourses().forEach((course) -> {
+                            if (course.getCourseId() != null) {
+                                courses.add(em.find(Course.class, course.getCourseId()));
+                            } else if (!em.contains(course)) {
+                                courses.add(em.merge(course));
+                            }
+                        });
+                        if (!courses.isEmpty()) {
+                            student.setStudyingCourses(courses);
                         }
-                    });
-                    if (!courses.isEmpty()) {
-                        student.setStudyingCourses(courses);
+                    } catch (Exception e) {
+                        LOGGER.info("No Studying Courses passed on restful");
                     }
                 }
 
