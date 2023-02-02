@@ -107,7 +107,7 @@ public class UserFacadeREST {
     /**
      * POST method to reset the users password
      *
-     * @param email
+     * @param email the email of the user that want's to reset the password
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

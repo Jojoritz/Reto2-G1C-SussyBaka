@@ -110,7 +110,7 @@ public class PostEJB implements PostEJBLocal {
     /**
      * Creates/inserts the data of the entity passed
      *
-     * @param entity
+     * @param entity the post to create
      * @throws CreateException If the creation method threw an exception
      */
     @Override
@@ -133,7 +133,7 @@ public class PostEJB implements PostEJBLocal {
     /**
      * Edits/Modify the data of the entity passed
      *
-     * @param entity
+     * @param entity the post to edit
      * @throws UpdateException If the creation method threw an exception
      */
     @Override

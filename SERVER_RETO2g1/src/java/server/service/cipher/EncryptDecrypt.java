@@ -137,6 +137,7 @@ public class EncryptDecrypt {
      *
      * @param path Path to the file
      * @return Byte array with the content of the file
+     * @throws IOException if any error happened while reading the file
      */
     private static byte[] fileReader(String path) throws IOException {
         try {

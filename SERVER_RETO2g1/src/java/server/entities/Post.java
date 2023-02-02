@@ -102,9 +102,9 @@ public class Post implements Serializable {
     private String video;
 
     /**
-     * List containing all the {@link Comments} a {@link Post} has
+     * List containing all the {@code Comments} a {@link Post} has
      *
-     * @associates <{model.Comment}>
+     * 
      */
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Comment> postComments;

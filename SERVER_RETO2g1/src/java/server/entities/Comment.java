@@ -65,7 +65,7 @@ public class Comment implements Serializable {
     private Post post;
 
     /**
-     * {@link Timestamp} field saves the time when the {@code Comment} was
+     * {@code Timestamp} field saves the time when the {@code Comment} was
      * created
      *
      */
@@ -147,7 +147,7 @@ public class Comment implements Serializable {
     /**
      * Gets the creation date of the {@link Comment}
      *
-     * @return {@link Timestamp} with the date when the comment was created
+     * @return {@code Timestamp} with the date when the comment was created
      */
     public Date getDateComment() {
         return dateComment;

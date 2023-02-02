@@ -47,7 +47,7 @@ public interface CommentEJBLocal {
     /**
      * Edits/Modify the data of the entity passed
      *
-     * @param comment
+     * @param comment the comment to edit
      * @throws UpdateException If the creation method threw an exception
      */
     public void edit(Comment comment) throws UpdateException;
