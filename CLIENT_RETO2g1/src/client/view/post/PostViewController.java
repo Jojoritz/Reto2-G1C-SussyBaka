@@ -509,6 +509,7 @@ public class PostViewController extends GenericController {
      *
      * @throws Exception It throws an exception if the selected cell is
      * {@code NULL}
+     * @return the selected table cell value
      */
     private String getSelectedCell() throws Exception {
         try {

@@ -55,7 +55,6 @@ public class PrincipalViewController extends GenericController {
      *
      * @param root the parent scene
      * @param primaryStage the principal stage
-     * @param user the user that has loggend
      */
     public void initStage(Parent root, Stage primaryStage) {
         LOG.info("Starting the principal view and setting the components on the screen");

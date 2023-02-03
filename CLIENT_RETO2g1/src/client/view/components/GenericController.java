@@ -74,8 +74,8 @@ public class GenericController {
     private final String CSS = "/client/view/css/style.css";
 
     /**
-     * @param msg
-     * @param type
+     * @param msg the message for the alert
+     * @param type the type of the alert
      */
     protected void showAlert(String msg, Alert.AlertType type) {
         switch (type) {
@@ -102,12 +102,12 @@ public class GenericController {
     }
 
     /**
-     *
-     * @param <T>
-     * @param stage
-     * @param txtFfield
-     * @param text
-     * @param tp
+     * A method that show a tooltip in a field
+     * @param <T> the type of the field
+     * @param stage the stage
+     * @param txtFfield the textField
+     * @param text the text of the text field
+     * @param tp the tooltip
      */
     protected <T extends Control> void showTooltip(Stage stage, T txtFfield, String text, Tooltip tp) {
         tp.setText(text);

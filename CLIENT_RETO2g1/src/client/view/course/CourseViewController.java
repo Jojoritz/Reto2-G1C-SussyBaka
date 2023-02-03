@@ -324,8 +324,8 @@ public class CourseViewController extends GenericController{
     /**
      * Initializes the controller class.
      *
-     * @param root
-     * @param primaryStage
+     * @param root the parent scecne
+     * @param primaryStage the parent stage
      */
     public void initStage(Parent root, Stage primaryStage) {
         LOG.info("Starting the window and setting the components on the screen");
@@ -851,8 +851,8 @@ public class CourseViewController extends GenericController{
     /**
      * Method that Parses the date with a format
      *
-     * @param date
-     * @return
+     * @param date the date to parse
+     * @return the parsed date
      */
     private boolean validateDate(String date) {
         try {

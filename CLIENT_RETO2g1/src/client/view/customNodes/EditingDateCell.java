@@ -18,7 +18,7 @@ import jfxtras.scene.control.LocalDateTimePicker;
 /**
  *
  * @author Henri
- * @param <T>
+ * @param <T> cell type class
  */
 public class EditingDateCell<T> extends TableCell<T, Date> {
 
