@@ -250,7 +250,7 @@ public class SignInViewController {
                 if (email) {
                     User user = new User();
                     user.setEmail(txtUser.getText());
-                    ControllerFactory.getUserController().resetPassword_XML(user);
+                    ControllerFactory.getUserController().modifyUser_XML(user);
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Se ha enviado un correo con la nueva contraseña", ButtonType.OK);
                     alert.showAndWait();
                 } else {
