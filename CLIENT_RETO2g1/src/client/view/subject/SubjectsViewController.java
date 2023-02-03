@@ -228,6 +228,7 @@ public class SubjectsViewController {
 
         primaryStage.hide();
 
+        //Initializing variable for validations and filters
         subjectNameEmpty = true;
         creationCenturyEmpty = true;
         levelEmpty = true;
@@ -235,10 +236,11 @@ public class SubjectsViewController {
         comboSelectedTeacher = null;
         filterToApply = null;
        
-
+        //Setting the combobox state
         cmbxFilterOptions.setEditable(false);
         cmbxTeacher.setEditable(false);
 
+        //Setting the buttons state
         btnCreateSubject.setDisable(true);
         btnDeleteSubject.setDisable(true);
         btnModifySubject.setDisable(true);
@@ -246,8 +248,9 @@ public class SubjectsViewController {
         btnSearchSubject.getStyleClass().add("buttonSearch");
         btnSubjectPrint.setDisable(false);
         btnSubjectReturn.setDisable(false);
+        //Setting filter text field state
         txtFilter.setDisable(true);
-
+        //Setting the table state and cell value factory
         tableSubjects.setVisible(true);
 
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -278,6 +281,7 @@ public class SubjectsViewController {
                     }
                 });
 
+                //Charging the subjects data to the table
                 subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
                 }));
                 tableSubjects.setItems(subjectsData);
@@ -392,7 +396,7 @@ public class SubjectsViewController {
                 comboSelectedTeacher = null;
             }
         });
-
+        //Seleccting witch filter type will be applyed 
         cmbxFilterOptions.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             LOGGER.info("Seleccting the filter type to apply");
             if (newValue.equals(FilterTypes.NOMBRE.toString())) {
@@ -411,13 +415,14 @@ public class SubjectsViewController {
             }
 
         });
-
+        
         btnSearchSubject.setOnAction(actionEvent -> {
             try {
                 LOGGER.info("Applying the filters and searching the subjects");
+                //If filter to apply is set to null
                 if (filterToApply == null) {
                     try {
-
+                        //Charge again all the data and put it in the table
                         LOGGER.info("If is not applyed any filters");
                         subjectsData.clear();
                         subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
@@ -429,11 +434,13 @@ public class SubjectsViewController {
                     }
 
                 } else {
+                    //If a filter is going to be applyed
                     LOGGER.info("If any filter is being applyed");
                     applyFilter();
                 }
             } catch (Exception ex) {
                 try {
+                    //If a exception happened while applying a filter charge all the data like if isn't being applyed any filter
                     LOGGER.severe(ex.getMessage());
                     alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al aplicar un filtro por lo que se desaplicaran todos");
                     txtFilter.setDisable(true);
@@ -648,6 +655,10 @@ public class SubjectsViewController {
         cmbxTeacher.getSelectionModel().select(-1);
     }
 
+    /**
+     * A method tha applyes a filter
+     * @throws Exception throws an exception if any error happened while trying to apply any filter
+     */
     private void applyFilter() throws Exception {
         try {
             LOGGER.info("Applying a filter");
