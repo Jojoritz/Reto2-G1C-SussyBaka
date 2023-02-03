@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.principal.PrincipalViewController">
+    <children>
+        <fx:include fx:id="menuBarContainerP" source="../components/MenuBar.fxml" />
+        <Label layoutX="14.0" layoutY="71.0" prefHeight="17.0" prefWidth="1260.0" text="Bienvenido" textAlignment="CENTER">
+            <font>
+                <Font size="35.0" />
+            </font>
+        </Label>
+        <Label fx:id="lblLoggedUser" layoutX="33.0" layoutY="122.0" prefHeight="35.0" prefWidth="1236.0" text="Placeholder" textAlignment="CENTER">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <ImageView fitHeight="414.0" fitWidth="752.0" layoutX="33.0" layoutY="203.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@principal.png" />
+            </image>
+        </ImageView>
+        <Button fx:id="btnCourse" layoutX="950.0" layoutY="203.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="135.0" text="Cursos" />
+        <Button fx:id="btnSubject" layoutX="950.0" layoutY="305.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="135.0" text="Asignaturas" />
+        <Button fx:id="btnProfile" layoutX="950.0" layoutY="417.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="135.0" text="Perfil" />
+        <Button fx:id="btnCloseSession" layoutX="950.0" layoutY="534.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="135.0" text="Cerrar Sesion" />
+    </children>
+</Pane>

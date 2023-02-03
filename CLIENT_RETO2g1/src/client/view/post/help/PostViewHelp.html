@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Publicaciones</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../../css/style.css" type="text/css"/>
+    </head>
+    <body>
+        <div>
+            <h2 class="center">Ventana de publicaciones</h2>
+            <div class="marginLR">
+                <p>
+                    Esta ventana tendrá una tabla que mostrará todas las publicaciones que se encuentran en un curso, visualizando en las columnas
+                    los campos <strong>"Título"</strong>, <strong>"Fecha de publicacion"</strong>, <strong>"YT link"</strong>
+                </p>
+                <p>
+                    Las celdas de la tabla son editables, por lo que si se hace doble click sobre una celda se activará
+                    el modo edición de la tabla.
+                </p>
+                <p>
+                    En la parte superior de la tabla hay un combo box que nos permitirá seleccionar la manera de buscar publicaciones estas opciones
+                    són <strong>Nombre</strong>, <strong>Fecha</strong>, <strong>Rango Fecha</strong>. en la parte izquierda hay un botón para
+                    abrir la ventana del contenido del post, y an la parte izquierda abajo el botón de <strong>Imprimir</strong> creará un informe con
+                    los datos que se muestrán en la tabla.
+                </p>
+                <img src="PostView.png" alt="Post View" width="750" height="450"/>
+            </div>
+
+            <h3 class="center">Botones</h3>
+            <div class="marginLR">
+                <p>
+                    Los botones "Entrar", "Guardar", "Eliminar", "Cancelar" y "Buscar" estarán desactivados al iniciar la ventana, y el botón de imprimir
+                    se activará si la tabla tiene datos, y los botones de "Añadir" y "Volver" estarán siempre activados. <br/>
+                    Al seleccionar una fila de la tabla el botón "Entrar" y "Eliminar" se habilitarán. <br/>
+                    Si se hace cualquier modificación en la tabla los botones "Guardar" y "Cancelar" se habilitarán.
+                </p>
+                <ul>
+                    <li><strong>Entrar:</strong> abrirá una ventana mostrando más contenido de la publicación</li>
+                    <li><strong>Guardar:</strong> guardará los cambios hecho a la tabla</li>
+                    <li><strong>Eliminar:</strong> eliminará la publicación seleccionada</li>
+                    <li><strong>Cancelar:</strong> cancelará todos los cambios que se han hecho a la tabla pero no se han guardado</li>
+                    <li><strong>Buscar:</strong> buscará publicaciones mediante unos criterios</li>
+                    <li><strong>Añadir:</strong> creará una fila con datos por defecto</li>
+                    <li><strong>Volver:</strong> cerrar la ventana actual y abrir la anterior</li>
+                </ul>
+            </div>
+            <h3 class="center">Editar contenido de la tabla</h3>
+            <div class="marginLR">
+                <p>
+                    Si se hace doble click a una celda en una fila con una publicación (no se ha hecho doble click en la parte vacía de la tabla),
+                    se activará el modo edición, en el caso de las columnas "Título" y "YT link", se mostrará un textfield donde podemos modificar
+                    el contenido de esa celda, para aplicar los cambios con darle click fuera o enter se guardará los cambios en la tabla pero no en el servidor.
+                    <br/>
+                    En el caso de la "Fecha de publicación" se mostrará un calendario donde se podrá especificar la fecha y la hora, para guardar
+                    la nueva fecha hay que pulsar enter, y en este caso para salir de modo edición habrá que hacer click en una celda con datos, no 
+                    funciona si se le da click a la parte vacía de la tabla.
+                </p>
+                <img src="EditingDate.png" alt="Post View" width="750" height="450"/>
+            </div>
+        </div>
+    </body>
+</html>

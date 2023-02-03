@@ -1,0 +1,109 @@
+/*
+    This is the css from the application views
+*/
+
+
+/*
+.root{
+    -fx-button-base-color: dodgerblue;
+    -fx-button-hover-color: deepskyblue;
+    -fx-button-armed-color: darkblue;
+}
+
+.label {
+    -fx-font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.button{
+    -fx-font-family: "Trebuchet MS", Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-background-color:  -fx-inner-border,-fx-outer-border, -fx-button-base-color;
+    -fx-text-fill: -fx-shadow-highlight-color;
+}
+
+.button:hover {
+    -fx-background-color: -fx-inner-border,-fx-outer-border, -fx-button-hover-color;
+}
+
+.button:armed {
+    -fx-background-color:-fx-inner-border,-fx-outer-border, -fx-button-armed-color;
+}
+*/
+
+
+.combo-box-base {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, white;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 3px, 3px, 2px, 1px;
+}
+
+.text-field{
+    -fx-text-box-border: transparent;
+    -fx-border-style: hidden hidden solid hidden;
+    -fx-border-width: 1px;
+    -fx-border-color: pink;
+}
+
+.text-field:focused{
+    -fx-focus-color: #5b0c50;
+    -fx-border-style: hidden hidden hidden hidden;
+}
+
+.label{
+    -fx-font-family: "Roboto";
+    -fx-alignment: center;
+}
+
+#btnPasswordReset{
+    -fx-background-color: transparent;
+    -fx-text-fill: #5b0c50;
+}
+
+#btnPasswordReset:hover{
+    -fx-underline: true;
+
+}
+
+#btnSignIn, #btnSignUp, #btnLogOut{
+    -fx-background-color: #5b0c50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+#btnSignUpView, #btnBack{
+    -fx-background-color: white;
+    -fx-font-weight: bold;
+    -fx-border-color: gray;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+#btnSignUpView:hover, #btnSignIn:hover, #btnSignUp:hover, #btnBack:hover, #btnLogOut:hover{
+    -fx-background-color: pink;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+#btnDelete{
+
+
+}
+
+#buttonSearch{
+    -fx-background-image: url("/client/view/icon/searchIcon.png");
+    -fx-background-size: cover;
+}
+
+.center {
+    text-align: center;
+}
+
+.marginLR {
+    margin-left: 2.5em;
+    margin-right: 2.5em;
+}
