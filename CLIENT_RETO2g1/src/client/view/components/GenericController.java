@@ -61,7 +61,7 @@ public class GenericController {
     /**
      * Limit for varchar
      */
-    protected final Integer VARCHAR_LIMIT = 10;
+    protected final Integer VARCHAR_LIMIT = 255;
 
     /**
      * Get clipboard system
@@ -103,6 +103,7 @@ public class GenericController {
 
     /**
      * A method that show a tooltip in a field
+     *
      * @param <T> the type of the field
      * @param stage the stage
      * @param txtFfield the textField
