@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group name="Retos">
+            <file>file:/D:/CFGS/DAM/Reto2/Reto2-G1C-SussyBaka/SERVER_RETO2g1/src/java/service/PostFacadeREST.java</file>
+            <file>file:/D:/CFGS/DAM/Reto2/Reto2-G1C-SussyBaka/SERVER_RETO2g1/src/java/ejb/interfaces/CommentEJBLocal.java</file>
+            <file>file:/D:/CFGS/DAM/Reto2/Reto2-G1C-SussyBaka/SERVER_RETO2g1/src/java/ejb/CommentEJB.java</file>
+            <file>file:/D:/CFGS/DAM/Reto2/Reto2-G1C-SussyBaka/SERVER_RETO2g1/src/java/ejb/PostEJB.java</file>
+            <file>file:/D:/CFGS/DAM/Reto2/Reto2-G1C-SussyBaka/SERVER_RETO2g1/src/java/entities/Post.java</file>
+            <file>file:/D:/CFGS/DAM/Reto2/Reto2-G1C-SussyBaka/SERVER_RETO2g1/src/java/ejb/interfaces/PostEJBLocal.java</file>
+            <file>file:/D:/CFGS/DAM/Reto2/Reto2-G1C-SussyBaka/SERVER_RETO2g1/src/java/service/CommentFacadeREST.java</file>
+            <file>file:/D:/CFGS/DAM/Reto2/Reto2-G1C-SussyBaka/SERVER_RETO2g1/src/java/ejb/interfaces/AbstractEJB.java</file>
+        </group>
+        <group>
+            <file>file:/C:/2DAM/RETOS/Reto2-G1C-SussyBaka-SERVER/SERVER_RETO2g1/src/java/server/ejb/CourseEJB.java</file>
+            <file>file:/C:/2DAM/RETOS/Reto2-G1C-SussyBaka-SERVER/SERVER_RETO2g1/src/java/server/entities/Subject.java</file>
+            <file>file:/C:/2DAM/RETOS/Reto2-G1C-SussyBaka-SERVER/SERVER_RETO2g1/src/java/server/entities/Teacher.java</file>
+            <file>file:/C:/2DAM/RETOS/Reto2-G1C-SussyBaka-SERVER/SERVER_RETO2g1/src/java/server/ejb/SubjectEJB.java</file>
+            <file>file:/C:/2DAM/RETOS/Reto2-G1C-SussyBaka-SERVER/SERVER_RETO2g1/src/java/server/entities/Student.java</file>
+            <file>file:/C:/2DAM/RETOS/Reto2-G1C-SussyBaka-SERVER/SERVER_RETO2g1/src/java/server/ejb/interfaces/CourseEJBLocal.java</file>
+            <file>file:/C:/2DAM/RETOS/Reto2-G1C-SussyBaka-SERVER/SERVER_RETO2g1/src/java/server/entities/Course.java</file>
+            <file>file:/C:/2DAM/RETOS/Reto2-G1C-SussyBaka-SERVER/SERVER_RETO2g1/src/java/server/service/CourseFacadeREST.java</file>
+        </group>
+    </open-files>
+</project-private>
