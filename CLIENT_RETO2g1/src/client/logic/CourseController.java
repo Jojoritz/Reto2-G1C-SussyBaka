@@ -17,7 +17,7 @@ public interface CourseController {
     /**
      * A RESTfull find method to find a course using the Date in XML format
      *
-     * @param <T>
+     * @param <T> The type of the response type
      * @param responseType The entity to find
      * @param startDate The parameter to use to find
      * @return A list of Courses with the date
@@ -29,7 +29,7 @@ public interface CourseController {
     /**
      * A RESTfull find method for find a course using the Date in JSON format
      *
-     * @param <T>
+     * @param <T> The type of the response type
      * @param responseType The entity to find
      * @param startDate The parameter to use to find
      * @return A list of Courses with the date
@@ -61,7 +61,7 @@ public interface CourseController {
     /**
      * A RESTfull find method to find a Course in XML format
      *
-     * @param <T>
+     * @param <T> The type of the response type
      * @param responseType The entity to find
      * @param id The parameter to use to find
      * @return A Course
@@ -73,7 +73,7 @@ public interface CourseController {
     /**
      * A RESTfull find method to find a Course in JSON format
      *
-     * @param <T>
+     * @param <T> The type of the response type
      * @param responseType The entity to find
      * @param id The parameter to use to find
      * @return A Course
@@ -105,7 +105,7 @@ public interface CourseController {
     /**
      * A RESTfull find method to find a course using the name in XML format
      *
-     * @param <T>
+     * @param <T> The type of the response type
      * @param responseType The entity to find
      * @param name The parameter to use to find
      * @return A list of Courses with the date
@@ -117,7 +117,7 @@ public interface CourseController {
     /**
      * A RESTfull find method to find a course using the name in JSON format
      *
-     * @param <T>
+     * @param <T> The type of the response type
      * @param responseType The entity to find
      * @param name The parameter to use to find
      * @return A list of Courses with the date
@@ -129,7 +129,7 @@ public interface CourseController {
     /**
      * A RESTfull find method to find all the COurses
      *
-     * @param <T>
+     * @param <T> The type of the response type
      * @param responseType The entity to find
      * @return A list of all the courses
      * @throws ClientErrorException If any error happened while modifying the
@@ -140,7 +140,7 @@ public interface CourseController {
     /**
      * A RESTfull find method to find all the COurses
      *
-     * @param <T>
+     * @param <T> The type of the response type
      * @param responseType The entity to find
      * @return A list of all the courses
      * @throws ClientErrorException If any error happened while modifying the
