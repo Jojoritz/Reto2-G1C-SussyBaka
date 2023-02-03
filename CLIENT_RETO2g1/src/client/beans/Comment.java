@@ -103,7 +103,7 @@ public class Comment implements Serializable {
     /**
      * Gets the creation date of the {@link Comment}
      *
-     * @return {@link Timestamp} with the date when the comment was created
+     * @return {@code Timestamp} with the date when the comment was created
      */
     public Date getDateComment() {
         return this.dateComment.get();

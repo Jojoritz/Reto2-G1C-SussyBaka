@@ -59,9 +59,8 @@ public class Post implements Serializable {
     private final SimpleStringProperty video;
 
     /**
-     * List containing all the {@link Comments} a {@link Post} has
+     * List containing all the {@code Comments} a {@link Post} has
      *
-     * @associates <{model.Comment}>
      */
     private Set<Comment> postComments;
 
@@ -74,9 +73,9 @@ public class Post implements Serializable {
     /**
      * {@link Post} Constructor
      *
-     * @param title
-     * @param publicationDate
-     * @param video
+     * @param title the title of the post
+     * @param publicationDate the publication date of the post
+     * @param video the url of the video
      */
     public Post(String title, Date publicationDate, String video) {
         this.title = new SimpleStringProperty(title);

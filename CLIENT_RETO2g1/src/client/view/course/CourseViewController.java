@@ -6,6 +6,7 @@
 package client.view.course;
 
 import client.beans.Course;
+import client.beans.Post;
 import client.beans.Subject;
 import client.beans.Teacher;
 import client.beans.User;
@@ -16,6 +17,7 @@ import client.logic.CourseController;
 import client.logic.SubjectController;
 import client.logic.UserController;
 import client.logic.exception.BusinessLogicException;
+import client.view.components.GenericController;
 import client.view.post.PostViewController;
 import client.view.subject.SubjectsViewController;
 import java.io.IOException;
@@ -67,7 +69,7 @@ import net.sf.jasperreports.view.JasperViewer;
  *
  * @author Joritz
  */
-public class CourseViewController {
+public class CourseViewController extends GenericController{
 
     /**
      * This is the logger of the class
@@ -322,8 +324,8 @@ public class CourseViewController {
     /**
      * Initializes the controller class.
      *
-     * @param root
-     * @param primaryStage
+     * @param root the parent scecne
+     * @param primaryStage the parent stage
      */
     public void initStage(Parent root, Stage primaryStage) {
         LOG.info("Starting the window and setting the components on the screen");
@@ -421,7 +423,8 @@ public class CourseViewController {
 
         /**
          * Verify that the course name is filled
-         **/
+         *
+         */
         txtCourseName.textProperty()
                 .addListener((event) -> {
                     //When the text is being modified in the text field
@@ -446,7 +449,8 @@ public class CourseViewController {
 
         /**
          * Verify that the course date is filled
-         **/
+         *
+         */
         txtCreatedDate.textProperty()
                 .addListener((event) -> {
                     //When the text is being modified in the text field
@@ -477,7 +481,8 @@ public class CourseViewController {
 
         /**
          * Verify that the combobox has items selected
-         **/
+         *
+         */
         cmbxTeacher.getSelectionModel()
                 .selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                     try {
@@ -503,7 +508,8 @@ public class CourseViewController {
 
         /**
          * Verify that the combobox has items selected
-         **/
+         *
+         */
         cmbxSubject.getSelectionModel()
                 .selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                     try {
@@ -529,7 +535,8 @@ public class CourseViewController {
 
         /**
          * Verify that the combobox has filters selected
-         **/
+         *
+         */
         cmbxFilter.getSelectionModel()
                 .selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                     LOG.info("Selecting the filter");
@@ -546,7 +553,8 @@ public class CourseViewController {
 
         /**
          * Searches the course with the filter aplyed
-         **/
+         *
+         */
         btnSearchCourse.setOnAction(actionEvent
                 -> {
             try {
@@ -598,19 +606,26 @@ public class CourseViewController {
             }
         });
 
-        /**
-         * btnEnter.setOnAction(actionEvent -> { try { LOG.info("Entering the
-         * Post Window"); FXMLLoader loader = new
-         * FXMLLoader(getClass().getResource("/client/view/post/PostView.fxml"));
-         * Parent rootPost = (Parent) loader.load(); PostViewController
-         * controller = ((PostViewController) loader.getController());
-         * controller.initStage(root, controller, stage, postList,
-         * Integer.SIZE); } catch (IOException ex) {
-         * Logger.getLogger(CourseViewController.class.getName()).log(Level.SEVERE,
-         * null, ex); }
+        btnEnter.setOnAction(actionEvent -> {
+            try {
+                /*
+                user = ControllerFactory.getUserController().getUser_XML(new GenericType<User>() {
+                }, "1");
+                 */
+                List<Post> postList = ControllerFactory.getPostController().
+                        getCoursePosts(new GenericType<ArrayList<Post>>() {
+                        }, tableCourses.getSelectionModel().getSelectedItem().getCourseId().toString());
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/post/PostView.fxml"));
+                Parent rootPost = (Parent) loader.load();
+                PostViewController controller = ((PostViewController) loader.getController());
+                controller.setUser(user);
+                stage.close();
+                controller.initStage(rootPost, ControllerFactory.getPostController(), stage, postList, tableCourses.getSelectionModel().getSelectedItem().getCourseId());
+            } catch (Exception e) {
+                LOG.severe(e.getMessage());
+            }
         });
-         */
-        
+
         /**
          * Closes the Window and goes to the one before
          */
@@ -648,7 +663,7 @@ public class CourseViewController {
         tableCourses.getSelectionModel()
                 .selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                     LOG.info("Table selection event handling");
-                    
+
                     //If it is not empty gets all the cambs of the table
                     if (newValue != null) {
                         LOG.info("A row was selected");
@@ -835,9 +850,9 @@ public class CourseViewController {
 
     /**
      * Method that Parses the date with a format
-     * 
-     * @param date
-     * @return 
+     *
+     * @param date the date to parse
+     * @return the parsed date
      */
     private boolean validateDate(String date) {
         try {
@@ -865,7 +880,8 @@ public class CourseViewController {
 
     /**
      * Method that searches for the Course using the filters
-     **/
+     *
+     */
     private void applyFilter() {
         try {
             LOG.info("Applying a Filter");
@@ -892,4 +908,3 @@ public class CourseViewController {
         }
     }
 }
-

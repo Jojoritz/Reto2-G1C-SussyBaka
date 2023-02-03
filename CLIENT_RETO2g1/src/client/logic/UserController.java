@@ -80,16 +80,18 @@ public interface UserController {
 
     /**
      * A RESTful client get method for getting all the users in XML format
-     *
+     *@param <T> the type of the response type
      * @param responseType the type of the response
      * @throws BusinessLogicException if any error happened
+     * @return a collection of users
      */
     public <T> T findAll_XML(GenericType<T> responseType) throws BusinessLogicException;
 
     /**
      * A RESTful client get method for getting all the users in XML format
-     *
+     *@param <T> the type of the response type
      * @param responseType the type of the response
+     * @return a collection of users
      * @throws BusinessLogicException if any error happened
      */
     public <T> T findAll_JSON(GenericType<T> responseType) throws BusinessLogicException;

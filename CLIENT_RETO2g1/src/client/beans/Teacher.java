@@ -41,7 +41,7 @@ public class Teacher extends User {
     /**
      * Sets the course of the teacher
      *
-     * @param teachingCourses
+     * @param teachingCourses the courses that teacher teaches
      */
     public void setTeachingCourses(Set<Course> teachingCourses) {
         this.teachingCourses = teachingCourses;
@@ -59,7 +59,7 @@ public class Teacher extends User {
     /**
      * Sets the subject that the teacher imparts
      *
-     * @param specializedSubjects
+     * @param specializedSubjects the subjects where teacher is specialized
      */
     public void setSpecializedSubjects(Set<Subject> specializedSubjects) {
         this.specializedSubjects = specializedSubjects;
