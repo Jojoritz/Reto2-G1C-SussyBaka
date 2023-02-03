@@ -15,7 +15,6 @@ public class Student extends User {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @associates <{entities.Course}>
      * This is a collection with the acctualy studying courses of the student
      */
     private List<Course> studyingCourses;
@@ -38,7 +37,7 @@ public class Student extends User {
     /**
      * Sets the courses that the students are studying
      *
-     * @param studyingCourses
+     * @param studyingCourses a list of studying courses
      */
     public void setStudyingCourses(List<Course> studyingCourses) {
         this.studyingCourses = studyingCourses;

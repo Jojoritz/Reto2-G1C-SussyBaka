@@ -16,14 +16,14 @@ public interface CommentController {
 
     /**
      *
-     * @param requestEntity
+     * @param requestEntity The entity to edit
      * @throws client.logic.exception.BusinessLogicException
      */
     public void edit(Object requestEntity) throws BusinessLogicException;
 
     /**
      *
-     * @param <T>
+     * @param <T> 
      * @param responseType
      * @param id
      * @return

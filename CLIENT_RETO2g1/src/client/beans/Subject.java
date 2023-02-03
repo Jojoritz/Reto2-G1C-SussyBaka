@@ -44,12 +44,10 @@ public class Subject implements Serializable {
     private String level;
 
     /**
-     * @associates <{entities.Course}>
      * The collection of courses that contains this subject
      */
     private Set<Course> courseWithSubject;
     /**
-     * @associates <{entities.Teacher}>
      * The collection of teacher that are specialized in this subject
      */
     private Set<Teacher> teachersSpecializedInSubject;
@@ -73,7 +71,7 @@ public class Subject implements Serializable {
     /**
      * Sets the ID of the subject
      *
-     * @param subjectId
+     * @param subjectId the id of the subject
      */
     public void setSubjectId(Integer subjectId) {
         this.subjectId = subjectId;
@@ -91,8 +89,8 @@ public class Subject implements Serializable {
     /**
      * Sets the name of the subject
      *
-     * @param name
-     */
+     * @param name the name of the subject
+     */ 
     public void setName(String name) {
         this.name = name;
     }
@@ -109,7 +107,7 @@ public class Subject implements Serializable {
     /**
      * Sets the type of subject
      *
-     * @param type
+     * @param type the type of the subject
      */
     public void setType(String type) {
         this.type = type;
@@ -127,7 +125,7 @@ public class Subject implements Serializable {
     /**
      * Sets the Century where the subject arose
      *
-     * @param century
+     * @param century the century when the subject was created
      */
     public void setCentury(String century) {
         this.century = century;
@@ -145,7 +143,7 @@ public class Subject implements Serializable {
     /**
      * Sets the level of the subject
      *
-     * @param level
+     * @param level the level of the subject
      */
     public void setLevel(String level) {
         this.level = level;
@@ -163,7 +161,7 @@ public class Subject implements Serializable {
     /**
      * Sets the courses that includes the subject
      *
-     * @param courseWithSubject
+     * @param courseWithSubject a collection of course with the courses where the subject is teached
      */
     public void setCourseWithSubject(Set<Course> courseWithSubject) {
         this.courseWithSubject = courseWithSubject;
@@ -172,7 +170,7 @@ public class Subject implements Serializable {
     /**
      * Gets the teacher that imparts the subject
      *
-     * @return
+     * @return a collection of teachers that are specialized in this subject
      */
     public Set<Teacher> getTeachersSpecializedInSubject() {
         return teachersSpecializedInSubject;
@@ -181,7 +179,7 @@ public class Subject implements Serializable {
     /**
      * Sets the teacher that imparts the subject
      *
-     * @param teachersSpecializedInSubject
+     * @param teachersSpecializedInSubject a collection of teacher that are specialized in this subject
      */
     public void setTeachersSpecializedInSubject(Set<Teacher> teachersSpecializedInSubject) {
         this.teachersSpecializedInSubject = teachersSpecializedInSubject;
