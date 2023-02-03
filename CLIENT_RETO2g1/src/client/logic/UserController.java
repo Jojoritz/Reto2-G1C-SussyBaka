@@ -21,7 +21,7 @@ public interface UserController {
      * format
      *
      * @param requestEntity the entity we want to change the password
-     * @throws ClientErrorException
+     * @throws BusinessLogicException if an error happened while reseting the passwor
      */
     public void resetPassword_XML(Object requestEntity) throws BusinessLogicException;
 
@@ -30,7 +30,7 @@ public interface UserController {
      * format
      *
      * @param requestEntity the entity we want to change the password
-     * @throws ClientErrorException
+     * @throws BusinessLogicException if any error happened while reseting the password
      */
     public void resetPassword_JSON(Object requestEntity) throws BusinessLogicException;
 
@@ -43,7 +43,7 @@ public interface UserController {
      * after executing this method
      * @param id the id of the user we want to obtain
      * @return the user with the id we want
-     * @throws ClientErrorException
+     * @throws BusinessLogicException if any error happened while getting the user with the id
      */
     public <T> T getUser_XML(GenericType<T> responseType, String id) throws BusinessLogicException;
 
@@ -56,7 +56,7 @@ public interface UserController {
      * after executing this method
      * @param id the id of the user we want to obtain
      * @return the user with the id we want
-     * @throws BusinessLogicException if any error happened
+     * @throws BusinessLogicException if any error happened while searching the user with the id
      */
     public <T> T getUser_JSON(GenericType<T> responseType, String id) throws BusinessLogicException;
 
