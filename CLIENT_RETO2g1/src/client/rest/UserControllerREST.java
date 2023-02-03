@@ -10,6 +10,7 @@ import client.logic.EncryptDecrypt;
 import client.logic.UserController;
 import client.logic.exception.BusinessLogicException;
 import java.net.URLEncoder;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
@@ -35,7 +36,7 @@ public class UserControllerREST implements UserController {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/SERVER_RETO2g1/webresources";
+    private static final String BASE_URI = ResourceBundle.getBundle("client.config").getString("restful_server");
 
     public UserControllerREST() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

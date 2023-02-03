@@ -226,10 +226,10 @@ public class PostViewTest extends ApplicationTest {
         Node row = lookup(".table-cell").nth(10).query();
         rightClickOn(row);
         clickOn("#btnMenuAdd");
-        assertTrue("Post added", count++ == postTable.getItems().size());
-        assertEquals("Post correctly added",
+        assertTrue("Post added", count + 1 == postTable.getItems().size());
+        assertEquals("Post correctly added", 1,
                 postTable.getItems().stream().filter(p -> p.getContent()
-                .equals("Dolore officia et aut aut quos dolor.Culpa voluptatum non harum voluptatem quia et quo.")).count(), 1);
+                .equals("Dolore officia et aut aut quos dolor. Culpa voluptatum non harum voluptatem quia et quo.")).count());
     }
 
     @Test
@@ -241,10 +241,10 @@ public class PostViewTest extends ApplicationTest {
         rightClickOn(row);
         clickOn("#btnMenuDelete");
         clickOn("Yes");
-        assertTrue("Post deleted", count-- == postTable.getItems().size());
-        assertEquals("Post correctly deleted",
+        assertTrue("Post deleted", count - 1 == postTable.getItems().size());
+        assertEquals("Post correctly deleted", 0,
                 postTable.getItems().stream().filter(p -> p.getContent()
-                .equals("Dolore officia et aut aut quos dolor.Culpa voluptatum non harum voluptatem quia et quo.")).count(), 0);
+                .equals("Dolore officia et aut aut quos dolor.Culpa voluptatum non harum voluptatem quia et quo.")).count());
     }
 
     @Test

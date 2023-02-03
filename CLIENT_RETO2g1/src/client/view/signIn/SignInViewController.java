@@ -13,6 +13,9 @@ import client.logic.exception.BusinessLogicException;
 import client.view.principal.PrincipalViewController;
 import client.view.signUp.SignUpViewController;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +25,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Control;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -106,6 +110,10 @@ public class SignInViewController {
      */
     @FXML
     private Label txtLogInError;
+    @FXML
+    private Label title;
+    @FXML
+    private Button btnPasswordReset;
 
     /**
      * This method initialize the stage (@code SignInView)
@@ -232,6 +240,29 @@ public class SignInViewController {
                 alert.showAndWait();
             }
         });
+        btnPasswordReset.setOnAction((event) -> {
+            try {
+                showTooltip(stage, btnPasswordReset, "Escriba el email en el campo de usuario (ignore el aviso del usuario)", userTooltip);
+
+                boolean email = Pattern.compile("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")
+                        .matcher(txtUser.getText()).matches();
+
+                if (email) {
+                    User user = new User();
+                    user.setEmail(txtUser.getText());
+                    ControllerFactory.getUserController().resetPassword_XML(user);
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Se ha enviado un correo con la nueva contraseña", ButtonType.OK);
+                    alert.showAndWait();
+                } else {
+                    showTooltip(stage, btnPasswordReset, "Escriba un email con el formato ejemplo@dominio.com", userTooltip);
+                }
+            } catch (BusinessLogicException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
+                alert.showAndWait();
+            }
+
+        });
+
         stage.show();
     }
 
@@ -305,7 +336,7 @@ public class SignInViewController {
      * @param text The text that is going to be showed
      * @param tp The tooltip
      */
-    private void showTooltip(Stage stage, TextField txtFfield, String text, Tooltip tp) {
+    private <T extends Control> void showTooltip(Stage stage, T txtFfield, String text, Tooltip tp) {
 
         tp.setText(text);
         //Setting the tooltip to the field and setting that when focus is lost is going to auto hide
