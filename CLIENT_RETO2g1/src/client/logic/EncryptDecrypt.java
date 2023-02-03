@@ -14,14 +14,15 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import javax.crypto.Cipher;
 import client.logic.exception.EncriptionException;
+import com.google.common.io.ByteStreams;
+import java.io.InputStream;
+import static org.apache.poi.util.IOUtils.toByteArray;
 
 /**
  *
  * @author Henri
  */
 public class EncryptDecrypt {
-
-    private static final String PUBLIC = EncryptDecrypt.class.getResource("Public.key").getPath();
 
     /**
      * Encrypt text with {@code RSA} in mode {@code ECB} with padding
@@ -36,7 +37,9 @@ public class EncryptDecrypt {
         byte[] encodedMessage;
         try {
             // Read public key from file
-            byte fileKey[] = fileReader(PUBLIC);
+            InputStream is = EncryptDecrypt.class.getResourceAsStream("Public.key");
+            byte[] fileContent = toByteArray(is);
+            byte fileKey[] = fileContent;
 
             // Generate KeyFactory with RSA
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -54,23 +57,6 @@ public class EncryptDecrypt {
         }
     }
 
-    /**
-     * Returns the file content in bytes
-     *
-     * @param path Path to the file
-     * @return Byte array with the content of the file
-     * @throws IOException if any error happened while reading a file
-     */
-    private static byte[] fileReader(String path) throws IOException {
-        try {
-            File file = new File(path);
-            String test = file.getAbsolutePath();
-            byte ret[] = Files.readAllBytes(file.toPath());
-            return ret;
-
-        } catch (Exception e) {
-            throw new IOException(e.getMessage());
-        }
-    }
+    
 
 }
