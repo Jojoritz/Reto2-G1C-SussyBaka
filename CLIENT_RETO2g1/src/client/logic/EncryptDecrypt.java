@@ -21,7 +21,7 @@ import client.logic.exception.EncriptionException;
  */
 public class EncryptDecrypt {
 
-    private static final String PUBLIC = "Public.key";
+    private static final String PUBLIC = EncryptDecrypt.class.getResource("Public.key").getPath();
 
     /**
      * Encrypt text with {@code RSA} in mode {@code ECB} with padding
