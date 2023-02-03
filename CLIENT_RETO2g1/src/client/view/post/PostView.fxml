@@ -23,14 +23,14 @@
                 <TableColumn fx:id="linkColumn" editable="true" prefWidth="264.0" text="YT Link" />
             </columns>
             <contextMenu>
-                <ContextMenu>
+                <ContextMenu fx:id="contextMenu">
                     <items>
                         <MenuItem fx:id="btnMenuEnter" mnemonicParsing="false" onAction="#menuEnter" text="Entrar" />
                         <MenuItem fx:id="btnMenuCopy" mnemonicParsing="false" onAction="#menuCopy" text="Copiar" />
                         <MenuItem fx:id="btnMenuPaste" mnemonicParsing="false" onAction="#menuPaste" text="Pegar" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuAdd" text="Añadir" />
+                        <MenuItem fx:id="btnMenuAdd" mnemonicParsing="false" onAction="#menuAdd" text="Añadir" />
                         <MenuItem fx:id="btnMenuDelete" mnemonicParsing="false" onAction="#menuDelete" text="Borrar" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuRefresh" text="Actualizar" />
+                        <MenuItem fx:id="btnMenuRefresh" mnemonicParsing="false" onAction="#menuRefresh" text="Actualizar" />
                     </items>
                 </ContextMenu>
             </contextMenu>

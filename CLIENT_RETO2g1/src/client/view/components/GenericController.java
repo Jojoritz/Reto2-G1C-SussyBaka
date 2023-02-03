@@ -61,7 +61,7 @@ public class GenericController {
     /**
      * Limit for varchar
      */
-    protected final Integer VARCHAR_LIMIT = 255;
+    protected final Integer VARCHAR_LIMIT = 10;
 
     /**
      * Get clipboard system

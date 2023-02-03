@@ -12,17 +12,17 @@
             <menus>
                 <Menu fx:id="menMenu" mnemonicParsing="false" text="Menu">
                     <items>
-                        <MenuItem fx:id="menitmInitialScreen" mnemonicParsing="false" onAction="#handleMenuBarStart" text="Inicio" />
-                        <MenuItem fx:id="menitmCourses" mnemonicParsing="false" onAction="#handleMenuBarCourses" text="Cursos" />
-                        <MenuItem fx:id="menitmPost" mnemonicParsing="false" onAction="#handleMenuBarPost" text="Posts" />
-                        <MenuItem fx:id="menitmSubjects" mnemonicParsing="false" onAction="#handleMenuBarSubjects" text="Asignaturas" />
-                        <MenuItem fx:id="menitmViewProfile" mnemonicParsing="false" onAction="#handleMenuBarProfile" text="Ver Perfil" />
-                        <MenuItem fx:id="menitmCloseSession" mnemonicParsing="false" onAction="#handleMenuBarLogOff" text="Cerrar Session" />
+                        <MenuItem fx:id="menitmInitialScreen" mnemonicParsing="false" text="Inicio" />
+                        <MenuItem fx:id="menitmCourses" mnemonicParsing="false" text="Cursos" />
+                        <MenuItem fx:id="menitmPost" mnemonicParsing="false" text="Posts" />
+                        <MenuItem fx:id="menitmSubjects" mnemonicParsing="false" text="Asignaturas" />
+                        <MenuItem fx:id="menitmViewProfile" mnemonicParsing="false" text="Ver Perfil" />
+                        <MenuItem fx:id="menitmCloseSession" mnemonicParsing="false" text="Cerrar Session" />
                     </items>
                 </Menu>
                 <Menu fx:id="menHelp" mnemonicParsing="false" text="Ayuda">
                     <items>
-                        <MenuItem fx:id="menitmHelp" mnemonicParsing="false" onAction="#handleMenuBarHelp" text="Ayuda" />
+                        <MenuItem fx:id="menitmHelp" mnemonicParsing="false" text="Ayuda" />
                     </items>
                 </Menu>
             </menus>

@@ -98,3 +98,12 @@
     -fx-background-image: url("/client/view/icon/searchIcon.png");
     -fx-background-size: cover;
 }
+
+.center {
+    text-align: center;
+}
+
+.marginLR {
+    margin-left: 2.5em;
+    margin-right: 2.5em;
+}

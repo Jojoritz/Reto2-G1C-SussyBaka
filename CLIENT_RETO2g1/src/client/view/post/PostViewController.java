@@ -8,7 +8,9 @@ package client.view.post;
 import client.beans.Comment;
 import client.beans.Course;
 import client.beans.Post;
+import client.beans.Student;
 import client.beans.enumerations.FilterTypes;
+import client.beans.enumerations.UserPrivilege;
 import client.logic.CommentController;
 import client.logic.ControllerFactory;
 import client.logic.PostController;
@@ -20,7 +22,6 @@ import client.view.customNodes.EditingStringCell;
 import client.view.signUp.SignUpViewController;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -70,10 +71,9 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
-import org.apache.velocity.exception.ParseErrorException;
 
 /**
- * FXML Controller class
+ * FXML Controller class for the post View
  *
  * @author Henri
  */
@@ -153,19 +153,18 @@ public class PostViewController extends GenericController {
     /**
      * Initializes the controller class.
      *
-     * @param root
-     * @param postController
-     * @param primaryStage
-     * @param postList
-     * @param courseId
+     * @param root Parent object
+     * @param postController Interface of the post
+     * @param primaryStage Primary stage
+     * @param postList List with all the post of the course
+     * @param courseId The course ID
      */
     public void initStage(Parent root, PostController postController, Stage primaryStage, List<Post> postList, Integer courseId) {
         scene = new Scene(root);
         stage = new Stage();
-        //primaryStage.hide();;
         this.postController = postController;
         this.primaryStage = primaryStage;
-
+        this.idCourse = courseId;
         // Copy of the post List
         if (!postList.isEmpty()) {
             this.copyList = copyArray(postList);
@@ -186,7 +185,6 @@ public class PostViewController extends GenericController {
             btnPostDelete.setDisable(true);
             btnPostCancel.setDisable(true);
             btnPostPrint.setDisable(postList.isEmpty());
-            btnPostAdd.setDisable(false);
             btnPostBack.setDisable(false);
 
             // Filter state
@@ -202,20 +200,29 @@ public class PostViewController extends GenericController {
             if (!postList.isEmpty()) {
                 postTable.setItems(getItems(postList));
             }
+
+            if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
+                btnPostAdd.setDisable(true);
+                postTable.setEditable(false);
+            } else {
+                btnPostAdd.setDisable(false);
+            }
             postTable.getSelectionModel().setCellSelectionEnabled(true);
             cmbxFilter.setItems(
                     FXCollections.observableArrayList(FilterTypes.NINGUNO, FilterTypes.NOMBRE, FilterTypes.FECHA, FilterTypes.RANGO_FECHA));
         });
 
         // Callbacks
-        Callback<TableColumn<Post, String>, TableCell<Post, String>> stringCellFactory
-                = (TableColumn<Post, String> p) -> new EditingStringCell();
+        Callback<TableColumn<Post, String>, TableCell<Post, String>> titleCellFactory
+                = (TableColumn<Post, String> p) -> new EditingStringCell(255);
+        Callback<TableColumn<Post, String>, TableCell<Post, String>> contentCellFactory
+                = (TableColumn<Post, String> p) -> new EditingStringCell(65535);
         Callback<TableColumn<Post, Date>, TableCell<Post, Date>> dateCellFactory
                 = (TableColumn<Post, Date> p) -> new EditingDateCell();
 
         // Title column
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        titleColumn.setCellFactory(stringCellFactory);
+        titleColumn.setCellFactory(titleCellFactory);
         titleColumn.setOnEditCommit(
                 (CellEditEvent<Post, String> t) -> {
                     ((Post) t.getTableView().getItems().get(
@@ -238,7 +245,7 @@ public class PostViewController extends GenericController {
 
         // YT link Column
         linkColumn.setCellValueFactory(new PropertyValueFactory<>("video"));
-        linkColumn.setCellFactory(stringCellFactory);
+        linkColumn.setCellFactory(contentCellFactory);
         linkColumn.setOnEditCommit(
                 (CellEditEvent<Post, String> t) -> {
                     ((Post) t.getTableView().getItems().get(
@@ -258,6 +265,7 @@ public class PostViewController extends GenericController {
                         btnPostDelete.setDisable(true);
                     }
                 });
+        // Post listener when right click
         postTable.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             if (e.getButton().equals(MouseButton.SECONDARY)) {
                 try {
@@ -279,7 +287,7 @@ public class PostViewController extends GenericController {
 
             }
         });
-
+// Listener when combo box changes 
         cmbxFilter.getSelectionModel().selectedItemProperty().addListener(
                 (options, oldValue, newValue) -> {
                     switch (newValue) {
@@ -306,13 +314,14 @@ public class PostViewController extends GenericController {
                             break;
                     }
                 });
+        // Validate the text field for the filter
         filterText.textProperty().addListener(observable -> {
             try {
                 String text = filterText.getText();
                 if (text.length() == 0) {
                     throw new Exception("No puedes filtrar con un texto vacio");
                 } else if (text.length() >= VARCHAR_LIMIT) {
-                    throw new Exception("No puedes filtrar con mas de" + VARCHAR_LIMIT + "caracteres");
+                    throw new Exception("No puedes filtrar con mas de " + VARCHAR_LIMIT + " caracteres");
                 } else {
                     btnBuscar.setDisable(false);
                 }
@@ -323,11 +332,13 @@ public class PostViewController extends GenericController {
             }
 
         });
+        // Validate the dates of the filter
         filterDate.textProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
                 btnBuscar.setDisable(false);
             }
         });
+        // Date end can't be before date start
         filterDateRange.textProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
                 if (!filterDate.getText().isEmpty()) {
@@ -340,6 +351,7 @@ public class PostViewController extends GenericController {
                 }
             }
         });
+        // Show error when user manually inserts a date and its not formatted correctly
         filterDate.setParseErrorCallback((throwable) -> {
             showAlert("No se puede formatear esa fecha, por favor introduzca la fecha en formato año/mes/dia", Alert.AlertType.ERROR);
             return null;
@@ -372,7 +384,7 @@ public class PostViewController extends GenericController {
         btnPostBack.setOnAction(event -> {
             LOG.info("Closing the window");
             stage.close();
-            //primaryStage.show();
+            primaryStage.show();
         });
         btnPostCancel.setOnAction(event -> {
             LOG.info("Cancel the edited table from commiting to the server");
@@ -447,7 +459,8 @@ public class PostViewController extends GenericController {
                     }
                 }
         );
-        stage.showAndWait();
+        primaryStage.hide();
+        stage.show();
     }
 
     /**
@@ -461,6 +474,18 @@ public class PostViewController extends GenericController {
         return postItems;
     }
 
+    /**
+     * This method will create new objects from a list, so if there is some
+     * changes any object there will be a list with the unchanged data.
+     *
+     * This is done in this way because if you copy like this:
+     * {@code copyList = originalList} this will make a reference to the
+     * originalList and any changes will be done in both variables because both
+     * are pointing to the same list.
+     *
+     * @param original List that will be copied
+     * @return Returns a list with the same data of the original list
+     */
     private List<Post> copyArray(List<Post> original) {
         List<Post> copy = new ArrayList<>();
         original.stream().forEach(p -> copy.add(
@@ -470,10 +495,21 @@ public class PostViewController extends GenericController {
         return copy;
     }
 
+    /**
+     * Returns the post object of the selected row in the table
+     *
+     * @return Post object of the selected row
+     */
     private Post getSelected() {
         return postTable.getSelectionModel().getSelectedItem();
     }
 
+    /**
+     * This method returns a string value of the table selected cell
+     *
+     * @throws Exception It throws an exception if the selected cell is
+     * {@code NULL}
+     */
     private String getSelectedCell() throws Exception {
         try {
             TablePosition pos = postTable.getSelectionModel().getSelectedCells().get(0);
@@ -493,6 +529,11 @@ public class PostViewController extends GenericController {
         }
     }
 
+    /**
+     * Deletes the row of post that is currently selected
+     *
+     * @param event Event thrown (its not used in this method)
+     */
     private void deletePost(ActionEvent event) {
         showAlert("¿Estas seguro de que quieres eliminar esta publicacion?", Alert.AlertType.CONFIRMATION);
         if (alert.getResult().equals(ButtonType.YES)) {
@@ -509,6 +550,11 @@ public class PostViewController extends GenericController {
         }
     }
 
+    /**
+     * Adds a row with defaults value and it will send that data to the server
+     *
+     * @param event Event thrown (its not used in this method)
+     */
     private void addPost(ActionEvent event) {
         try {
             LOG.info("Creating new post with default values...");
@@ -525,6 +571,11 @@ public class PostViewController extends GenericController {
         }
     }
 
+    /**
+     * Opens the {@link PostContentViewController} with the data of a post
+     *
+     * @param event Event thrown (its not used in this method)
+     */
     private void commentView(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("PostContentView.fxml"));
@@ -541,11 +592,23 @@ public class PostViewController extends GenericController {
         }
     }
 
+    /**
+     * This is the method that calls {@link #commentView(javafx.event.ActionEvent)
+     * }, this method its for the context menu.
+     *
+     * @param event Event thrown (its not used in this method)
+     */
     @FXML
     private void menuEnter(ActionEvent event) {
         commentView(event);
     }
 
+    /**
+     * This context menu option will copy any string (if its not NULL) from the
+     * current selected cell from the table
+     *
+     * @param event Event thrown (its not used in this method)
+     */
     @FXML
     private void menuCopy(ActionEvent event) {
         try {
@@ -559,6 +622,12 @@ public class PostViewController extends GenericController {
         }
     }
 
+    /**
+     * This context menu option will paste the string saved in the system
+     * clipboard if its not {@code NULL or empty}
+     *
+     * @param event Event thrown (its not used in this method)
+     */
     @FXML
     private void menuPaste(ActionEvent event) {
         try {
@@ -600,16 +669,34 @@ public class PostViewController extends GenericController {
         }
     }
 
+    /**
+     * This context menu adds a new post calling the method {@link #addPost(javafx.event.ActionEvent)
+     * }
+     *
+     * @param event Event thrown (its not used in this method)
+     */
     @FXML
     private void menuAdd(ActionEvent event) {
         addPost(event);
     }
 
+    /**
+     * This context menu deletes de selected post row, calling the method {@link #deletePost(javafx.event.ActionEvent)
+     * }
+     *
+     * @param event Event thrown (its not used in this method)
+     */
     @FXML
     private void menuDelete(ActionEvent event) {
         deletePost(event);
     }
 
+    /**
+     * This context menu refreshes the table by getting again the list from the
+     * server, and setting it to the table
+     *
+     * @param event Event thrown (its not used in this method)
+     */
     @FXML
     private void menuRefresh(ActionEvent event) {
         try {
@@ -617,8 +704,6 @@ public class PostViewController extends GenericController {
             }, idCourse.toString());
             postTable.setItems(getItems(postList));
             postTable.refresh();
-            showAlert("Se ha actualizado la tabla", Alert.AlertType.INFORMATION);
-
         } catch (BusinessLogicException e) {
             LOG.severe(e.getMessage());
         }

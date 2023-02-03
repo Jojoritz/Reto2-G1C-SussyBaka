@@ -5,9 +5,18 @@
  */
 package client.view.components;
 
+import client.beans.Post;
+import client.beans.User;
+import client.logic.ControllerFactory;
+import client.view.course.CourseViewController;
+import client.view.post.PostViewController;
+import client.view.principal.PrincipalViewController;
+import client.view.signIn.SignInViewController;
 import client.view.signUp.SignUpViewController;
 import client.view.subject.SubjectsViewController;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,6 +27,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
+import javax.ws.rs.core.GenericType;
 
 /**
  * FXML Controller class
@@ -55,6 +65,8 @@ public class MenuBarController {
         helpHtml = url;
     }
 
+    private static User user;
+
     /**
      * The logger of this class
      */
@@ -68,60 +80,105 @@ public class MenuBarController {
             }
         });
 
+        menitmHelp.setOnAction(event -> {
+            try {
+                LOG.info("Opening help window....");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("HelpView.fxml"));
+                Parent root = (Parent) loader.load();
+                HelpViewController helpController = ((HelpViewController) loader.getController());
+                helpController.initAndShowStage(root, helpHtml);
+            } catch (IOException e) {
+                LOG.severe(e.getMessage());
+                showError();
+            }
+        });
+        menitmInitialScreen.setOnAction(event -> {
+            try {
+                LOG.info("Opening main window...");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/principal/PrincipalView.fxml"));
+                Parent root = (Parent) loader.load();
+                PrincipalViewController principalController = ((PrincipalViewController) loader.getController());
+                stage.close();
+                principalController.initStage(root, stage);
+            } catch (IOException e) {
+                LOG.info(e.getMessage());
+                showError();
+            }
+        });
+        menitmCourses.setOnAction(event -> {
+            try {
+                LOG.info("Opening subjects window...");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/course/Courses.fxml"));
+                Parent root = (Parent) loader.load();
+                CourseViewController courseViewController = ((CourseViewController) loader.getController());
+                stage.close();
+                courseViewController.initStage(root, stage);
+            } catch (IOException e) {
+                LOG.severe(e.getMessage());
+                showError();
+            }
+        });
+        // This is only a back door to enter to the post, using logged user and course ID 1
+        menitmPost.setOnAction(event -> {
+            try {
+                /*
+                user = ControllerFactory.getUserController().getUser_XML(new GenericType<User>() {
+                }, "1");
+                 */
+                List<Post> postList = ControllerFactory.getPostController().
+                        getCoursePosts(new GenericType<ArrayList<Post>>() {
+                        }, "1");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/post/PostView.fxml"));
+                Parent root = (Parent) loader.load();
+                PostViewController controller = ((PostViewController) loader.getController());
+                controller.setUser(user);
+                stage.close();
+                controller.initStage(root, ControllerFactory.getPostController(), stage, postList, 1);
+            } catch (Exception e) {
+                LOG.severe(e.getMessage());
+                showError();
+            }
+        });
+        menitmSubjects.setOnAction(event -> {
+            try {
+                LOG.info("Opening subjects window...");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/subject/Subjects.fxml"));
+                Parent root = (Parent) loader.load();
+                SubjectsViewController subjectViewController = ((SubjectsViewController) loader.getController());
+                stage.close();
+                subjectViewController.initStage(root, stage);
+            } catch (IOException e) {
+                LOG.severe(e.getMessage());
+                showError();
+            }
+        });
+        menitmViewProfile.setOnAction(event -> {
+            showError();
+        });
+        menitmCloseSession.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/signIn/SignInView.fxml"));
+                Parent root = (Parent) loader.load();
+                SignInViewController controller = ((SignInViewController) loader.getController());
+                stage.close();
+                controller.initStage(root);
+            } catch (IOException e) {
+                showError();
+            }
+        });
+    }
+
+    private void showError() {
+        Alert alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al abrir la ventana");
+        alert.showAndWait();
     }
 
     public void setStage(Stage stageParam) {
         stage = stageParam;
     }
 
-    @FXML
-    private void handleMenuBarStart(ActionEvent event) {
-
+    public void setUser(User userLogged) {
+        user = userLogged;
     }
 
-    @FXML
-    private void handleMenuBarCourses(ActionEvent event) {
-    }
-
-    @FXML
-    private void handleMenuBarPost(ActionEvent event) {
-    }
-
-    @FXML
-    private void handleMenuBarSubjects(ActionEvent event) {
-        try {
-            LOG.info("Opening subjects window...");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/subject/Subjects.fxml"));
-            Parent root = (Parent) loader.load();
-            SubjectsViewController subjectViewController = ((SubjectsViewController) loader.getController());
-            subjectViewController.initStage(root, stage);
-        } catch (Exception e) {
-            LOG.severe("An error happened while opening the subjects window");
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al abrir la ventana");
-            alert.showAndWait();
-        }
-    }
-
-    @FXML
-    private void handleMenuBarProfile(ActionEvent event) {
-    }
-
-    @FXML
-    private void handleMenuBarLogOff(ActionEvent event) {
-        stage.close();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/signIn/SignInView.fxml"));
-    }
-
-    @FXML
-    private void handleMenuBarHelp(ActionEvent event) {
-        try {
-            LOG.info("Opening help window...." + helpHtml);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("HelpView.fxml"));
-            Parent root = (Parent) loader.load();
-            HelpViewController helpController = ((HelpViewController) loader.getController());
-            helpController.initAndShowStage(root, helpHtml);
-        } catch (IOException e) {
-            LOG.severe(e.getMessage());
-        }
-    }
 }

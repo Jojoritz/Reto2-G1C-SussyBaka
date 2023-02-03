@@ -318,7 +318,7 @@ public class CourseViewController {
     /**
      * Initializes the controller class.
      */
-    public void initStage(Parent root, Stage primaryStage, String css) {
+    public void initStage(Parent root, Stage primaryStage) {
         LOG.info("Starting the window and setting the components on the screen");
         //Setting the Window
         scene = new Scene(root);

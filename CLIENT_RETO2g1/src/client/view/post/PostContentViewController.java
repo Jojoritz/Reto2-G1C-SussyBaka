@@ -9,7 +9,6 @@ import client.beans.Comment;
 import client.beans.Post;
 import client.beans.Student;
 import client.beans.Teacher;
-import client.beans.User;
 import client.beans.enumerations.UserPrivilege;
 import client.logic.CommentController;
 import client.logic.PostController;
@@ -18,9 +17,6 @@ import client.view.components.GenericController;
 import client.view.components.MenuBarController;
 import client.view.customNodes.EditingDateCell;
 import client.view.customNodes.EditingStringCell;
-import static client.view.customNodes.HyperlinkCell.getHostServices;
-import client.view.signUp.SignUpViewController;
-import com.lowagie.text.html.simpleparser.Img;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -35,8 +31,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.beans.property.SimpleObjectProperty;
@@ -45,7 +39,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -82,7 +75,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
 
 /**
- * FXML Controller class
+ * FXML Controller class for the Post content View
  *
  * @author Henri
  */
@@ -130,13 +123,25 @@ public class PostContentViewController extends GenericController {
     private MenuItem contextCommentRefresh;
     @FXML
     private final MenuBarController menuBarController = new MenuBarController();
-    
+
+    /**
+     * Copy list of the comments
+     */
     private List<Comment> copyList;
 
+    /**
+     * Comment list
+     */
     private List<Comment> commentList;
 
+    /**
+     * Post object
+     */
     private Post copyPost;
 
+    /**
+     * Comment controller interface
+     */
     private CommentController commentController;
 
     /**
@@ -144,6 +149,17 @@ public class PostContentViewController extends GenericController {
      */
     private static final Logger LOG = Logger.getLogger(PostContentViewController.class.getName());
 
+    /**
+     * Initializes the controller class.
+     *
+     * @param root The parent root
+     * @param postController Implementation of the Post controller interface
+     * @param commentController Implementation of the Comment controller
+     * interface
+     * @param primaryStage Primary stage
+     * @param commentList List with all the comments
+     * @param post The post object that has all the data
+     */
     public void initStage(Parent root, PostController postController, CommentController commentController, Stage primaryStage, List<Comment> commentList, Post post) {
         scene = new Scene(root);
         stage = new Stage();
@@ -171,8 +187,7 @@ public class PostContentViewController extends GenericController {
             stage.setResizable(false);
             stage.initModality(Modality.APPLICATION_MODAL);
             menuBarController.setHelpHtml("/client/view/post/help/PostContentViewHelp.html");
-            
-            
+
             if (post != null) {
                 txtTitle.setText(post.getTitle());
                 txtAreaContent.setText(post.getContent());
@@ -221,6 +236,7 @@ public class PostContentViewController extends GenericController {
             }
         });
 
+        // Validator for the img url
         txtImgUrl.textProperty().addListener(observable -> {
             String text = txtImgUrl.getText();
             if (text.length() >= VARCHAR_LIMIT) {
@@ -232,19 +248,16 @@ public class PostContentViewController extends GenericController {
             }
             btnPostContentCancel.setDisable(false);
         });
+        // Update image when lost focus the text field
         txtImgUrl.focusedProperty().addListener((obs, bool1, bool2) -> {
             if (!bool2) {
                 updateImage(txtImgUrl.getText(), imgView);
             }
         });
-        txtImgUrl.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                updateImage(txtImgUrl.getText(), imgView);
-            }
-        });
         txtImgUrl.setTooltip(new Tooltip("URL de la imagen a mostrar, "
-                + "para mostrar la imagen pulse enter o clicke fuera del campo de texto"));
+                + "para actualizar la imagen una vez cambiado la URL clicke fuera del campo de texto"));
 
+        // Video url text field validator
         txtVideoUrl.textProperty().addListener(observable -> {
             String text = txtVideoUrl.getText();
             if (text.length() >= VARCHAR_LIMIT) {
@@ -256,10 +269,12 @@ public class PostContentViewController extends GenericController {
             }
             btnPostContentCancel.setDisable(false);
         });
+        // Change in the hyperlink field when writing in the text field
         txtVideoUrl.textProperty().addListener(observable -> {
             videoHyperLink.setText(txtVideoUrl.getText());
             btnPostContentCancel.setDisable(false);
         });
+        // Open default browser 
         videoHyperLink.setOnAction(event -> {
             String url = txtVideoUrl.getText();
             if (!url.matches("^https?:\\/\\/(?!.*:\\/\\/)\\S+")) {
@@ -276,7 +291,7 @@ public class PostContentViewController extends GenericController {
 
         // Callbacks
         Callback<TableColumn<Comment, String>, TableCell<Comment, String>> stringCellFactory
-                = (TableColumn<Comment, String> p) -> new EditingStringCell();
+                = (TableColumn<Comment, String> p) -> new EditingStringCell(65535);
         Callback<TableColumn<Comment, Date>, TableCell<Comment, Date>> dateCellFactory
                 = (TableColumn<Comment, Date> p) -> new EditingDateCell();
 
@@ -292,6 +307,7 @@ public class PostContentViewController extends GenericController {
                     ((Comment) t.getTableView().getItems()
                             .get(t.getTablePosition().getRow()))
                             .setDateComment(t.getNewValue());
+
                 }
         );
         // Comment column

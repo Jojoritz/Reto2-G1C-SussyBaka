@@ -5,6 +5,7 @@
  */
 package client.view.signIn;
 
+import client.beans.Teacher;
 import client.beans.User;
 import client.logic.ControllerFactory;
 import client.logic.UserController;
@@ -273,29 +274,26 @@ public class SignInViewController {
                 //UserRESTInterface userRest = ControllerFactroy.getUserControllerREST();
                 user = userRest.signIn_XML(User.class, txtUser.getText(), txtPassword.getText());
 
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/principal/PrincipalView.fxml"));
+                Parent root = (Parent) loader.load();
+                PrincipalViewController principalController = ((PrincipalViewController) loader.getController());
+                principalController.setUser(user);
+                principalController.initStage(root, primaryStage);
+                txtUser.setText("");
+                txtPassword.setText("");
             } catch (ClientErrorException exc) {
-                exc.printStackTrace();
                 LOG.info(exc.getMessage());
                 throw new BusinessLogicException(exc.getMessage());
             }
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/principal/PrincipalView.fxml"));
-            Parent root = (Parent) loader.load();
-            PrincipalViewController principalController = ((PrincipalViewController) loader.getController());
-            principalController.initStage(root, primaryStage, user);
-            txtUser.setText("");
-            txtPassword.setText("");
 
         } catch (BusinessLogicException ex) {
             LOG.severe(ex.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK);
             alert.showAndWait();
-            ex.printStackTrace();
         } catch (Exception ex) {
             LOG.severe(ex.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, "Ha ocurrido un error al iniciar la ventana de inicio de sesión", ButtonType.OK);
             alert.showAndWait();
-            ex.printStackTrace();
         }
     }
 

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="596.0" prefWidth="1005.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.course.CourseViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/style.css" prefHeight="596.0" prefWidth="1005.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.course.CourseViewController">
    <children>
       <fx:include fx:id="menuBarContainer" source="/client/view/components/MenuBar.fxml"/>
       <TableView fx:id="tableCourses" layoutX="172.0" layoutY="243.0" prefHeight="300.0" prefWidth="622.0">

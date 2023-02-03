@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -10,7 +15,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.signUp.SignUpViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.signUp.SignUpViewController">
     <children>
         <Label layoutX="705.0" layoutY="14.0" prefHeight="35.0" prefWidth="449.0" text="Registro">
             <font>
@@ -18,50 +23,50 @@
             </font>
         </Label>
         
-        <Label layoutX="750.0" layoutY="71.0" text="Nombres y Apellidos">
+        <Label layoutX="754.0" layoutY="61.0" text="Nombres y Apellidos">
             <font>
                 <Font size="16.0" />
             </font>
         </Label>
-        <TextField fx:id="txtFullName" layoutX="750.0" layoutY="96.0" prefHeight="37.0" prefWidth="380.0" promptText="Introduce el nombre completo">
+        <TextField fx:id="txtFullName" layoutX="754.0" layoutY="86.0" prefHeight="37.0" prefWidth="380.0" promptText="Introduce el nombre completo">
             <font>
                 <Font size="16.0" />
             </font>
         </TextField>
-        <Label fx:id="txtFullNameError" layoutX="754.0" layoutY="140.0" prefHeight="20.0" prefWidth="345.0" textFill="RED" visible="false">            
+        <Label fx:id="txtFullNameError" alignment="TOP_LEFT" layoutX="754.0" layoutY="128.0" prefHeight="39.0" prefWidth="509.0" textFill="RED" visible="false">            
             <font>
                 <Font size="14.0" />
             </font>
         </Label>
 
-        <Label layoutX="754.0" layoutY="171.0" text="Email:">
+        <Label layoutX="754.0" layoutY="174.0" text="Email:">
             <font>
                 <Font size="16.0" />
             </font>
         </Label>
-        <TextField fx:id="txtEmail" layoutX="754.0" layoutY="196.0" prefHeight="37.0" prefWidth="380.0" promptText="Introduce el email">
+        <TextField fx:id="txtEmail" layoutX="754.0" layoutY="199.0" prefHeight="37.0" prefWidth="380.0" promptText="Introduce el email">
             <font>
                 <Font size="16.0" />
             </font>
         </TextField>
-        <Label fx:id="txtEmailError" layoutX="759.0" layoutY="235.0" prefHeight="20.0" prefWidth="323.0" textFill="RED" visible="false">            
+        <Label fx:id="txtEmailError" alignment="TOP_LEFT" layoutX="759.0" layoutY="237.0" prefHeight="46.0" prefWidth="496.0" textFill="RED" visible="false">            
             <font>
                 <Font size="14.0" />
             </font>
         </Label>
 
       
-        <Label layoutX="754.0" layoutY="280.0" text="Usuario:">
+        <Label layoutX="754.0" layoutY="282.0" text="Usuario:">
             <font>
                 <Font size="16.0" />
             </font>
         </Label>
-        <TextField fx:id="txtUsername" layoutX="754.0" layoutY="305.0" prefHeight="37.0" prefWidth="380.0" promptText="Introduce el nombre de usuario">
+        <TextField fx:id="txtUsername" layoutX="754.0" layoutY="307.0" prefHeight="37.0" prefWidth="380.0" promptText="Introduce el nombre de usuario">
             <font>
                 <Font size="16.0" />
             </font>
         </TextField>
-        <Label fx:id="txtUsernameError" layoutX="750.0" layoutY="350.0" prefHeight="20.0" prefWidth="395.0" textFill="RED" visible="false">            
+        <Label fx:id="txtUsernameError" alignment="TOP_LEFT" layoutX="750.0" layoutY="352.0" prefHeight="35.0" prefWidth="518.0" textFill="RED" visible="false">            
             <font>
                 <Font size="14.0" />
             </font>
@@ -78,7 +83,7 @@
                 <Font size="16.0" />
             </font>
         </PasswordField>
-        <Label fx:id="txtPasswordError" layoutX="759.0" layoutY="460.0" prefHeight="39.0" prefWidth="442.0" textFill="RED" visible="false">
+        <Label fx:id="txtPasswordError" alignment="TOP_LEFT" layoutX="759.0" layoutY="460.0" prefHeight="39.0" prefWidth="442.0" textFill="RED" visible="false">
             <font>
                 <Font size="14.0" />
             </font>
@@ -94,7 +99,7 @@
                 <Font size="16.0" />
             </font>
         </PasswordField>
-        <Label fx:id="txtPasswordConfirmError" layoutX="753.0" layoutY="582.0" prefHeight="35.0" prefWidth="428.0" textFill="RED" visible="false">
+        <Label fx:id="txtPasswordConfirmError" alignment="TOP_LEFT" layoutX="753.0" layoutY="579.0" prefHeight="37.0" prefWidth="428.0" textFill="RED" visible="false">
             <font>
                 <Font size="14.0" />
             </font>

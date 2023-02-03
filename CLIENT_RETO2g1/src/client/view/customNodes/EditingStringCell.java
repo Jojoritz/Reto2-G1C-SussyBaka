@@ -8,6 +8,8 @@ package client.view.customNodes;
 import client.beans.Post;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -20,8 +22,11 @@ public class EditingStringCell<K> extends TableCell<K, String> {
 
     private TextField textField;
     private static final Logger LOG = Logger.getLogger(EditingStringCell.class.getName());
+    private final Integer LIMIT;
+    private Alert alert;
 
-    public EditingStringCell() {
+    public EditingStringCell(Integer limit) {
+        this.LIMIT = limit;
     }
 
     @Override
@@ -73,12 +78,24 @@ public class EditingStringCell<K> extends TableCell<K, String> {
                 (ObservableValue<? extends Boolean> arg0,
                         Boolean arg1, Boolean arg2) -> {
                     if (!arg2) {
-                        commitEdit(textField.getText());
+                        if (textField.getText().length() > LIMIT) {
+                            textField.setText(textField.getText().substring(0, LIMIT));
+                            alert = new Alert(Alert.AlertType.ERROR, "No puedes escribiar mas de " + LIMIT + " caracteres", ButtonType.OK);
+                            alert.showAndWait();
+                        } else {
+                            commitEdit(textField.getText());
+                        }
                     }
                 });
         textField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                commitEdit(textField.getText());
+                if (textField.getText().length() > LIMIT) {
+                    textField.setText(textField.getText().substring(0, LIMIT));
+                    alert = new Alert(Alert.AlertType.ERROR, "No puedes escribiar mas de " + LIMIT + " caracteres", ButtonType.YES);
+                    alert.showAndWait();
+                } else {
+                    commitEdit(textField.getText());
+                }
             }
         });
     }

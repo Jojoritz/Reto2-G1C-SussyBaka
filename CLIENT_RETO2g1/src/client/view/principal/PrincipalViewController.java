@@ -6,10 +6,18 @@
 package client.view.principal;
 
 import client.beans.User;
+import client.view.components.GenericController;
+import client.view.components.MenuBarController;
+import client.view.course.CourseViewController;
+import client.view.signIn.SignInViewController;
+import client.view.subject.SubjectsViewController;
+import java.io.IOException;
 import java.util.logging.Logger;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
@@ -21,7 +29,7 @@ import javafx.stage.Stage;
  *
  * @author Henri
  */
-public class PrincipalViewController {
+public class PrincipalViewController extends GenericController {
 
     @FXML
     private Label lblLoggedUser;
@@ -35,14 +43,12 @@ public class PrincipalViewController {
     private Button btnCloseSession;
     @FXML
     private MenuBar menuBarContainer;
-
-    private User user;
-
-    private Stage myStage = null;
-
-    private Scene myScene = null;
+    @FXML
+    private final MenuBarController menuBarController = new MenuBarController();
 
     private static final Logger LOG = Logger.getLogger(PrincipalViewController.class.getName());
+
+    private static Stage mainStage;
 
     /**
      * Initializes the controller class.
@@ -51,22 +57,25 @@ public class PrincipalViewController {
      * @param primaryStage
      * @param user
      */
-    public void initStage(Parent root, Stage primaryStage, User user) {
+    public void initStage(Parent root, Stage primaryStage) {
         LOG.info("Starting the principal view and setting the components on the screen");
-        myScene = new Scene(root);
-        myStage = new Stage();
+        scene = new Scene(root);
+        mainStage = new Stage();
         primaryStage.hide();
-        this.user = user;
+        this.setUser(user);
+        menuBarController.setStage(mainStage);
+        menuBarController.setUser(user);
 
-        myStage.setOnShowing((event) -> {
+        mainStage.setOnShowing((event) -> {
 
-            myStage.setTitle("Ventana Principal");
-            myStage.setScene(myScene);
-            myStage.setResizable(false);
-            myStage.initModality(Modality.WINDOW_MODAL);
+            mainStage.setTitle("Ventana Principal");
+            mainStage.setScene(scene);
+            mainStage.setResizable(false);
+            if (!mainStage.isShowing()) {
+                mainStage.initModality(Modality.WINDOW_MODAL);
+            }
 
-            lblLoggedUser.setText(this.user.getLogin());
-
+            lblLoggedUser.setText(user.getLogin());
             btnCourse.setDisable(false);
             btnSubject.setDisable(false);
             btnProfile.setDisable(false);
@@ -74,7 +83,52 @@ public class PrincipalViewController {
             btnCloseSession.setDefaultButton(true);
         });
 
-        myStage.show();
+        btnCourse.setOnAction(event -> {
+            try {
+                LOG.info("Opening subjects window...");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/course/Courses.fxml"));
+                Parent root2 = (Parent) loader.load();
+                CourseViewController courseViewController = ((CourseViewController) loader.getController());
+                mainStage.hide();
+                courseViewController.initStage(root2, mainStage);
+            } catch (IOException e) {
+                LOG.severe(e.getMessage());
+                showAlert(e.getMessage(), Alert.AlertType.ERROR);
+            }
+        });
+
+        btnSubject.setOnAction(event -> {
+            try {
+                LOG.info("Opening subjects window...");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/subject/Subjects.fxml"));
+                Parent root2 = (Parent) loader.load();
+                SubjectsViewController subjectViewController = ((SubjectsViewController) loader.getController());
+                mainStage.hide();
+                subjectViewController.initStage(root2, mainStage);
+            } catch (IOException e) {
+                LOG.severe(e.getMessage());
+                showAlert(e.getMessage(), Alert.AlertType.ERROR);
+            }
+        });
+
+        btnProfile.setOnAction(event -> {
+            showAlert("No se puede abrir esta ventana", Alert.AlertType.ERROR);
+        });
+
+        btnCloseSession.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/signIn/SignInView.fxml"));
+                Parent root2 = (Parent) loader.load();
+                SignInViewController controller = ((SignInViewController) loader.getController());
+                mainStage.close();
+                controller.initStage(root2);
+            } catch (IOException e) {
+                LOG.severe(e.getMessage());
+                showAlert("Error al intentar abrir la ventana", Alert.AlertType.ERROR);
+            }
+        });
+
+        mainStage.show();
     }
 
 }
