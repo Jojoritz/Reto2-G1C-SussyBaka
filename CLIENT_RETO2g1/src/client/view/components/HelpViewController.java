@@ -32,7 +32,7 @@ public class HelpViewController {
      * Initializes and show the help window.
      *
      * @param root The FXML document hierarchy root.
-     * @param html
+     * @param html the html document hiearchy root.
      */
     public void initAndShowStage(Parent root, String html) {
         Scene scene = new Scene(root);

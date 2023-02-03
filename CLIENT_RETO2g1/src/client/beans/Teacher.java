@@ -14,13 +14,11 @@ public class Teacher extends User {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @associates <{entities.Course}>
      * A collection of the actually teaching courses of the teacher
      */
     private Set<Course> teachingCourses;
 
     /**
-     * @associates <{entities.Subject}>
      * A collection with the specialized subject of this teacher
      */
     private Set<Subject> specializedSubjects;
