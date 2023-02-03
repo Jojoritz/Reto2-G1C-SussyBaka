@@ -90,6 +90,7 @@ public class PrincipalViewController extends GenericController {
                 Parent root2 = (Parent) loader.load();
                 CourseViewController courseViewController = ((CourseViewController) loader.getController());
                 mainStage.hide();
+                courseViewController.setUser(user);
                 courseViewController.initStage(root2, mainStage);
             } catch (IOException e) {
                 LOG.severe(e.getMessage());
