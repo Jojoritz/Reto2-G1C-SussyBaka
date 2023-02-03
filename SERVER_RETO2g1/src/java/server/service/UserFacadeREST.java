@@ -123,7 +123,8 @@ public class UserFacadeREST {
     }
 
     /**
-     * PUT method to update user
+     * PUT method to update user, if only send a email, it will reset the
+     * password
      *
      * @param user the data to update
      */
@@ -132,8 +133,13 @@ public class UserFacadeREST {
     public void modifyUser(User user) {
         try {
             LOGGER.info("Modifying a user");
-            user.setPassword(EncryptDecrypt.descifrarTextoAsimetrico(user.getPassword()));
-            ejb.edit(user);
+            if (user.getFullName() == null && user.getEmail() != null) {
+                LOGGER.info("Starting to change the user password");
+                ejb.resetPassword(user.getEmail());
+            } else {
+                user.setPassword(EncryptDecrypt.descifrarTextoAsimetrico(user.getPassword()));
+                ejb.edit(user);
+            }
         } catch (UpdateException | EncriptionException e) {
             LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
