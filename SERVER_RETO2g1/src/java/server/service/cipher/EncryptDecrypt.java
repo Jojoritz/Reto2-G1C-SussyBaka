@@ -5,9 +5,7 @@
  */
 package server.service.cipher;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -23,6 +21,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import server.exception.EncriptionException;
+import static org.apache.poi.util.IOUtils.toByteArray;
 
 /**
  *
@@ -32,9 +31,9 @@ public class EncryptDecrypt {
 
     private static final String KEY = "[g#>3!tx9Xr\\eeKt";
     private static final byte[] SALT = String.valueOf(".....").getBytes();
-    private static final String CREDENTIALS = EncryptDecrypt.class.getResource("credentials.dat").getPath();
-    private static final String PRIVATE = EncryptDecrypt.class.getResource("Private.key").getPath();
-    private static final String PUBLIC = EncryptDecrypt.class.getResource("Public.key").getPath();
+    private static final String CREDENTIALS = "credentials.dat";
+    private static final String PRIVATE = "Private.key";
+    private static final String PUBLIC = "Public.key";
 
     /**
      * Get password for the email decrypt a encrypted file
@@ -48,8 +47,8 @@ public class EncryptDecrypt {
         SecretKeyFactory secretKeyFactory;
         try {
             // Read file
-            byte[] fileContent = fileReader(CREDENTIALS);
-
+            InputStream is = EncryptDecrypt.class.getResourceAsStream(CREDENTIALS);
+            byte[] fileContent = toByteArray(is);
             // Generate secret key with PBKDF2WithHmacSHA1
             keySpec = new PBEKeySpec(KEY.toCharArray(), SALT, 65536, 128);
             secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
@@ -84,7 +83,8 @@ public class EncryptDecrypt {
         byte[] encodedMessage;
         try {
             // Read public key from file
-            byte fileKey[] = fileReader(PUBLIC);
+            InputStream is = EncryptDecrypt.class.getResourceAsStream(PUBLIC);
+            byte fileKey[] = toByteArray(is);
 
             // Generate KeyFactory with RSA
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -115,7 +115,8 @@ public class EncryptDecrypt {
         byte[] decodedMessage;
         try {
             // Read public key from file
-            byte fileKey[] = fileReader(PRIVATE);
+            InputStream is = EncryptDecrypt.class.getResourceAsStream(PRIVATE);
+            byte fileKey[] = toByteArray(is);
 
             // Generate KeyFactory with RSA
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -129,24 +130,6 @@ public class EncryptDecrypt {
             return new String(decodedMessage);
         } catch (Exception e) {
             throw new EncriptionException(e.getMessage());
-        }
-    }
-
-    /**
-     * Returns the file content in bytes
-     *
-     * @param path Path to the file
-     * @return Byte array with the content of the file
-     * @throws IOException if any error happened while reading the file
-     */
-    private static byte[] fileReader(String path) throws IOException {
-        try {
-            File file = new File(path);
-            byte ret[] = Files.readAllBytes(file.toPath());
-            return ret;
-
-        } catch (Exception e) {
-            throw new IOException(e.getMessage());
         }
     }
 
