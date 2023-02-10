@@ -14,6 +14,7 @@ import client.logic.ControllerFactory;
 import client.logic.SubjectController;
 import client.logic.UserController;
 import client.logic.exception.BusinessLogicException;
+import client.view.components.MenuBarController;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -207,6 +208,10 @@ public class SubjectsViewController {
      * This is the logger for the subjects view controller
      */
     private static final Logger LOGGER = Logger.getLogger(SubjectsViewController.class.getName());
+    /**
+     * Controller of the menu bar
+     */
+    private final MenuBarController menuBarController = new MenuBarController();
 
     /**
      * The method that initialize the window
@@ -225,7 +230,7 @@ public class SubjectsViewController {
         myStage.setScene(myScene);
         myStage.setTitle("Asignaturas");
         myStage.setResizable(false);
-
+        menuBarController.setStage(myStage);
         primaryStage.hide();
 
         //Initializing variable for validations and filters
@@ -235,7 +240,7 @@ public class SubjectsViewController {
         typeEmpty = true;
         comboSelectedTeacher = null;
         filterToApply = null;
-       
+
         //Setting the combobox state
         cmbxFilterOptions.setEditable(false);
         cmbxTeacher.setEditable(false);
@@ -285,13 +290,12 @@ public class SubjectsViewController {
                 subjectsData = FXCollections.observableArrayList(subjectController.findAll_XML(new GenericType<Collection<Subject>>() {
                 }));
                 tableSubjects.setItems(subjectsData);
-            } 
-            catch (BusinessLogicException ex) { 
+            } catch (BusinessLogicException ex) {
                 LOGGER.severe("An error happened while loading data: " + ex.getMessage());
                 LOGGER.severe("Its posible that the server is shut down, or a connection error had happened");
                 alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al cargar los datos, intentelo de nuevo mas tarde");
                 alert.showAndWait();
-            } 
+            }
 
         });
 
@@ -415,7 +419,7 @@ public class SubjectsViewController {
             }
 
         });
-        
+
         btnSearchSubject.setOnAction(actionEvent -> {
             try {
                 LOGGER.info("Applying the filters and searching the subjects");
@@ -548,15 +552,15 @@ public class SubjectsViewController {
         btnSubjectPrint.setOnAction(actionEvent -> {
             try {
                 LOGGER.info("Printing a report");
-                
-                JasperReport report =
-                        JasperCompileManager.compileReport(getClass().getResourceAsStream("/client/view/subject/SubjectReport.jrxml"));
-                
+
+                JasperReport report
+                        = JasperCompileManager.compileReport(getClass().getResourceAsStream("/client/view/subject/SubjectReport.jrxml"));
+
                 JRBeanCollectionDataSource dataItems = new JRBeanCollectionDataSource((Collection<Subject>) this.tableSubjects.getItems());
-                Map<String,Object> parameters = new HashMap<>();
-                
-                JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
-                
+                Map<String, Object> parameters = new HashMap<>();
+
+                JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, dataItems);
+
                 JasperViewer jasperViewer = new JasperViewer(jasperPrint);
                 jasperViewer.setVisible(true);
             } catch (JRException ex) {
@@ -565,8 +569,7 @@ public class SubjectsViewController {
                 alert = new Alert(Alert.AlertType.ERROR, "Ha sucedido un error al tratar de imprimir el informe");
                 alert.showAndWait();
             }
-            
-            
+
         });
         btnModifySubject.setOnAction(actionEvent -> {
             LOGGER.info("Modifying the subject");
@@ -620,10 +623,10 @@ public class SubjectsViewController {
                         LOGGER.info("Deleting confirmed");
                         Subject selectedSubject = (Subject) tableSubjects.getSelectionModel().getSelectedItem();
                         subjectController.removeSubject(String.valueOf(selectedSubject.getSubjectId()));
-                        
+
                         subjectsData.remove(selectedSubject);
                         tableSubjects.getItems().remove(selectedSubject);
-                        
+
                         tableSubjects.refresh();
                         alert = new Alert(Alert.AlertType.WARNING, "El borrado se ha realizado correctamente");
                         clearFields();
@@ -657,7 +660,9 @@ public class SubjectsViewController {
 
     /**
      * A method tha applyes a filter
-     * @throws Exception throws an exception if any error happened while trying to apply any filter
+     *
+     * @throws Exception throws an exception if any error happened while trying
+     * to apply any filter
      */
     private void applyFilter() throws Exception {
         try {

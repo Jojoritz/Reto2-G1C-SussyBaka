@@ -17,11 +17,6 @@ import client.view.components.GenericController;
 import client.view.components.MenuBarController;
 import client.view.customNodes.EditingDateCell;
 import client.view.customNodes.EditingStringCell;
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -44,22 +39,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -83,16 +73,6 @@ public class PostContentViewController extends GenericController {
 
     @FXML
     private Label txtTitle;
-    @FXML
-    private TextArea txtAreaContent;
-    @FXML
-    private TextField txtImgUrl;
-    @FXML
-    private ImageView imgView;
-    @FXML
-    private Hyperlink videoHyperLink;
-    @FXML
-    private TextField txtVideoUrl;
     @FXML
     private TableView<Comment> tableComment;
     @FXML
@@ -121,7 +101,10 @@ public class PostContentViewController extends GenericController {
     private MenuItem contextCommentDelete;
     @FXML
     private MenuItem contextCommentRefresh;
-    @FXML
+
+    /**
+     * Controller of the menu bar
+     */
     private final MenuBarController menuBarController = new MenuBarController();
 
     /**
@@ -186,107 +169,19 @@ public class PostContentViewController extends GenericController {
             stage.setScene(scene);
             stage.setResizable(false);
             stage.initModality(Modality.APPLICATION_MODAL);
+            menuBarController.setStage(stage);
             menuBarController.setHelpHtml("/client/view/post/help/PostContentViewHelp.html");
 
             if (post != null) {
                 txtTitle.setText(post.getTitle());
-                txtAreaContent.setText(post.getContent());
-                if (post.getImage() != null) {
-                    txtImgUrl.setText(post.getImage());
-                    updateImage(txtImgUrl.getText(), imgView);
-                }
-                if (post.getVideo() != null) {
-                    txtVideoUrl.setText(post.getVideo());
-                    videoHyperLink.setText(post.getVideo());
-                }
             }
 
-            // If user is teacher
-            if (user.getPrivilege().equals(UserPrivilege.TEACHER)) {
-                // Editable true in all text fields/area
-                txtAreaContent.setEditable(true);
-                txtImgUrl.setEditable(true);
-                txtVideoUrl.setEditable(true);
-
-                btnPostContentAdd.setDisable(true);
-            } else if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
-                // Editable false in all text fields/area
-                txtAreaContent.setEditable(false);
-                txtImgUrl.setEditable(false);
-                txtVideoUrl.setEditable(false);
-
-                // Enable Add comment
-                btnPostContentAdd.setDisable(false);
-            }
             btnPostContentDelete.setDisable(true);
             btnPostContentCancel.setDisable(true);
             btnPostContentSave.setDisable(true);
             btnPostContentBack.setDisable(false);
             contextCommentRefresh.setDisable(false);
             btnPostContentBack.setDefaultButton(true);
-        });
-
-        // Listeners for text fields & text area
-        txtAreaContent.textProperty().addListener(observable -> {
-            if (txtAreaContent.getText().length() >= 65535) {
-                showTooltip(stage, txtAreaContent, "No se puede escribir más de 65535 caracteres", tooltip);
-                btnPostContentSave.setDisable(true);
-            } else {
-                btnPostContentSave.setDisable(false);
-            }
-        });
-
-        // Validator for the img url
-        txtImgUrl.textProperty().addListener(observable -> {
-            String text = txtImgUrl.getText();
-            if (text.length() >= VARCHAR_LIMIT) {
-                showTooltip(stage, txtImgUrl, "No se puede poner una URL de mas de "
-                        + VARCHAR_LIMIT + " caracteres", tooltip);
-                btnPostContentSave.setDisable(true);
-            } else {
-                btnPostContentSave.setDisable(false);
-            }
-            btnPostContentCancel.setDisable(false);
-        });
-        // Update image when lost focus the text field
-        txtImgUrl.focusedProperty().addListener((obs, bool1, bool2) -> {
-            if (!bool2) {
-                updateImage(txtImgUrl.getText(), imgView);
-            }
-        });
-        txtImgUrl.setTooltip(new Tooltip("URL de la imagen a mostrar, "
-                + "para actualizar la imagen una vez cambiado la URL clicke fuera del campo de texto"));
-
-        // Video url text field validator
-        txtVideoUrl.textProperty().addListener(observable -> {
-            String text = txtVideoUrl.getText();
-            if (text.length() >= VARCHAR_LIMIT) {
-                showTooltip(stage, txtVideoUrl, "No se puede poner una URL de mas de "
-                        + VARCHAR_LIMIT + " caracteres", tooltip);
-                btnPostContentSave.setDisable(true);
-            } else {
-                btnPostContentSave.setDisable(false);
-            }
-            btnPostContentCancel.setDisable(false);
-        });
-        // Change in the hyperlink field when writing in the text field
-        txtVideoUrl.textProperty().addListener(observable -> {
-            videoHyperLink.setText(txtVideoUrl.getText());
-            btnPostContentCancel.setDisable(false);
-        });
-        // Open default browser 
-        videoHyperLink.setOnAction(event -> {
-            String url = txtVideoUrl.getText();
-            if (!url.matches("^https?:\\/\\/(?!.*:\\/\\/)\\S+")) {
-                url = "http://" + url;
-            }
-            try {
-                Desktop.getDesktop().browse(new URL(url).toURI());
-            } catch (MalformedURLException | URISyntaxException ex) {
-                LOG.severe(ex.getMessage());
-            } catch (IOException e) {
-                LOG.severe(e.getMessage());
-            }
         });
 
         // Callbacks
@@ -352,41 +247,24 @@ public class PostContentViewController extends GenericController {
 
         btnPostContentSave.setOnAction(event -> {
             LOG.info("Saving modified data, sending them to the server");
-            if (user.getPrivilege().equals(UserPrivilege.TEACHER)) {
-                try {
-                    if (post != null) {
-                        post.setContent(txtAreaContent.getText());
-                        post.setImage(txtImgUrl.getText());
-                        post.setVideo(txtVideoUrl.getText());
-                        postController.edit(post);
-                        this.copyPost = new Post(post.getPostId(), post.getTitle(), post.getContent(),
-                                post.getPublicationDate(), post.getImage(), post.getVideo(), post.getCourse());
-                        showAlert("Se han guardado los cambios correctamente", Alert.AlertType.INFORMATION);
-                    }
-                } catch (BusinessLogicException e) {
-                    LOG.severe(e.getMessage());
-                    showAlert(e.getMessage(), Alert.AlertType.ERROR);
+            // Get only the modified elements from the table
+            List<Comment> modifiedList = tableComment.getItems().stream()
+                    .filter(c1 -> !copyList.stream()
+                    .anyMatch(c2 -> c2.equals(c1)))
+                    .collect(Collectors.toList());
+            try {
+                for (Comment comment : modifiedList) {
+                    commentController.edit(comment);
                 }
-
-            } else if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
-                // Get only the modified elements from the table
-                List<Comment> modifiedList = tableComment.getItems().stream()
-                        .filter(c1 -> !copyList.stream()
-                        .anyMatch(c2 -> c2.equals(c1)))
-                        .collect(Collectors.toList());
-                try {
-                    for (Comment comment : modifiedList) {
-                        commentController.edit(comment);
-                    }
-                    // After commit edit, copy modified list from table to both copy and original list
-                    this.copyList = copyArray(tableComment.getItems());
-                    this.commentList = copyArray(tableComment.getItems());
-                    showAlert("Se han guardado los cambios correctamente", Alert.AlertType.INFORMATION);
-                } catch (BusinessLogicException e) {
-                    LOG.severe(e.getMessage());
-                    showAlert(e.getMessage(), Alert.AlertType.ERROR);
-                }
+                // After commit edit, copy modified list from table to both copy and original list
+                this.copyList = copyArray(tableComment.getItems());
+                this.commentList = copyArray(tableComment.getItems());
+                showAlert("Se han guardado los cambios correctamente", Alert.AlertType.INFORMATION);
+            } catch (BusinessLogicException e) {
+                LOG.severe(e.getMessage());
+                showAlert(e.getMessage(), Alert.AlertType.ERROR);
             }
+
         });
         btnPostContentAdd.setOnAction(event -> {
             try {

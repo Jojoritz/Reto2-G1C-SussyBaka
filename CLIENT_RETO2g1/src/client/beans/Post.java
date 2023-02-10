@@ -1,6 +1,5 @@
 package client.beans;
 
-import client.view.post.PostContentViewController;
 import java.io.Serializable;
 
 import java.util.Date;

@@ -8,7 +8,6 @@ package client.view.post;
 import client.beans.Comment;
 import client.beans.Course;
 import client.beans.Post;
-import client.beans.Student;
 import client.beans.enumerations.FilterTypes;
 import client.beans.enumerations.UserPrivilege;
 import client.logic.CommentController;
@@ -41,6 +40,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -51,6 +51,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TablePosition;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -78,7 +79,7 @@ import net.sf.jasperreports.view.JasperViewer;
  * @author Henri
  */
 public class PostViewController extends GenericController {
-
+    
     @FXML
     private TableView<Post> postTable;
     @FXML
@@ -87,6 +88,10 @@ public class PostViewController extends GenericController {
     private TableColumn<Post, Date> dateColumn;
     @FXML
     private TableColumn<Post, String> linkColumn;
+    @FXML
+    private TableColumn<Post, String> contentColumn;
+    @FXML
+    private TableColumn<Post, String> imgColumn;
     @FXML
     private Button btnPostEnter;
     @FXML
@@ -120,6 +125,10 @@ public class PostViewController extends GenericController {
     @FXML
     private MenuItem btnMenuDelete;
     @FXML
+    private MenuItem btnMenuAdd;
+    @FXML
+    private MenuItem btnMenuRefresh;
+    
     private final MenuBarController menuBarController = new MenuBarController();
 
     /**
@@ -134,17 +143,14 @@ public class PostViewController extends GenericController {
      * The logger of this class
      */
     private static final Logger LOG = Logger.getLogger(SignUpViewController.class.getName());
-
     /**
      * Post original post list
      */
     private List<Post> postList;
-
     /**
      * Post copy list
      */
     private List<Post> copyList;
-
     /**
      * Date formatter object
      */
@@ -165,12 +171,13 @@ public class PostViewController extends GenericController {
         this.postController = postController;
         this.primaryStage = primaryStage;
         this.idCourse = courseId;
+
         // Copy of the post List
         if (!postList.isEmpty()) {
             this.copyList = copyArray(postList);
             this.postList = postList;
         }
-
+        
         stage.setOnShowing((event) -> {
             LOG.info("Starting POST window and setting the components on the screen");
             stage.setTitle("Publicaciones");
@@ -186,6 +193,7 @@ public class PostViewController extends GenericController {
             btnPostCancel.setDisable(true);
             btnPostPrint.setDisable(postList.isEmpty());
             btnPostBack.setDisable(false);
+            btnMenuRefresh.setDisable(false);
 
             // Filter state
             filterText.setDisable(true);
@@ -196,39 +204,45 @@ public class PostViewController extends GenericController {
             filterDateRange.setShowTime(false);
             filterDateRange.dateFormatProperty().set(FORMATTER);
             btnBuscar.setDisable(true);
-
+            
             if (!postList.isEmpty()) {
                 postTable.setItems(getItems(postList));
             }
-
+            
             if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
                 btnPostAdd.setDisable(true);
                 postTable.setEditable(false);
             } else {
                 btnPostAdd.setDisable(false);
             }
+
+            // Enable only select cell instead row
             postTable.getSelectionModel().setCellSelectionEnabled(true);
-            cmbxFilter.setItems(
-                    FXCollections.observableArrayList(FilterTypes.NINGUNO, FilterTypes.NOMBRE, FilterTypes.FECHA, FilterTypes.RANGO_FECHA));
+
+            // Add type on the filter
+            cmbxFilter.setItems(FXCollections.observableArrayList(
+                    FilterTypes.NINGUNO, FilterTypes.TITULO,
+                    FilterTypes.FECHA, FilterTypes.RANGO_FECHA));
         });
 
         // Callbacks
-        Callback<TableColumn<Post, String>, TableCell<Post, String>> titleCellFactory
+        Callback<TableColumn<Post, String>, TableCell<Post, String>> stringCellFactory255
                 = (TableColumn<Post, String> p) -> new EditingStringCell(255);
-        Callback<TableColumn<Post, String>, TableCell<Post, String>> contentCellFactory
+        Callback<TableColumn<Post, String>, TableCell<Post, String>> stringCellFactory65535
                 = (TableColumn<Post, String> p) -> new EditingStringCell(65535);
         Callback<TableColumn<Post, Date>, TableCell<Post, Date>> dateCellFactory
                 = (TableColumn<Post, Date> p) -> new EditingDateCell();
 
         // Title column
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        titleColumn.setCellFactory(titleCellFactory);
+        titleColumn.setCellFactory(stringCellFactory255);
         titleColumn.setOnEditCommit(
                 (CellEditEvent<Post, String> t) -> {
                     ((Post) t.getTableView().getItems().get(
-                            t.getTablePosition().getRow())).setTitle(t.getNewValue());
-                    btnPostSave.setDisable(false);
-                    btnPostCancel.setDisable(false);
+                            t.getTablePosition().getRow()))
+                            .setTitle(t.getNewValue());
+                    updateButtonDisableStates(false);
+                    
                 });
 
         // Date Column
@@ -239,19 +253,41 @@ public class PostViewController extends GenericController {
                     ((Post) t.getTableView().getItems()
                             .get(t.getTablePosition().getRow()))
                             .setPublicationDate(t.getNewValue());
-                    btnPostSave.setDisable(false);
-                    btnPostCancel.setDisable(false);
+                    updateButtonDisableStates(false);
+                });
+
+        // Content column
+        contentColumn.setCellValueFactory(new PropertyValueFactory<>("content"));
+        contentColumn.setCellFactory(stringCellFactory65535);
+        contentColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Post, String> t) -> {
+                    ((Post) t.getTableView().getItems()
+                            .get(t.getTablePosition().getRow()))
+                            .setContent(t.getNewValue());
+                    updateButtonDisableStates(false);
+                    
                 });
 
         // YT link Column
         linkColumn.setCellValueFactory(new PropertyValueFactory<>("video"));
-        linkColumn.setCellFactory(contentCellFactory);
+        linkColumn.setCellFactory(stringCellFactory255);
         linkColumn.setOnEditCommit(
                 (CellEditEvent<Post, String> t) -> {
                     ((Post) t.getTableView().getItems().get(
-                            t.getTablePosition().getRow())).setVideo(t.getNewValue());
-                    btnPostSave.setDisable(false);
-                    btnPostCancel.setDisable(false);
+                            t.getTablePosition().getRow()))
+                            .setVideo(t.getNewValue());
+                    updateButtonDisableStates(false);
+                });
+
+        // Img link column
+        imgColumn.setCellValueFactory(new PropertyValueFactory<>("image"));
+        imgColumn.setCellFactory(stringCellFactory255);
+        imgColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Post, String> t) -> {
+                    ((Post) t.getTableView().getItems().get(
+                            t.getTablePosition().getRow()))
+                            .setImage(t.getNewValue());
+                    updateButtonDisableStates(false);
                 });
 
         // Select row on table
@@ -265,17 +301,24 @@ public class PostViewController extends GenericController {
                         btnPostDelete.setDisable(true);
                     }
                 });
+
         // Post listener when right click
         postTable.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent e) -> {
             if (e.getButton().equals(MouseButton.SECONDARY)) {
                 try {
                     if (getSelectedCell() != null) {
-                        btnMenuDelete.setDisable(false);
-                        btnMenuCopy.setDisable(false);
+                        if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
+                            btnMenuPaste.setDisable(true);
+                            btnMenuAdd.setDisable(true);
+                            btnMenuDelete.setDisable(true);
+                        } else { // User is privilege is different of student (admin, teacher)
+                            btnMenuCopy.setDisable(false);
+                            btnMenuDelete.setDisable(false);
+                            if (((String) clipboard.getContent(DataFormat.PLAIN_TEXT)) != null) {
+                                btnMenuPaste.setDisable(false);
+                            }
+                        }
                         btnMenuEnter.setDisable(false);
-                    }
-                    if (((String) clipboard.getContent(DataFormat.PLAIN_TEXT)) != null) {
-                        btnMenuPaste.setDisable(false);
                     }
                 } catch (Exception ex) {
                     LOG.info(ex.getMessage());
@@ -283,15 +326,19 @@ public class PostViewController extends GenericController {
                     btnMenuPaste.setDisable(true);
                     btnMenuCopy.setDisable(true);
                     btnMenuEnter.setDisable(true);
+                    if (user.getPrivilege().equals(UserPrivilege.STUDENT)) {
+                        btnMenuAdd.setDisable(true);
+                    }
+                    
                 }
-
+                
             }
         });
 // Listener when combo box changes 
         cmbxFilter.getSelectionModel().selectedItemProperty().addListener(
                 (options, oldValue, newValue) -> {
                     switch (newValue) {
-                        case NOMBRE:
+                        case TITULO:
                             filterText.setDisable(false);
                             filterDate.setDisable(true);
                             filterDateRange.setDisable(true);
@@ -310,7 +357,7 @@ public class PostViewController extends GenericController {
                             filterText.setDisable(true);
                             filterDate.setDisable(true);
                             filterDateRange.setDisable(true);
-                            btnBuscar.setDisable(true);
+                            btnBuscar.setDisable(false);
                             break;
                     }
                 });
@@ -325,12 +372,12 @@ public class PostViewController extends GenericController {
                 } else {
                     btnBuscar.setDisable(false);
                 }
-
+                
             } catch (Exception e) {
                 showTooltip(stage, filterText, e.getMessage(), tooltip);
                 btnBuscar.setDisable(true);
             }
-
+            
         });
         // Validate the dates of the filter
         filterDate.textProperty().addListener((obs, oldValue, newValue) -> {
@@ -374,28 +421,42 @@ public class PostViewController extends GenericController {
                 this.copyList = copyArray(postTable.getItems());
                 this.postList = copyArray(postTable.getItems());
                 showAlert("Se han guardado los cambios correctamente", Alert.AlertType.INFORMATION);
+                updateButtonDisableStates(true);
+                LOG.info("Data saved succesfully");
             } catch (BusinessLogicException ex) {
                 LOG.severe(ex.getMessage());
                 showAlert(ex.getMessage(), Alert.AlertType.ERROR);
             }
-
+            
         });
         btnPostDelete.setOnAction(this::deletePost);
         btnPostBack.setOnAction(event -> {
-            LOG.info("Closing the window");
-            stage.close();
-            primaryStage.show();
+            try {
+                if (menuBarController.getEdited()) {
+                    openViewWithoutSaving();
+                    throw new Exception("User has to save or discard changes before changing view");
+                }
+                LOG.info("Closing the window");
+                stage.close();
+                menuBarController.setEdited(false);
+                primaryStage.show();
+            } catch (Exception e) {
+                LOG.info(e.getMessage());
+            }
         });
         btnPostCancel.setOnAction(event -> {
             LOG.info("Cancel the edited table from commiting to the server");
             postTable.setItems(getItems(copyArray(copyList)));
             postTable.refresh();
-            btnPostCancel.setDisable(true);
+            updateButtonDisableStates(true);
         });
         btnPostAdd.setOnAction(this::addPost);
         btnPostEnter.setOnAction(this::commentView);
         btnPostPrint.setOnAction(event -> {
             try {
+                if (postList.isEmpty()) {
+                    throw new JRException("No se puede imprimir los datos de una tabla vacia");
+                }
                 JasperReport report
                         = JasperCompileManager.compileReport(getClass()
                                 .getResourceAsStream("/client/view/post/PostReport.jrxml"));
@@ -405,7 +466,7 @@ public class PostViewController extends GenericController {
                 JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, dataItems);
                 JasperViewer jasperViewer = new JasperViewer(jasperPrint, false);
                 jasperViewer.setVisible(true);
-
+                
             } catch (JRException e) {
                 LOG.severe(e.getMessage());
                 showAlert(e.getMessage(), Alert.AlertType.ERROR);
@@ -415,27 +476,33 @@ public class PostViewController extends GenericController {
             try {
                 List<Post> filterPostList = new ArrayList<>();
                 switch (cmbxFilter.getValue()) {
-                    case NOMBRE:
+                    case TITULO:
                         filterPostList = postController.findByTitle(new GenericType<List<Post>>() {
                         }, courseId.toString(), filterText.getText());
+                        LOG.info(String.format("Searching with the title: %s", filterText.getText()));
                         break;
                     case FECHA:
                         filterPostList = postController.findByDate(new GenericType<List<Post>>() {
                         }, courseId.toString(), FORMATTER.format(filterDate.getCalendar().getTime()));
+                        LOG.info(String.format("Searching with date: %s", filterDate.getCalendar().getTime()));
                         break;
                     case RANGO_FECHA:
                         filterPostList = postController.findByDateRange(new GenericType<List<Post>>() {
                         }, courseId.toString(), FORMATTER.format(filterDate.getCalendar().getTime()),
                                 FORMATTER.format(filterDateRange.getCalendar().getTime()));
+                        LOG.info(String.format("Searching with date range from: %s to: %s",
+                                filterDate.getCalendar().getTime(), filterDateRange.getCalendar().getTime()));
                         break;
                     default:
-                        menuRefresh(event);
+                        discardEditTable();
+                        LOG.info("No filter, setting table with all posts");
                         break;
                 }
-                if (!filterPostList.isEmpty()) {
+                if (!cmbxFilter.getValue().equals(FilterTypes.NINGUNO)) {
                     postTable.setItems(getItems(filterPostList));
                     postTable.refresh();
                 }
+                
             } catch (BusinessLogicException e) {
                 LOG.severe(e.getMessage());
                 showAlert(e.getMessage(), Alert.AlertType.ERROR);
@@ -449,7 +516,7 @@ public class PostViewController extends GenericController {
                 (WindowEvent windowEvent) -> {
                     LOG.info("Opening exit alert confirmation");
                     showAlert("¿Quieres cerrar el programa?", Alert.AlertType.CONFIRMATION);
-
+                    
                     if (alert.getResult().equals(ButtonType.YES)) {
                         LOG.info("Closing the application");
                         Platform.exit();
@@ -491,7 +558,7 @@ public class PostViewController extends GenericController {
         original.stream().forEach(p -> copy.add(
                 new Post(p.getPostId(), p.getTitle(), p.getContent(),
                         p.getPublicationDate(), p.getImage(), p.getVideo(), p.getCourse())));
-
+        
         return copy;
     }
 
@@ -502,6 +569,22 @@ public class PostViewController extends GenericController {
      */
     private Post getSelected() {
         return postTable.getSelectionModel().getSelectedItem();
+    }
+
+    /**
+     * Updates the states of the buttons when a cell is edited
+     *
+     * @param bool passes the boolean for the state of the buttons
+     */
+    private void updateButtonDisableStates(Boolean bool) {
+        btnPostSave.setDisable(bool);
+        btnPostCancel.setDisable(bool);
+        menuBarController.setEdited(!bool);
+    }
+    
+    private void openViewWithoutSaving() {
+        showAlert("No has guardado los cambios que has hecho a la tabla, "
+                + "\nTienes que guardar o descartar los cambios para salir", Alert.AlertType.INFORMATION);
     }
 
     /**
@@ -543,10 +626,11 @@ public class PostViewController extends GenericController {
                 Post postDelete = getSelected();
                 postController.remove(postDelete.getPostId().toString());
                 postTable.getItems().remove(postDelete);
+                LOG.info("Row deleted successfully from the table and the server");
             } catch (BusinessLogicException ex) {
                 LOG.severe(ex.getMessage());
                 showAlert(ex.getMessage(), Alert.AlertType.ERROR);
-
+                
             }
         }
     }
@@ -565,10 +649,29 @@ public class PostViewController extends GenericController {
                     + "Culpa voluptatum non harum voluptatem quia et quo.",
                     new Date(), null, null, newCourse);
             postController.create(newPost);
-
+            btnPostPrint.setDisable(false);
             menuRefresh(event);
+            LOG.info("New Post with default values created succesfully");
         } catch (BusinessLogicException e) {
             showAlert(e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    /**
+     * This method discards any modification of the table, getting a new list
+     * from the server and setting it to the table view.
+     */
+    private void discardEditTable() {
+        try {
+            this.postList = postController.getCoursePosts(new GenericType<ArrayList<Post>>() {
+            }, idCourse.toString());
+            postTable.setItems(getItems(postList));
+            postTable.refresh();
+            btnPostSave.setDisable(true);
+            btnPostCancel.setDisable(true);
+            menuBarController.setEdited(false);
+        } catch (BusinessLogicException e) {
+            LOG.severe(e.getMessage());
         }
     }
 
@@ -579,17 +682,23 @@ public class PostViewController extends GenericController {
      */
     private void commentView(ActionEvent event) {
         try {
+            if (menuBarController.getEdited()) {
+                openViewWithoutSaving();
+                throw new Exception("User has to save or discard changes before changing view");
+            }
             FXMLLoader loader = new FXMLLoader(getClass().getResource("PostContentView.fxml"));
             Parent rootPostContentView = (Parent) loader.load();
             PostContentViewController postContent = ((PostContentViewController) loader.getController());
             Post post = getSelected();
+            menuBarController.setEdited(false);
             CommentController commentController = ControllerFactory.getCommentController();
             postContent.initStage(rootPostContentView, postController, commentController, this.stage,
                     commentController.findAll(new GenericType<ArrayList<Comment>>() {
                     }, post.getPostId().toString()), post);
-
         } catch (IOException | BusinessLogicException e) {
-            showAlert(e.getLocalizedMessage(), Alert.AlertType.ERROR);
+            showAlert(e.getMessage(), Alert.AlertType.ERROR);
+        } catch (Exception ex) {
+            LOG.info(ex.getMessage());
         }
     }
 
@@ -613,7 +722,6 @@ public class PostViewController extends GenericController {
     @FXML
     private void menuCopy(ActionEvent event) {
         try {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
             ClipboardContent content = new ClipboardContent();
             content.putString(getSelectedCell());
             clipboard.setContent(content);
@@ -634,7 +742,7 @@ public class PostViewController extends GenericController {
         try {
             boolean modified = false;
             String content = (String) clipboard.getContent(DataFormat.PLAIN_TEXT);
-
+            
             TablePosition selectedCell = postTable.getSelectionModel().getSelectedCells().get(0);
             int col = selectedCell.getColumn();
             TableColumn column = postTable.getColumns().get(col);
@@ -653,7 +761,7 @@ public class PostViewController extends GenericController {
                     modified = true;
                 } catch (Exception e) {
                     modified = false;
-                    LOG.info(e.getMessage() + " Pasted item is a text, if it was date it wasn't formatted properly");
+                    LOG.info(e.getMessage() + " \nPasted item is a text, if it was date it wasn't formatted properly");
                 }
             }
             if (modified) {
@@ -666,7 +774,7 @@ public class PostViewController extends GenericController {
             showAlert("Rolling back any modification to the table", Alert.AlertType.INFORMATION);
             postTable.setItems(getItems(copyArray(copyList)));
             postTable.refresh();
-
+            
         }
     }
 
@@ -700,14 +808,7 @@ public class PostViewController extends GenericController {
      */
     @FXML
     private void menuRefresh(ActionEvent event) {
-        try {
-            this.postList = postController.getCoursePosts(new GenericType<ArrayList<Post>>() {
-            }, idCourse.toString());
-            postTable.setItems(getItems(postList));
-            postTable.refresh();
-        } catch (BusinessLogicException e) {
-            LOG.severe(e.getMessage());
-        }
+        discardEditTable();
     }
-
+    
 }

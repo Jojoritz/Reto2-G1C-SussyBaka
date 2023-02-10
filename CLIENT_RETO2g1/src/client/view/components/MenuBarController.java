@@ -23,6 +23,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -61,9 +62,9 @@ public class MenuBarController {
 
     private static String helpHtml;
 
-    public void setHelpHtml(String url) {
-        helpHtml = url;
-    }
+    private static Boolean edited = false;
+
+    private Boolean openView;
 
     private static User user;
 
@@ -73,6 +74,7 @@ public class MenuBarController {
     private static final Logger LOG = Logger.getLogger(MenuBarController.class.getName());
 
     public void initialize() {
+
         menHelp.showingProperty().addListener((
                 observableValue, oldValue, newValue) -> {
             if (newValue) {
@@ -94,12 +96,20 @@ public class MenuBarController {
         });
         menitmInitialScreen.setOnAction(event -> {
             try {
-                LOG.info("Opening main window...");
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/principal/PrincipalView.fxml"));
-                Parent root = (Parent) loader.load();
-                PrincipalViewController principalController = ((PrincipalViewController) loader.getController());
-                stage.close();
-                principalController.initStage(root, stage);
+                openView = true;
+                if (edited) {
+                    openView = showConfirmationWithoutSave();
+                }
+
+                if (openView) {
+                    LOG.info("Opening main window...");
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/principal/PrincipalView.fxml"));
+                    Parent root = (Parent) loader.load();
+                    PrincipalViewController principalController = ((PrincipalViewController) loader.getController());
+                    //stage.close();
+                    edited = false;
+                    principalController.initStage(root, stage);
+                }
             } catch (IOException e) {
                 LOG.info(e.getMessage());
                 showError();
@@ -107,12 +117,20 @@ public class MenuBarController {
         });
         menitmCourses.setOnAction(event -> {
             try {
-                LOG.info("Opening subjects window...");
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/course/Courses.fxml"));
-                Parent root = (Parent) loader.load();
-                CourseViewController courseViewController = ((CourseViewController) loader.getController());
-                stage.close();
-                courseViewController.initStage(root, stage);
+                openView = true;
+                if (edited) {
+                    openView = showConfirmationWithoutSave();
+                }
+
+                if (openView) {
+                    LOG.info("Opening subjects window...");
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/course/Courses.fxml"));
+                    Parent root = (Parent) loader.load();
+                    CourseViewController courseViewController = ((CourseViewController) loader.getController());
+                    //stage.close();
+                    edited = false;
+                    courseViewController.initStage(root, stage);
+                }
             } catch (IOException e) {
                 LOG.severe(e.getMessage());
                 showError();
@@ -121,19 +139,27 @@ public class MenuBarController {
         // This is only a back door to enter to the post, using logged user and course ID 1
         menitmPost.setOnAction(event -> {
             try {
-                /*
+                openView = true;
+                if (edited) {
+                    openView = showConfirmationWithoutSave();
+                }
+
+                if (openView) {
+                    /*
                 user = ControllerFactory.getUserController().getUser_XML(new GenericType<User>() {
                 }, "1");
-                 */
-                List<Post> postList = ControllerFactory.getPostController().
-                        getCoursePosts(new GenericType<ArrayList<Post>>() {
-                        }, "1");
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/post/PostView.fxml"));
-                Parent root = (Parent) loader.load();
-                PostViewController controller = ((PostViewController) loader.getController());
-                controller.setUser(user);
-                stage.close();
-                controller.initStage(root, ControllerFactory.getPostController(), stage, postList, 1);
+                     */
+                    List<Post> postList = ControllerFactory.getPostController().
+                            getCoursePosts(new GenericType<ArrayList<Post>>() {
+                            }, "1");
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/post/PostView.fxml"));
+                    Parent root = (Parent) loader.load();
+                    PostViewController controller = ((PostViewController) loader.getController());
+                    controller.setUser(user);
+                    //stage.close();
+                    edited = false;
+                    controller.initStage(root, ControllerFactory.getPostController(), stage, postList, 1);
+                }
             } catch (Exception e) {
                 LOG.severe(e.getMessage());
                 showError();
@@ -141,12 +167,20 @@ public class MenuBarController {
         });
         menitmSubjects.setOnAction(event -> {
             try {
-                LOG.info("Opening subjects window...");
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/subject/Subjects.fxml"));
-                Parent root = (Parent) loader.load();
-                SubjectsViewController subjectViewController = ((SubjectsViewController) loader.getController());
-                stage.close();
-                subjectViewController.initStage(root, stage);
+                openView = true;
+                if (edited) {
+                    openView = showConfirmationWithoutSave();
+                }
+
+                if (openView) {
+                    LOG.info("Opening subjects window...");
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/subject/Subjects.fxml"));
+                    Parent root = (Parent) loader.load();
+                    SubjectsViewController subjectViewController = ((SubjectsViewController) loader.getController());
+                    //stage.close();
+                    edited = false;
+                    subjectViewController.initStage(root, stage);
+                }
             } catch (IOException e) {
                 LOG.severe(e.getMessage());
                 showError();
@@ -157,11 +191,19 @@ public class MenuBarController {
         });
         menitmCloseSession.setOnAction(event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/signIn/SignInView.fxml"));
-                Parent root = (Parent) loader.load();
-                SignInViewController controller = ((SignInViewController) loader.getController());
-                stage.close();
-                controller.initStage(root);
+                openView = true;
+                if (edited) {
+                    openView = showConfirmationWithoutSave();
+                }
+
+                if (openView) {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/view/signIn/SignInView.fxml"));
+                    Parent root = (Parent) loader.load();
+                    SignInViewController controller = ((SignInViewController) loader.getController());
+                    //stage.close();
+                    edited = false;
+                    controller.initStage(root);
+                }
             } catch (IOException e) {
                 showError();
             }
@@ -173,12 +215,31 @@ public class MenuBarController {
         alert.showAndWait();
     }
 
+    private Boolean showConfirmationWithoutSave() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "No has guardado los cambios que has hecho a la tabla, "
+                + "\n¿Estás seguro de que quieres salir sin guardar?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+        return alert.getResult() == ButtonType.YES;
+    }
+
     public void setStage(Stage stageParam) {
         stage = stageParam;
     }
 
     public void setUser(User userLogged) {
         user = userLogged;
+    }
+
+    public void setEdited(Boolean bool) {
+        edited = bool;
+    }
+
+    public Boolean getEdited() {
+        return edited;
+    }
+
+    public void setHelpHtml(String url) {
+        helpHtml = url;
     }
 
 }

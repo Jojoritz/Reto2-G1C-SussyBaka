@@ -8,13 +8,9 @@ package client.view.post;
 import client.Main;
 import client.beans.Post;
 import client.beans.enumerations.FilterTypes;
-import client.view.signUp.SignUpViewController;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Date;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
-import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -25,14 +21,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import jfxtras.scene.control.CalendarTextField;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.runners.MethodSorters;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -40,8 +32,6 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
-import static org.testfx.matcher.control.ButtonMatchers.isDefaultButton;
-import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
 
 /**
  * This test class test the view {@link PostViewController}, and the test

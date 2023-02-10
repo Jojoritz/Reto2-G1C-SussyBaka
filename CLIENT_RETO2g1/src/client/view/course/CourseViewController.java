@@ -18,6 +18,7 @@ import client.logic.SubjectController;
 import client.logic.UserController;
 import client.logic.exception.BusinessLogicException;
 import client.view.components.GenericController;
+import client.view.components.MenuBarController;
 import client.view.post.PostViewController;
 import client.view.subject.SubjectsViewController;
 import java.io.IOException;
@@ -69,7 +70,7 @@ import net.sf.jasperreports.view.JasperViewer;
  *
  * @author Joritz
  */
-public class CourseViewController extends GenericController{
+public class CourseViewController extends GenericController {
 
     /**
      * This is the logger of the class
@@ -322,6 +323,11 @@ public class CourseViewController extends GenericController{
     private FilterTypes filterToApply;
 
     /**
+     * Controller of the menu bar
+     */
+    private final MenuBarController menuBarController = new MenuBarController();
+
+    /**
      * Initializes the controller class.
      *
      * @param root the parent scecne
@@ -335,11 +341,11 @@ public class CourseViewController extends GenericController{
         //Hide the last window
         primaryStage.hide();
         this.primaryStage = primaryStage;
-
         stage.setTitle("Course");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.initModality(Modality.WINDOW_MODAL);
+        menuBarController.setStage(stage);
 
         //Disable & Enable the buttons
         btnCreate.setDisable(true);

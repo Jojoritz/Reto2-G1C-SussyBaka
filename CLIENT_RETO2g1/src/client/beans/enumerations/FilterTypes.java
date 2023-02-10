@@ -24,6 +24,10 @@ public enum FilterTypes {
      */
     NOMBRE,
     /**
+     * The name option for the filter
+     */
+    TITULO,
+    /**
      * The type option for the filter
      */
     TIPO,
